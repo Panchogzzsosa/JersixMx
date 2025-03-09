@@ -1,0 +1,17 @@
+.notification {
+    position: fixed;
+    top: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #333;
+    color: white;
+    padding: 15px 30px;
+    border-radius: 5px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    transition: top 0.3s ease-in-out;
+    z-index: 1000;
+}
+
+.notification.show {
+    top: 20px;
+}

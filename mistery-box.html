@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JerSix - Mystery Box </title>
+    <link rel="stylesheet" href="Css/mistery-box.css">
+    <link rel="stylesheet" href="Css/index.css">
+    <link rel="stylesheet" href="Css/cart.css">
+    <link rel="stylesheet" href="Css/notificacion.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="Js/products-data.js"></script>
+    <script src="Js/index.js"></script>
+    <script src="Js/search.js"></script>
+    <script src="Js/mistery-box.js"></script>
+    <script src="Js/cart2.js" defer></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const newsletterForm = document.querySelector('.newsletter-form');
+            const newsletterInput = document.querySelector('.newsletter-input');
+            const newsletterButton = document.querySelector('.newsletter-button');
+
+            function showNotification(message, isSuccess = true) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
+                notification.textContent = message;
+                document.body.appendChild(notification);
+
+                setTimeout(() => {
+                    notification.classList.add('show');
+                }, 100);
+
+                setTimeout(() => {
+                    notification.classList.remove('show');
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
+            }
+
+            newsletterForm.addEventListener('submit', function(e) {
+                e.preventDefault();
+                const email = newsletterInput.value.trim();
+
+                if (!email) {
+                    showNotification('Por favor, ingrese un correo electrónico', false);
+                    return;
+                }
+
+                newsletterButton.disabled = true;
+                newsletterButton.textContent = 'Enviando...';
+
+                fetch('save_newsletter.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: 'email=' + encodeURIComponent(email)
+                })
+                .then(response => response.json())
+                .then(data => {
+                    showNotification(data.message, data.success);
+                    if (data.success) {
+                        newsletterInput.value = '';
+                    }
+                })
+                .catch(error => {
+                    showNotification('Error al procesar la solicitud. Por favor, intente más tarde.', false);
+                })
+                .finally(() => {
+                    newsletterButton.disabled = false;
+                    newsletterButton.textContent = 'Suscribirse';
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <button class="menu-toggle">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="logo"><a href="index.php"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
+            <ul class="nav-links">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li><a href="index">Inicio</a></li>
+                <li><a href="productos">Productos</a></li>
+                <li><a href="mistery-box" id = "pagina_actual" >Mistery Box</a></li>
+                <li><a href="giftcard" class="active">Giftcard</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" placeholder="Buscar productos..." class="search-input">
+                <button class="search-button">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+            </div>
+            <div class="cart-icon">
+                <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="product-detail">
+            <div class="product-image-container">
+                <img src="img/MysteryBox.webp" alt="Mystery Box" class="product-image" id="main-image">
+            </div>
+
+            <div class="product-info">
+                <h1 class="product-title">Mystery Box - Proximamente</h1>
+                <p class="product-description">Tu próximo JERSIX está a un paso. ¿Cuál te tocará?</p>
+                <div class="product-price">$ 799.00 MXN</div>
+
+            <div class="product-options">
+                <div class="option-group">
+                    <h3>Tipo</h3>
+                    <div class="tipo-options">
+                        <button class="size-option tipo-option" data-tipo="champions">Champions</button>
+                        <button class="size-option tipo-option" data-tipo="ligamx">LigaMX</button>
+                    </div>
+                </div>
+
+                <div class="size-selector">
+                    <h3>Talla <button class="size-guide-btn">Guía de tallas</button></h3>
+                    <div class="size-options">
+                        <button class="size-option" data-size="S">S</button>
+                        <button class="size-option" data-size="M">M</button>
+                        <button class="size-option" data-size="L">L</button>
+                    </div>
+                </div>
+
+                <div class="quantity-selector">
+                    <h3>Cantidad</h3>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus">-</button>
+                        <input type="number" value="1" min="1" class="quantity-input">
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+
+                <button class="add-to-cart-btn">Agregar al carrito</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre JerseyZone</h3>
+                <p>Somos una tienda especializada en jerseys deportivos y casuales de alta calidad. Nuestro compromiso es ofrecer diseños únicos y materiales premium para nuestros clientes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Preguntas Frecuentes</h3>
+                <ul>
+                    <li><a href="Preguntas_Frecuentes.html">Envíos y Entregas</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Devoluciones</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Métodos de Pago</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Generales</h3>
+                <ul>
+                    <li><a href="PoliticaDevolucion.html">Politica de Devoluciones</a></li>
+                    <li><a href="aviso_privacidad.html">Aviso de Privacidad</a></li>
+                    <li><a href="TerminosYcondicones.html">Terminos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Suscríbete para recibir las últimas novedades y ofertas especiales.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Tu correo electrónico" class="newsletter-input">
+                    <button class="newsletter-button">Suscribirse</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+
+    <div class="whatsapp-button">
+        <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <div id="sizeGuideModal" class="modal">
+        <div class="modal-content">
+            <span class="close">&times;</span>
+            <h2>Guía de Tallas</h2>
+            <table class="size-chart">
+                <thead>
+                    <tr>
+                        <th style="background-color: #F5F5F5; color: #333333;">Talla</th>
+                        <th style="background-color: #F5F5F5; color: #333333;">Pecho (cm)</th>
+                        <th style="background-color: #F5F5F5; color: #333333;">Largo (cm)</th>
+                        <th style="background-color: #F5F5F5; color: #333333;">Hombros (cm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>S</td>
+                        <td>96-101</td>
+                        <td>71-73</td>
+                        <td>44-46</td>
+                    </tr>
+                    <tr>
+                        <td>M</td>
+                        <td>101-106</td>
+                        <td>73-75</td>
+                        <td>46-48</td>
+                    </tr>
+                    <tr>
+                        <td>L</td>
+                        <td>106-111</td>
+                        <td>75-77</td>
+                        <td>48-50</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>

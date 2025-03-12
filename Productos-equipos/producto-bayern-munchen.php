@@ -6,7 +6,7 @@ try {
 
     // Get product stock and price from database
     $stmt = $pdo->prepare('SELECT stock, price FROM products WHERE name LIKE ?');
-    $stmt->execute(['%Liverpool%']);
+    $stmt->execute(['%Bayer Munich%']);
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
     $stock = $product ? $product['stock'] : 0;
     $price = $product ? $product['price'] : '799.00'; // Get price from database or use default
@@ -42,7 +42,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Liverpool Local 24/25 - JerseyZone</title>
+    <title>Bayern Munich Local 24/25 - JerseyZone</title>
     <link rel="stylesheet" href="../Css/index.css">
     <link rel="stylesheet" href="../Css/productos.css">
     <link rel="stylesheet" href="../Css/cart.css">
@@ -386,16 +386,16 @@ try {
     <main>
         <div class="product-detail">
             <div class="product-image-container">
-                <img src="../img/Jerseys/LiverpoolLocal.jpg" alt="Liverpool Jersey" class="product-image" id="mainImage" loading="lazy">
+                <img src="../img/Jerseys/BayerMunchenLocal.jpg" alt="Liverpool Jersey" class="product-image" id="mainImage" loading="lazy">
                 <div class="product-thumbnails">
-                    <img src="../img/Jerseys/LiverpoolLocal.jpg" alt="Liverpool Jersey Front" class="thumbnail active" onclick="changeImage(this)" loading="lazy">
-                    <img src="../img/Jerseys/Liverpool2.jpg" alt="Liverpool Jersey Back" class="thumbnail" onclick="changeImage(this)" loading="lazy">
-                    <img src="../img/Jerseys/Liverpool3.jpg" alt="Liverpool Jersey Detail" class="thumbnail" onclick="changeImage(this)" loading="lazy">
+                    <img src="../img/Jerseys/BayerMunchenLocal.jpg" alt="Liverpool Jersey Front" class="thumbnail active" onclick="changeImage(this)" loading="lazy">
+                    <img src="../img/Jerseys/BayernMunchen2.jpg" alt="Liverpool Jersey Back" class="thumbnail" onclick="changeImage(this)" loading="lazy">
+                    <img src="../img/Jerseys/BayernMunchen1.jpg" alt="Liverpool Jersey Detail" class="thumbnail" onclick="changeImage(this)" loading="lazy">
                 </div>
             </div>
             <div class="product-info">
-                <h1 class="product-title">Liverpool Local 24/25</h1>
-                <p class="product-price" data-product-id="liverpool">$ <?php echo $price; ?></p>
+                <h1 class="product-title">Bayern de Múnich Local 24/25</h1>
+                <p class="product-price" data-product-id="bayern_munich">$ <?php echo $price; ?></p>
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const priceElement = document.querySelector('.product-price');

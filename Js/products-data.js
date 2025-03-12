@@ -7,7 +7,7 @@ const productsData = [
         league: "laliga",
         price: "799.00",
         image: "../img/Jerseys/RealMadridLocal.jpg",
-        url: "../Productos-equipos/producto-real-madrid.php",
+        url: "../Productos-equipos/producto-real-madrid",
         productId: "real_madrid"
     },
     {
@@ -18,7 +18,7 @@ const productsData = [
         league: "laliga",
         price: "799.00",
         image: "../img/LoMasVendido/Barca.png",
-        url: "../Productos-equipos/producto-barca.php",
+        url: "../Productos-equipos/producto-barca",
         productId: "barcelona"
     },
     {
@@ -29,19 +29,19 @@ const productsData = [
         league: "premier",
         price: "799.00",
         image: "../img/Jerseys/ManchesterCity.png",
-        url: "../Productos-equipos/producto-manchester-city.php",
+        url: "../Productos-equipos/producto-manchester-city",
         productId: "manchester_city"
     },
     {
         id: 4,
-        name: "Liverpool Local",
-        team: "Liverpool",
+        name: "Bayern Munich Local",
+        team: "Bayern Munich",
         category: "local",
-        league: "premier",
+        league: "bundesliga",
         price: "799.00",
-        image: "../img/Jerseys/LiverpoolLocal.jpg",
-        url: "../Productos-equipos/producto-liverpool.php",
-        productId: "liverpool"
+        image: "../img/Jerseys/BayerMunchenLocal.jpg",
+        url: "../Productos-equipos/producto-bayer-munchen",
+        productId: "bayern_munich"
     },
     {
         id: 5,
@@ -51,7 +51,7 @@ const productsData = [
         league: "serieA",
         price: "799.00",
         image: "../img/Jerseys/MilanLocal.png",
-        url: "../Productos-equipos/producto-ac-milan.php",
+        url: "../Productos-equipos/producto-ac-milan",
         productId: "ac_milan"
     },
     {
@@ -62,7 +62,7 @@ const productsData = [
         league: "ligue1",
         price: "799.00",
         image: "../img/Jerseys/PSGLocal.jpg",
-        url: "../Productos-equipos/producto-psg.php",
+        url: "../Productos-equipos/producto-psg",
         productId: "psg"
     },
     {
@@ -73,7 +73,7 @@ const productsData = [
         league: "ligamx",
         price: "799.00",
         image: "../img/Jerseys/RayadosLocal.jpg",
-        url: "../Productos-equipos/producto-rayados.php",
+        url: "../Productos-equipos/producto-rayados",
         productId: "rayados"
     },
     {
@@ -84,7 +84,7 @@ const productsData = [
         league: "ligamx",
         price: "799.00",
         image: "../img/Jerseys/TigresLocal.jpg",
-        url: "../Productos-equipos/producto-tigres.php",
+        url: "../Productos-equipos/producto-tigres",
         productId: "tigres"
     },
     {
@@ -95,7 +95,7 @@ const productsData = [
         league: "ligamx",
         price: "799.00",
         image: "../img/Jerseys/AmericaLocal.jpg",
-        url: "../Productos-equipos/producto-america.php",
+        url: "../Productos-equipos/producto-america",
         productId: "america"
     },
     {
@@ -106,7 +106,7 @@ const productsData = [
         league: "ligamx",
         price: "799.00",
         image: "../img/Jerseys/ChivasLocal.jpg",
-        url: "../Productos-equipos/producto-chivas.php",
+        url: "../Productos-equipos/producto-chivas",
         productId: "chivas"
     },
     {
@@ -117,7 +117,7 @@ const productsData = [
         league: "ligamx",
         price: "799.00",
         image: "../img/Jerseys/CruzAzulLocal.jpg",
-        url: "../Productos-equipos/producto-cruzazul.php",
+        url: "../Productos-equipos/producto-cruzazul",
         productId: "cruz_azul"
     }
 ];

@@ -373,7 +373,7 @@ try {
                 </div>
             </div>
             <div class="product-info">
-                <h1 class="product-title">AC Milan 24/25</h1>
+                <h1 class="product-title">AC Milan Local 24/25</h1>
                 <p class="product-price" data-product-id="ac_milan">$ <?php echo $price; ?></p>
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {

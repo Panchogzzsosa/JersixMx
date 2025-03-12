@@ -129,6 +129,7 @@ require_once __DIR__ . '/config/database.php';
                     <li><label><input type="checkbox" id="filter-laliga" data-league="laliga"> LaLiga</label></li>
                     <li><label><input type="checkbox" id="filter-ligue1" data-league="ligue1"> Ligue 1</label></li>
                     <li><label><input type="checkbox" id="filter-selecciones" data-league="serieA"> Serie A</label></li>
+                    <li><label><input type="checkbox" id="filter-selecciones" data-league="bundesliga"> Bundesliga</label></li>
                 </ul>
             </div>
             <div class="filter-section">
@@ -179,11 +180,11 @@ require_once __DIR__ . '/config/database.php';
                         <button class="add-to-cart">Ver Producto</button>
                     </a>
                 </div>
-                <div class="product-card" data-category="local" data-league="premier">
-                    <a href="Productos-equipos/producto-liverpool">
-                        <img src="img/Jerseys/LiverpoolLocal.jpg" alt="Liverpool Jersey" loading="lazy">
-                        <h3>Liverpool Local 24/25</h3>
-                        <p class="price" data-product-id="liverpool">$ <?php echo isset($products['Liverpool Local 24/25']) ? number_format($products['Liverpool Local 24/25'], 2) : '799.00'; ?></p>
+                <div class="product-card" data-category="local" data-league="bundesliga">
+                    <a href="Productos-equipos/producto-bayern-munchen">
+                        <img src="img/Jerseys/BayerMunchenLocal.jpg" alt="Bayern de Múnich Jersey" loading="lazy">
+                        <h3>Bayern de Múnich Local 24/25</h3>
+                        <p class="price" data-product-id="bayern_munich">$ <?php echo isset($products['Bayern de Múnich Local 24/25']) ? number_format($products['Bayern de Múnich Local 24/25'], 2) : '799.00'; ?></p>
                         <button class="add-to-cart">Ver Producto</button>
                     </a>
                 </div>

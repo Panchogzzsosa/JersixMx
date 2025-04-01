@@ -4,7 +4,7 @@ $host = 'localhost';
 $dbname = 'checkout';
 $username = 'root';
 $password = '';
-$port = 3306;
+$port = 3307;
 
 function getConnection() {
     global $host, $dbname, $username, $password, $port;

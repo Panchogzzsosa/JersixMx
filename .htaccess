@@ -1,48 +1,29 @@
 RewriteEngine On
 
-# Excepción para archivos de API
-RewriteCond %{REQUEST_URI} !^/JersixMx/save_newsletter\.php [NC]
+# Excluir la carpeta admin (regla corregida)
+RewriteCond %{REQUEST_URI} !^/admin/.*$
+RewriteCond %{REQUEST_URI} !^/admin$
 
-# Eliminar extensiones de archivo de la URL para archivos PHP
+# Force HTTPS
+
+
+# Remove .php extension from product pages
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^Productos-equipos/([^/]+)/?$ Productos-equipos/$1.php [L]
+
+# Remove .php extension from other pages
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.php -f
-RewriteRule ^(.*)$ $1.php [L]
+RewriteRule ^([^/]+)/?$ $1.php [L]
 
-# Eliminar extensiones de archivo de la URL para archivos HTML
+# Remove .html extension
 RewriteCond %{REQUEST_FILENAME} !-d
 RewriteCond %{REQUEST_FILENAME}.html -f
-RewriteRule ^(.*)$ $1.html [L]
+RewriteRule ^([^/]+)/?$ $1.html [L]
 
-# Reglas para URLs amigables de productos específicos (páginas estáticas existentes)
-RewriteRule ^Productos-equipos/producto-real-madrid$ Productos-equipos/producto-real-madrid.php [L]
-RewriteRule ^Productos-equipos/producto-barca$ Productos-equipos/producto-barca.php [L]
-RewriteRule ^Productos-equipos/producto-manchester-city$ Productos-equipos/producto-manchester-city.php [L]
-RewriteRule ^Productos-equipos/producto-bayern-munchen$ Productos-equipos/producto-bayern-munchen.php [L]
-RewriteRule ^Productos-equipos/producto-ac-milan$ Productos-equipos/producto-ac-milan.php [L]
-RewriteRule ^Productos-equipos/producto-Psg$ Productos-equipos/producto-Psg.php [L]
-RewriteRule ^Productos-equipos/producto-rayados$ Productos-equipos/producto-rayados.php [L]
-RewriteRule ^Productos-equipos/producto-tigres$ Productos-equipos/producto-tigres.php [L]
-RewriteRule ^Productos-equipos/producto-america$ Productos-equipos/producto-america.php [L]
-RewriteRule ^Productos-equipos/producto-chivas$ Productos-equipos/producto-chivas.php [L]
-RewriteRule ^Productos-equipos/producto-cruzazul$ Productos-equipos/producto-cruzazul.php [L]
-
-# Regla específica para mistery-box.html
-RewriteRule ^mistery-box$ mistery-box.html [L]
-
-# Regla para producto con ID numérico
-RewriteRule ^producto/([0-9]+)$ Productos-equipos/producto.php?id=$1 [L,QSA]
-
-# Regla genérica para URLs amigables de todos los demás productos
-RewriteRule ^Productos-equipos/producto-([^/]+)$ Productos-equipos/producto.php?slug=$1 [L,QSA]
-
-# Excepción para archivos de API y AJAX
-RewriteCond %{REQUEST_URI} !^/JersixMx/save_newsletter\.php [NC]
-RewriteCond %{REQUEST_URI} !^/JersixMx/get_product_price\.php [NC]
-
-# Redireccionar solicitudes a archivos php a la versión sin la extensión
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.php[\s?] [NC]
-RewriteRule ^ /%1 [R=301,L,NE]
-
-# Redireccionar solicitudes a archivos html a la versión sin la extensión
-RewriteCond %{THE_REQUEST} \s/+(.+?)\.html[\s?] [NC]
-RewriteRule ^ /%1 [R=301,L,NE]
+# Prevent viewing of .htaccess file
+<Files .htaccess>
+Order allow,deny
+Deny from all
+</Files>

@@ -278,23 +278,251 @@ try {
     <link rel="stylesheet" href="../Css/notificacion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
-    <script src="../Js/Producto-equipos.js" defer></script>
     <script src="../Js/search.js" defer></script>
     <script src="../Js/products-data.js" defer></script>
     <script src="../Js/cart.js" defer></script>
     <script src="../Js/newsletter.js" defer></script>
     <style>
-        /* Size Guide Styles */
+        /* Estilos generales de la página de producto */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+            font-size: 16px; /* Tamaño base de fuente aumentado */
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px; /* Padding aumentado */
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px; /* Gap aumentado */
+            margin-top: 30px; /* Margen superior aumentado */
+            margin-bottom: 60px; /* Margen inferior aumentado */
+        }
+
+        /* Estilos de imágenes */
+        .product-image-container {
+            position: relative;
+            margin-bottom: 30px;
+            overflow: visible; /* Cambiado de hidden para evitar comportamientos de zoom */
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            display: block;
+            margin: 0 auto;
+            max-height: 650px;
+            object-fit: contain;
+            cursor: default; /* Asegura que no aparezca cursor de zoom */
+        }
+
+        .product-thumbnails {
+            display: flex;
+            gap: 15px; /* Gap aumentado */
+            margin-top: 25px; /* Margen superior aumentado */
+            justify-content: center; /* Cambiado de flex-start a center para centrar */
+            flex-wrap: wrap; /* Permite que las miniaturas se envuelvan en varias líneas si es necesario */
+        }
+
+        .thumbnail {
+            width: 75px; /* Tamaño de miniatura */
+            height: 75px; /* Tamaño de miniatura */
+            object-fit: cover;
+            border: 1px solid #e0e0e0; /* Borde más fino y de color más claro */
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px; /* Margen inferior */
+            padding: 2px; /* Padding reducido */
+            box-shadow: none; /* Eliminar cualquier sombra */
+        }
+
+        .thumbnail.active {
+            border: 2px solid #333; /* Borde más fino para la miniatura activa */
+        }
+
+    
+
+        /* Botones de navegación de imágenes - Solo flechas */
+        .image-navigation {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 15px; /* Padding horizontal */
+            pointer-events: none; /* Para que los clics pasen a través del contenedor */
+        }
+
+        .prev-image, .next-image {
+            width: 40px;
+            height: 40px;
+            background: transparent; /* Fondo transparente */
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto; /* Para que los botones reciban clics */
+        }
+
+        .prev-image i, .next-image i {
+            font-size: 24px; /* Tamaño de icono aumentado */
+            color: #333; /* Color oscuro para las flechas */
+        }
+
+        .prev-image:hover i, .next-image:hover i {
+            color: #000; /* Color negro al pasar el mouse */
+        }
+
+        /* Estilos de información del producto */
+        .product-info {
+            padding: 0;
+        }
+
+        .product-title {
+            font-size: 32px; /* Tamaño de título aumentado */
+            font-weight: 600;
+            margin-bottom: 25px; /* Margen inferior aumentado */
+            color: #000;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 25px; /* Tamaño de precio aumentado */
+            font-weight: 500; /* Peso de fuente disminuido de bold (700) a medium (500) */
+            margin-bottom: 30px; /* Margen inferior aumentado */
+            color: #000; /* Color cambiado de #000 (negro) a #555 (gris más claro) */
+            letter-spacing: 0.5px; /* Ligero espaciado entre letras para mejor visualización */
+        }
+
+        .shipping-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 35px; /* Margen inferior aumentado */
+            color: #666;
+            font-size: 18px; /* Tamaño de texto aumentado */
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px; /* Padding inferior aumentado */
+        }
+
+        .shipping-info p {
+            margin: 0;
+        }
+
+        /* Selectores de talla y cantidad */
+        .section-title {
+            font-size: 20px; /* Tamaño de título de sección aumentado */
+            font-weight: bold;
+            margin-bottom: 20px; /* Margen inferior aumentado */
+            margin-top: 30px; /* Margen superior añadido */
+            color: #333;
+        }
+
         .size-guide-btn {
             background: none;
             border: none;
-            color: #007bff;
+            color: #0066cc;
             text-decoration: underline;
             cursor: pointer;
-            font-size: 0.9rem;
-            margin-left: 10px;
+            padding: 0;
+            font-size: 16px; /* Tamaño de texto aumentado */
+            margin-left: 15px; /* Margen izquierdo aumentado */
         }
 
+        .size-options {
+            display: flex;
+            gap: 15px; /* Gap aumentado */
+            margin-bottom: 40px; /* Margen inferior aumentado */
+        }
+
+        .size-option {
+            width: 60px; /* Tamaño aumentado */
+            height: 60px; /* Tamaño aumentado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 18px; /* Tamaño de texto aumentado */
+            transition: all 0.3s ease;
+        }
+
+        .size-option:hover {
+            border-color: #333;
+        }
+
+        .size-option.selected {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px; /* Margen inferior aumentado */
+        }
+
+        .quantity-btn {
+            width: 45px; /* Tamaño aumentado */
+            height: 45px; /* Tamaño aumentado */
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            font-size: 22px; /* Tamaño de texto aumentado */
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 70px; /* Anchura aumentada */
+            height: 45px; /* Altura aumentada */
+            border: 1px solid #ddd;
+            text-align: center;
+            margin: 0 12px; /* Margen horizontal aumentado */
+            font-size: 20px; /* Tamaño de texto aumentado */
+        }
+
+        .stock-info {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 18px; /* Padding aumentado */
+            border-radius: 6px; /* Radio de borde aumentado */
+            margin-bottom: 40px; /* Margen inferior aumentado */
+            font-size: 17px; /* Tamaño de texto aumentado */
+            color: #555;
+        }
+
+        .stock-info i {
+            margin-right: 12px; /* Margen derecho aumentado */
+            font-size: 20px; /* Tamaño de icono aumentado */
+        }
+
+        /* Botón de compra */
+        .add-to-cart-btn {
+            width: 100%;
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 20px; /* Padding aumentado */
+            font-size: 20px; /* Tamaño de texto aumentado */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px; /* Margen superior añadido */
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #333;
+        }
+
+        /* Modal de guía de tallas */
         .modal {
             display: none;
             position: fixed;
@@ -308,323 +536,79 @@ try {
 
         .modal-content {
             background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
+            margin: 10% auto;
+            padding: 30px; /* Padding aumentado */
+            width: 90%; /* Ancho aumentado */
+            max-width: 700px; /* Ancho máximo aumentado */
+            border-radius: 8px; /* Radio de borde aumentado */
         }
 
         .close {
-            color: #aaa;
             float: right;
-            font-size: 28px;
+            font-size: 30px; /* Tamaño de texto aumentado */
             font-weight: bold;
             cursor: pointer;
-        }
-
-        .close:hover {
-            color: black;
         }
 
         .size-guide-table {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 20px;
+            margin-top: 25px; /* Margen superior aumentado */
+            font-size: 18px; /* Tamaño de texto aumentado */
         }
 
-        .size-guide-table th,
-        .size-guide-table td {
+        .size-guide-table th, .size-guide-table td {
             border: 1px solid #ddd;
-            padding: 12px;
+            padding: 15px; /* Padding aumentado */
             text-align: center;
         }
 
         .size-guide-table th {
             background-color: #f5f5f5;
         }
-        .product-detail {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-        }
 
-        .product-image-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-image {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-
-        .product-image-container:hover .product-image {
-            transform: none;
-            cursor: default;
-        }
-
-        .product-thumbnails {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-        }
-
-        .thumbnail {
-            width: 80px;
-            height: 80px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-            object-fit: cover;
-        }
-
-        .thumbnail:hover,
-        .thumbnail.active {
-            opacity: 1;
-        }
-
-        /* Estilos para navegación de imágenes */
-        .image-navigation {
-            position: absolute;
-            width: 100%;
-            top: 50%;
-            left: 0;
-            transform: translateY(-50%);
-            display: flex;
-            justify-content: space-between;
-            padding: 0 10px;
-            pointer-events: none;
-        }
-
-        .prev-image, .next-image {
-            background-color: rgba(255, 255, 255, 0.8);
-            border: none;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            pointer-events: auto;
-            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
-            transition: background-color 0.3s ease;
-        }
-
-        .prev-image:hover, .next-image:hover {
-            background-color: rgba(255, 255, 255, 1);
-        }
-
-        .prev-image i, .next-image i {
-            color: #333;
-            font-size: 14px;
-        }
-
-        /* Estilos para indicador de zoom */
-        .zoom-indicator {
-            position: absolute;
-            bottom: 15px;
-            left: 50%;
-            transform: translateX(-50%);
-            background-color: rgba(0, 0, 0, 0.6);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            opacity: 0.7;
-            transition: opacity 0.3s ease;
-        }
-
-        .zoom-indicator i {
-            font-size: 14px;
-        }
-
-        .product-image-container:hover .zoom-indicator {
-            opacity: 1;
-        }
-
-        .product-info {
-            padding: 1rem 0;
-        }
-
-        .product-title {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-            font-weight: 600;
-        }
-
-        .product-price {
-            font-size: 1.5rem;
-            color: #333;
-            margin-bottom: 1.5rem;
-        }
-
-        .size-selector {
-            margin-bottom: 2rem;
-        }
-
-        .size-selector h3 {
-            margin-bottom: 1rem;
-            font-size: 1rem;
-        }
-
-        .size-options {
-            display: flex;
-            gap: 1rem;
-        }
-
-        .size-option {
-            width: 50px;
-            height: 50px;
-            border: 1px solid #ddd;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-
-        .size-option:hover {
-            border-color: #333;
-        }
-
-        .size-option.selected {
-            background: #333;
-            color: white;
-            border-color: #333;
-        }
-
-        .shipping-info {
-            margin-bottom: 2rem;
-            font-size: 0.9rem;
-            color: #666;
-        }
-
-        .personalization {
-            margin-bottom: 2rem;
-        }
-
-        .quantity-selector {
-            margin-bottom: 2rem;
-        }
-
-        .quantity-controls {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-        }
-
-        .quantity-btn {
-            width: 40px;
-            height: 40px;
-            border: 1px solid #ddd;
-            background: white;
-            cursor: pointer;
-            font-size: 1.2rem;
-        }
-
-        .quantity-input {
-            width: 60px;
-            height: 40px;
-            text-align: center;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .personalization select {
-            width: 100%;
-            padding: 0.8rem;
-            margin-top: 0.5rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        .personalization-input {
-            width: 100%;
-            padding: 0.8rem;
-            margin-bottom: 1rem;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-        }
-
-        #personalization-fields {
-            margin-top: 1rem;
-        }
-
-        .add-to-cart-btn {
-            width: 100%;
-            padding: 1rem;
-            background: #333;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-        }
-
-        .add-to-cart-btn:hover {
-            background: #000;
-        }
-
+        /* Responsive */
         @media (max-width: 768px) {
             .product-detail {
                 grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .product-title {
+                font-size: 26px;
+            }
+            
+            .thumbnail {
+                width: 60px;
+                height: 60px;
             }
         }
 
-        /* Estilos para el panel de depuración */
-        .debug-panel {
-            background-color: #f8f9fa;
-            border: 1px solid #ddd;
-            border-radius: 6px;
-            padding: 15px;
-            margin-top: 20px;
-            font-family: monospace;
-            font-size: 13px;
-            overflow-x: auto;
+        /* Botón de WhatsApp */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 30px; /* Posición inferior aumentada */
+            right: 30px; /* Posición derecha aumentada */
+            z-index: 999;
         }
-        
-        .debug-panel h3 {
-            margin-top: 0;
-            color: #333;
-            font-size: 16px;
-        }
-        
-        .debug-panel pre {
-            margin: 0;
-            white-space: pre-wrap;
-        }
-        
-        .refresh-cache-btn {
-            display: inline-block;
-            background-color: #28a745;
+
+        .whatsapp-button a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px; /* Tamaño aumentado */
+            height: 70px; /* Tamaño aumentado */
+            background-color: #25D366;
             color: white;
+            border-radius: 50%;
+            font-size: 35px; /* Tamaño de icono aumentado */
             text-decoration: none;
-            padding: 8px 12px;
-            border-radius: 4px;
-            font-size: 14px;
-            margin-top: 15px;
-            font-family: Arial, sans-serif;
-            transition: background-color 0.3s;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* Sombra mejorada */
         }
-        
-        .refresh-cache-btn:hover {
-            background-color: #218838;
+
+        /* Eliminar cualquier indicador de zoom que pudiera existir */
+        .zoom-indicator {
+            display: none;
         }
     </style>
 </head>
@@ -642,7 +626,7 @@ try {
                 <li><a href="../index">Inicio</a></li>
                 <li><a href="../productos">Productos</a></li>
                 <li><a href="../mistery-box">Mistery Box</a></li>
-                <li><a href="../giftcard" class="active">Giftcard</a></li>
+                <li><a href="../giftcard">Giftcard</a></li>
             </ul>
             <div class="search-container">
                 <input type="text" placeholder="Buscar productos..." class="search-input">
@@ -660,7 +644,13 @@ try {
         <div class="product-detail">
             <div class="product-image-container">
                 <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name); ?>" class="product-image" id="mainImage" loading="lazy">
+                
                 <?php if (count($thumbnails) > 1): ?>
+                <div class="image-navigation">
+                    <button class="prev-image" onclick="changeImageNav(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="next-image" onclick="changeImageNav(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
                 <div class="product-thumbnails">
                     <?php foreach ($thumbnails as $index => $thumbnail): ?>
                     <img src="<?php echo $thumbnail; ?>" alt="<?php echo htmlspecialchars($product_name); ?> <?php echo $index+1; ?>" 
@@ -668,130 +658,77 @@ try {
                          onclick="changeImage(this)" loading="lazy">
                     <?php endforeach; ?>
                 </div>
-                
-                <!-- Botones de navegación de imágenes -->
-                <div class="image-navigation">
-                    <button class="prev-image" onclick="changeImageNav(-1)"><i class="fas fa-chevron-left"></i></button>
-                    <button class="next-image" onclick="changeImageNav(1)"><i class="fas fa-chevron-right"></i></button>
-                </div>
-                
-                <!-- Indicador de zoom -->
-                <div class="zoom-indicator">
-                    <i class="fas fa-search-plus"></i> Mueva el cursor para hacer zoom
-                </div>
-                <?php endif; ?>
-                
-                <!-- Panel de depuración (oculto por defecto) -->
-                <?php if (isset($_GET['debug'])): ?>
-                <div class="debug-panel">
-                    <h3>Información de Depuración</h3>
-                    <pre><?php echo json_encode($debug_info, JSON_PRETTY_PRINT); ?></pre>
-                    <a href="?id=<?php echo $product_id; ?>&debug=1&refreshCache=<?php echo time(); ?>" class="refresh-cache-btn">Recargar caché de imágenes</a>
-                </div>
                 <?php endif; ?>
             </div>
+            
             <div class="product-info">
                 <h1 class="product-title"><?php echo htmlspecialchars($product_name); ?></h1>
                 <p class="product-price" data-product-id="<?php echo $product_id; ?>">$ <?php echo number_format($price, 2); ?></p>
-                <script>
-                document.addEventListener('DOMContentLoaded', function() {
-                    const priceElement = document.querySelector('.product-price');
-                    const productId = priceElement.getAttribute('data-product-id');
-
-                    function updatePrice() {
-                        fetch(`../get_product_price.php?id=${productId}`)
-                            .then(response => response.json())
-                            .then(data => {
-                                if (data.success) {
-                                    priceElement.textContent = `$ ${parseFloat(data.price).toFixed(2)}`;
-                                }
-                            })
-                            .catch(error => console.error('Error fetching price:', error));
-                    }
-
-                    // Update price initially
-                    updatePrice();
-
-                    // Update price every 30 seconds
-                    setInterval(updatePrice, 30000);
-                });
-                </script>
+                
                 <div class="shipping-info">
                     <p>Envío gratis a TODO MÉXICO 🇲🇽</p>
                 </div>
-                <div class="size-selector">
-                    <h3>Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button></h3>
-                    <div class="size-options">
-                        <div class="size-option">XS</div>
-                        <div class="size-option">S</div>
-                        <div class="size-option">M</div>
-                        <div class="size-option">L</div>
-                        <div class="size-option">XL</div>
-                    </div>
+                
+                <div class="section-title">
+                    Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button>
+                </div>
+                <div class="size-options">
+                    <div class="size-option">S</div>
+                    <div class="size-option">M</div>
+                    <div class="size-option">L</div>
                 </div>
 
-                <!-- Size Guide Modal -->
-                <div id="sizeGuideModal" class="modal">
-                    <div class="modal-content">
-                        <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
-                        <h2>Guía de Tallas</h2>
-                        <table class="size-guide-table">
-                            <thead>
-                                <tr>
-                                    <th>Talla</th>
-                                    <th>Pecho (cm)</th>
-                                    <th>Largo (cm)</th>
-                                    <th>Hombros (cm)</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <tr>
-                                    <td>S</td>
-                                    <td>96-101</td>
-                                    <td>71</td>
-                                    <td>44</td>
-                                </tr>
-                                <tr>
-                                    <td>M</td>
-                                    <td>101-106</td>
-                                    <td>73</td>
-                                    <td>46</td>
-                                </tr>
-                                <tr>
-                                    <td>L</td>
-                                    <td>106-111</td>
-                                    <td>75</td>
-                                    <td>48</td>
-                                </tr>
-                            </tbody>
-                        </table>
-                    </div>
+                <div class="section-title">Cantidad</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus" id="minusBtn">-</button>
+                    <input type="number" class="quantity-input" id="quantityInput" value="1" min="1" max="<?php echo $stock; ?>">
+                    <button class="quantity-btn plus" id="plusBtn">+</button>
                 </div>
-                <div class="quantity-selector">
-                    <h3>Cantidad</h3>
-                    <div class="quantity-controls">
-                        <button class="quantity-btn minus">-</button>
-                        <input type="number" class="quantity-input" value="1" min="1" max="<?php echo $stock; ?>">
-                        <button class="quantity-btn plus">+</button>
-                    </div>
-                    <br>
-                    <div class="stock-info" style="background-color: #f8f9fa; padding: 12px 16px; border-radius: 6px; margin-top: 10px; font-size: 0.95rem; color: #495057; display: flex; align-items: center; gap: 8px;">
-                        <i class="fas fa-box" style="color: #6c757d;"></i>
-                        <span>Stock disponible: <strong><?php echo $stock; ?></strong> unidades</span>
-                    </div>
+                
+                <div class="stock-info">
+                    <i class="fas fa-box"></i>
+                    <span>Stock disponible: <strong><?php echo $stock; ?></strong> unidades</span>
                 </div>
-                <div class="personalization" style="display: none;">
-                    <h3>Personalizar Camiseta</h3>
-                    <select id="personalization-select" disabled>
-                        <option value="none">Sin Personalizar</option>
-                        <option value="custom">Personalizar</option>
-                    </select>
-                    <div id="personalization-fields" style="display: none;">
-                        <input type="text" placeholder="Nombre en la camiseta" class="personalization-input" id="jersey-name" maxlength="20" disabled>
-                        <input type="number" placeholder="Número" class="personalization-input" id="jersey-number" min="1" max="99" disabled>
-                    </div>
-                </div>
+                
                 <button class="add-to-cart-btn">Agregar al Carrito</button>
+            </div>
+        </div>
+        
+        <!-- Size Guide Modal -->
+        <div id="sizeGuideModal" class="modal">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
+                <h2 style="font-size: 26px; margin-bottom: 20px;">Guía de Tallas</h2>
+                <table class="size-guide-table">
+                    <thead>
+                        <tr>
+                            <th>Talla</th>
+                            <th>Pecho (cm)</th>
+                            <th>Largo (cm)</th>
+                            <th>Hombros (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>S</td>
+                            <td>96-101</td>
+                            <td>71</td>
+                            <td>44</td>
+                        </tr>
+                        <tr>
+                            <td>M</td>
+                            <td>101-106</td>
+                            <td>73</td>
+                            <td>46</td>
+                        </tr>
+                        <tr>
+                            <td>L</td>
+                            <td>106-111</td>
+                            <td>75</td>
+                            <td>48</td>
+                        </tr>
+                    </tbody>
+                </table>
             </div>
         </div>
     </main>
@@ -836,12 +773,122 @@ try {
             <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
         </div>
     </footer>
+    
     <div class="whatsapp-button">
         <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
+
+    <script>
+    // Funciones básicas para el manejo de imágenes
+    function changeImage(element) {
+        document.getElementById('mainImage').src = element.src;
+        
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        element.classList.add('active');
+    }
     
-    <div id="notification" class="notification"></div>
+    function changeImageNav(direction) {
+        const thumbnails = Array.from(document.querySelectorAll('.thumbnail'));
+        const currentIndex = thumbnails.findIndex(thumb => thumb.classList.contains('active'));
+        
+        let newIndex = currentIndex + direction;
+        
+        if (newIndex < 0) newIndex = thumbnails.length - 1;
+        if (newIndex >= thumbnails.length) newIndex = 0;
+        
+        changeImage(thumbnails[newIndex]);
+    }
+
+    // Asegurar que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded");
+        
+        // Manejo de selección de tallas
+        const sizeOptions = document.querySelectorAll('.size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                console.log('Talla seleccionada:', this.textContent);
+            });
+        });
+        
+        // Manejo de cantidad con IDs específicos para evitar conflictos
+        const minusBtn = document.getElementById('minusBtn');
+        const plusBtn = document.getElementById('plusBtn');
+        const quantityInput = document.getElementById('quantityInput');
+        
+        if (minusBtn && plusBtn && quantityInput) {
+            // Botón de disminuir
+            minusBtn.onclick = function() {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                    console.log('Cantidad actualizada a:', quantityInput.value);
+                }
+            };
+            
+            // Botón de aumentar
+            plusBtn.onclick = function() {
+                let currentValue = parseInt(quantityInput.value);
+                let maxValue = parseInt(quantityInput.getAttribute('max'));
+                if (currentValue < maxValue) {
+                    quantityInput.value = currentValue + 1;
+                    console.log('Cantidad actualizada a:', quantityInput.value);
+                }
+            };
+            
+            // Validación directa del input
+            quantityInput.addEventListener('input', function() {
+                let value = parseInt(this.value);
+                let max = parseInt(this.getAttribute('max'));
+                let min = parseInt(this.getAttribute('min'));
+                
+                if (isNaN(value) || value < min) {
+                    this.value = min;
+                } else if (value > max) {
+                    this.value = max;
+                }
+            });
+        } else {
+            console.error('No se encontraron los elementos de control de cantidad');
+        }
+        
+        // Modal de guía de tallas
+        const sizeGuideBtn = document.querySelector('.size-guide-btn');
+        const sizeGuideModal = document.getElementById('sizeGuideModal');
+        const closeBtn = sizeGuideModal.querySelector('.close');
+        
+        if (sizeGuideBtn && sizeGuideModal && closeBtn) {
+            sizeGuideBtn.onclick = function() {
+                sizeGuideModal.style.display = 'block';
+            };
+            
+            closeBtn.onclick = function() {
+                sizeGuideModal.style.display = 'none';
+            };
+            
+            window.onclick = function(event) {
+                if (event.target == sizeGuideModal) {
+                    sizeGuideModal.style.display = 'none';
+                }
+            };
+        }
+        
+        // Eliminar cualquier comportamiento de zoom en la imagen
+        const mainImage = document.getElementById('mainImage');
+        if (mainImage) {
+            // Eliminar eventos de clic que pudieran estar activando zoom
+            mainImage.onclick = null;
+            mainImage.style.cursor = 'default';
+        }
+    });
+    </script>
 </body>
 </html> 

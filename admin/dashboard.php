@@ -1,20 +1,35 @@
 <?php
+// Mostrar todos los errores
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
-// Check if admin is logged in
+// Añadir mensaje de diagnóstico
+echo "Verificando sesión... ";
 if (!isset($_SESSION['admin_id'])) {
+    echo "No hay sesión de administrador. Redirigiendo a login.html";
     header('Location: login.html');
     exit();
+} else {
+    echo "Sesión de administrador encontrada.<br>";
 }
 
-// Database connection
-
+// Diagnóstico de conexión a base de datos
+echo "Intentando conectar a la base de datos... ";
 try {
     $pdo = new PDO('mysql:host=localhost:3307;dbname=checkout', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    echo "Conexión exitosa a la base de datos.<br>";
 } catch(PDOException $e) {
-    die('Error de conexión a la base de datos');
+    echo "Error de conexión: " . $e->getMessage();
+    die();
 }
+
+// Si llegas aquí, imprime un mensaje de éxito y detén la ejecución para diagnóstico
+echo "Todo parece estar funcionando correctamente hasta este punto. Si ves este mensaje, el problema puede estar en el código posterior.";
+exit();
 
 // Get customer data with their orders
 // Get active customers (those with orders in the last 30 days)

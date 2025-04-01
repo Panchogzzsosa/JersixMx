@@ -69,6 +69,17 @@ try {
                 if (!mkdir($uploadDir, 0777, true)) {
                     throw new Exception('No se pudo crear el directorio de carga.');
                 }
+                // Asegurarse de que el directorio tenga los permisos adecuados
+                chmod($uploadDir, 0777);
+            } else if (!is_writable($uploadDir)) {
+                // Intentar cambiar permisos si el directorio existe pero no es escribible
+                chmod($uploadDir, 0777);
+                
+                if (!is_writable($uploadDir)) {
+                    // Si aún no se puede escribir, mostrar un mensaje más detallado
+                    $perms = substr(sprintf('%o', fileperms($uploadDir)), -4);
+                    throw new Exception('El directorio de carga no tiene permisos de escritura. Permisos actuales: ' . $perms . '. Por favor, contacta al administrador del sistema para asignar permisos 0777 al directorio ' . $uploadDir);
+                }
             }
 
             if (!is_writable($uploadDir)) {
@@ -121,7 +132,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Editar Producto - Jersey Store</title>
+    <title>Editar Producto - Jersix</title>
     <link rel="stylesheet" href="../Css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
@@ -188,7 +199,7 @@ try {
     <div class="dashboard-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Jersey Store</h2>
+                <h2>Jersix.mx</h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -205,6 +216,9 @@ try {
                 </li>
                 <li class="nav-item">
                     <a href="newsletter.php"><i class="fas fa-envelope"></i> Correos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="csv_generator.php"><i class="fas fa-file-csv"></i> Generador CSV</a>
                 </li>
             </ul>
         </div>

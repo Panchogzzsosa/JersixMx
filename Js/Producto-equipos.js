@@ -1,142 +1,193 @@
-function changeImage(thumbnail) {
-    // Get the main image element
+/**
+ * Js/Producto-equipos.js
+ * Script para manejar las funcionalidades de la página de producto
+ */
+
+// Índice de la imagen actual
+let currentImageIndex = 0;
+let thumbnails = [];
+
+// Función para cambiar la imagen principal
+function changeImage(element) {
     const mainImage = document.getElementById('mainImage');
+    if (!mainImage) return;
     
-    // Update the main image source
-    mainImage.src = thumbnail.src;
+    mainImage.src = element.src;
     
-    // Remove active class from all thumbnails
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    thumbnails.forEach(thumb => thumb.classList.remove('active'));
+    // Actualizar la clase "active" de las miniaturas
+    thumbnails.forEach((thumb, index) => {
+        thumb.classList.remove('active');
+        if (thumb === element) {
+            currentImageIndex = index;
+        }
+    });
+    element.classList.add('active');
+}
+
+// Función para navegar entre imágenes con los botones de navegación
+function changeImageNav(direction) {
+    thumbnails = Array.from(document.querySelectorAll('.thumbnail'));
+    const totalImages = thumbnails.length;
+    if (totalImages <= 1) return;
     
-    // Add active class to clicked thumbnail
-    thumbnail.classList.add('active');
+    // Calcular el nuevo índice
+    let newIndex = currentImageIndex + direction;
     
-    // Add fade effect
-    mainImage.style.opacity = '0';
-    setTimeout(() => {
-        mainImage.style.opacity = '1';
-    }, 50);
+    // Manejar los límites
+    if (newIndex < 0) newIndex = totalImages - 1;
+    if (newIndex >= totalImages) newIndex = 0;
+    
+    // Cambiar la imagen
+    changeImage(thumbnails[newIndex]);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
-    // Mobile menu toggle functionality
-    const menuToggle = document.querySelector('.menu-toggle');
-    const navLinks = document.querySelector('.nav-links');
-
-    menuToggle.addEventListener('click', () => {
-        navLinks.classList.toggle('active');
-    });
-
-    const mainImage = document.getElementById('mainImage');
-    mainImage.style.transition = 'opacity 0.3s ease';
-    // Quantity controls
-    const minusBtn = document.querySelector('.minus');
-    const plusBtn = document.querySelector('.plus');
-    const quantityInput = document.querySelector('.quantity-input');
-    const priceElement = document.querySelector('.product-price');
-    const basePrice = parseFloat(priceElement.textContent.replace('$', '').trim());
-    const personalizationPrice = 200.00;
-
-    function updatePrice() {
-        const isPersonalized = personalizationSelect.value === 'custom';
-        const quantity = parseInt(quantityInput.value);
-        const total = (basePrice + (isPersonalized ? personalizationPrice : 0)) * quantity;
-        priceElement.textContent = `$ ${total.toFixed(2)}`;
+    // Inicializar thumbnails
+    thumbnails = Array.from(document.querySelectorAll('.thumbnail'));
+    // Si hay al menos una miniatura, hacerla activa
+    if (thumbnails.length > 0) {
+        thumbnails[0].classList.add('active');
     }
-
-    minusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(quantityInput.value);
-        if (currentValue > 1) {
-            quantityInput.value = currentValue - 1;
-        }
-    });
-
-    plusBtn.addEventListener('click', () => {
-        const currentValue = parseInt(quantityInput.value);
-        quantityInput.value = currentValue + 1;
-    });
-
-    quantityInput.addEventListener('change', () => {
-        if (quantityInput.value < 1) {
-            quantityInput.value = 1;
-        }
-        updatePrice();
-    });
-
-    // Personalization controls
-    const personalizationSelect = document.getElementById('personalization-select');
-    const personalizationFields = document.getElementById('personalization-fields');
-    const jerseyName = document.getElementById('jersey-name');
-    const jerseyNumber = document.getElementById('jersey-number');
-
-    personalizationSelect.addEventListener('change', function() {
-        if (this.value === 'custom') {
-            personalizationFields.style.display = 'block';
-        } else {
-            personalizationFields.style.display = 'none';
-            jerseyName.value = '';
-            jerseyNumber.value = '';
-        }
-        updatePrice();
-    });
-
-    // Add to cart button
-    const addToCartBtn = document.querySelector('.add-to-cart-btn');
-    addToCartBtn.addEventListener('click', () => {
-        const quantity = parseInt(quantityInput.value);
-        const size = document.querySelector('.size-option.selected')?.textContent || '';
-
-        if (personalizationSelect.value === 'custom') {
-            if (!jerseyName.value.trim() || !jerseyNumber.value.trim()) {
-                if (window.cartManager) {
-                    
-                }
-                return;
-            }
-            const numberValue = parseInt(jerseyNumber.value);
-            if (isNaN(numberValue) || numberValue < 1 || numberValue > 99 || jerseyNumber.value.length > 2) {
-                if (window.cartManager) {
-                    
-                }
-                return;
-            }
-        }
-
-        const personalization = personalizationSelect.value === 'custom' ? {
-            name: jerseyName.value.trim(),
-            number: jerseyNumber.value.trim()
-        } : null;
-
-        const isPersonalized = personalizationSelect.value === 'custom';
-        const itemPrice = basePrice + (isPersonalized ? personalizationPrice : 0);
-
-        // Create cart item object
-        const cartItem = {
-            product: 'Barcelona Jersey 24/25',
-            quantity,
-            size,
-            personalization,
-            price: itemPrice
-        };
-
-        // Add to cart using CartManager if available
-        if (window.cartManager) {
-            window.cartManager.addToCart(cartItem);
-        } else {
-            console.log('Adding to cart:', cartItem);
-        }
-    });
-
-    // Size selection
+    
+    // Inicializar selección de tallas
     const sizeOptions = document.querySelectorAll('.size-option');
     sizeOptions.forEach(option => {
-        option.addEventListener('click', () => {
-            sizeOptions.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
+        option.addEventListener('click', function() {
+            sizeOptions.forEach(o => o.classList.remove('selected'));
+            this.classList.add('selected');
         });
     });
-
-    // Initialize price
-    updatePrice();
-})
+    
+    // Inicializar controles de cantidad
+    const quantityInput = document.querySelector('.quantity-input');
+    const minusBtn = document.querySelector('.quantity-btn.minus');
+    const plusBtn = document.querySelector('.quantity-btn.plus');
+    
+    if (quantityInput && minusBtn && plusBtn) {
+        // Obtener el stock máximo del producto
+        const maxStock = parseInt(quantityInput.getAttribute('max') || '10');
+        
+        minusBtn.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+        
+        plusBtn.addEventListener('click', function() {
+            let value = parseInt(quantityInput.value);
+            if (value < maxStock) {
+                quantityInput.value = value + 1;
+            }
+        });
+        
+        // Asegurar que la cantidad no exceda el stock
+        quantityInput.addEventListener('change', function() {
+            let value = parseInt(this.value);
+            if (isNaN(value) || value < 1) {
+                this.value = 1;
+            } else if (value > maxStock) {
+                this.value = maxStock;
+            }
+        });
+    }
+    
+    // Funcionalidad para zoom en imagen
+    const mainImage = document.getElementById('mainImage');
+    
+    if (mainImage) {
+        mainImage.addEventListener('mousemove', function(e) {
+            const { left, top, width, height } = this.getBoundingClientRect();
+            const x = (e.clientX - left) / width;
+            const y = (e.clientY - top) / height;
+            
+            // Aplicar transformación para zoom
+            this.style.transformOrigin = `${x * 100}% ${y * 100}%`;
+            this.style.transform = 'scale(1.5)';
+        });
+        
+        mainImage.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+    }
+    
+    // Agregar manejadores de error para las imágenes
+    const allImages = document.querySelectorAll('img');
+    allImages.forEach(img => {
+        img.addEventListener('error', function() {
+            // Si la imagen falla, intentar con una imagen de respaldo
+            if (!this.src.includes('default-product.jpg')) {
+                console.log('Error cargando imagen:', this.src);
+                // Redirigir a imagen por defecto
+                if (this.classList.contains('thumbnail')) {
+                    // Si es una miniatura, simplemente ocultarla
+                    this.style.display = 'none';
+                } else {
+                    // Si es la imagen principal, usar una imagen por defecto
+                    if (this.src.includes('../')) {
+                        this.src = '../img/default-product.jpg';
+                    } else {
+                        this.src = 'img/default-product.jpg';
+                    }
+                }
+            }
+        });
+    });
+    
+    // Agregar control de navegación con teclado
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'ArrowLeft') {
+            changeImageNav(-1);
+        } else if (e.key === 'ArrowRight') {
+            changeImageNav(1);
+        }
+    });
+    
+    // Si existe un botón de agregar al carrito, agregar funcionalidad
+    const addToCartBtn = document.querySelector('.add-to-cart-btn');
+    if (addToCartBtn) {
+        addToCartBtn.addEventListener('click', function() {
+            // Obtener información del producto
+            const productTitle = document.querySelector('.product-title').textContent;
+            const productPrice = document.querySelector('.product-price').textContent;
+            const productImage = document.getElementById('mainImage').src;
+            const productId = document.querySelector('.product-price').getAttribute('data-product-id');
+            const selectedSize = document.querySelector('.size-option.selected')?.textContent || 'M';
+            const quantity = parseInt(document.querySelector('.quantity-input')?.value || '1');
+            
+            console.log('Agregando al carrito:', {
+                title: productTitle,
+                price: productPrice,
+                image: productImage,
+                id: productId,
+                size: selectedSize,
+                quantity: quantity
+            });
+            
+            // Llamar a la función addToCart si está disponible
+            if (typeof shoppingCart !== 'undefined' && shoppingCart.addToCart) {
+                // Extraer el precio numérico
+                const priceValue = parseFloat(productPrice.replace(/[^\d.-]/g, ''));
+                
+                shoppingCart.addToCart({
+                    id: productId + '-' + selectedSize,
+                    title: productTitle,
+                    price: priceValue,
+                    image: productImage,
+                    size: selectedSize,
+                    quantity: quantity
+                });
+                
+                // Mostrar mensaje de éxito si hay una función de notificación
+                if (typeof showNotification === 'function') {
+                    showNotification('Producto agregado al carrito', true);
+                } else {
+                    alert('¡Producto agregado al carrito!');
+                }
+            } else {
+                console.error('No se encontró la función addToCart');
+                alert('Error al agregar al carrito. Por favor, intente nuevamente.');
+            }
+        });
+    }
+});

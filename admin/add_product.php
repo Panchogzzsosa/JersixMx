@@ -43,6 +43,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 if (!mkdir($uploadDir, 0777, true)) {
                     throw new Exception('No se pudo crear el directorio de carga.');
                 }
+                // Asegurarse de que el directorio tenga los permisos adecuados
+                chmod($uploadDir, 0777);
+            } else if (!is_writable($uploadDir)) {
+                // Intentar cambiar permisos si el directorio existe pero no es escribible
+                chmod($uploadDir, 0777);
+                
+                if (!is_writable($uploadDir)) {
+                    // Si aún no se puede escribir, mostrar un mensaje más detallado
+                    $perms = substr(sprintf('%o', fileperms($uploadDir)), -4);
+                    throw new Exception('El directorio de carga no tiene permisos de escritura. Permisos actuales: ' . $perms . '. Por favor, contacta al administrador del sistema para asignar permisos 0777 al directorio ' . $uploadDir);
+                }
             }
 
             // Check if directory is writable
@@ -81,7 +92,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agregar Nuevo Producto - Jersey Store</title>
+    <title>Agregar Nuevo Producto - Jersix</title>
     <link rel="stylesheet" href="../Css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
@@ -142,7 +153,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="dashboard-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Jersey Store</h2>
+                <h2>Jersix.mx</h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -159,6 +170,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 </li>
                 <li class="nav-item">
                     <a href="newsletter.php"><i class="fas fa-envelope"></i> Correos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="csv_generator.php"><i class="fas fa-file-csv"></i> Generador CSV</a>
                 </li>
             </ul>
         </div>
@@ -181,7 +195,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <form action="add_product.php" method="POST" enctype="multipart/form-data">
                     <div class="form-group">
                         <label for="name">Nombre del Producto</label>
-                        <input type="text" id="name" name="name" required>
+                        <input type="text" id="name" name="name" required placeholder="Ej: Barcelona Local 24/25">
+                        <p class="help-text">Formato recomendado: Equipo + Tipo + Temporada (Ej: Barcelona Local 24/25)</p>
                     </div>
 
                     <div class="form-group">

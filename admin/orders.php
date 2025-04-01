@@ -40,7 +40,7 @@ $orders = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gestión de Pedidos - Jersey Store</title>
+    <title>Gestión de Pedidos - Jersix</title>
     <link rel="stylesheet" href="../Css/dashboard.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
     <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
@@ -49,7 +49,7 @@ $orders = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
     <div class="dashboard-container">
         <div class="sidebar">
             <div class="sidebar-header">
-                <h2>Jersey Store</h2>
+                <h2>Jersix.mx</h2>
             </div>
             <ul class="nav-menu">
                 <li class="nav-item">
@@ -66,6 +66,9 @@ $orders = $pdo->query($query)->fetchAll(PDO::FETCH_ASSOC);
                 </li>
                 <li class="nav-item">
                     <a href="newsletter.php"><i class="fas fa-envelope"></i> Correos</a>
+                </li>
+                <li class="nav-item">
+                    <a href="csv_generator.php"><i class="fas fa-file-csv"></i> Generador CSV</a>
                 </li>
             </ul>
         </div>

@@ -16,66 +16,7 @@
     <script src="Js/search.js"></script>
     <script src="Js/mistery-box.js"></script>
     <script src="Js/cart2.js" defer></script>
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const newsletterForm = document.querySelector('.newsletter-form');
-            const newsletterInput = document.querySelector('.newsletter-input');
-            const newsletterButton = document.querySelector('.newsletter-button');
-
-            function showNotification(message, isSuccess = true) {
-                const notification = document.createElement('div');
-                notification.className = `notification ${isSuccess ? 'success' : 'error'}`;
-                notification.textContent = message;
-                document.body.appendChild(notification);
-
-                setTimeout(() => {
-                    notification.classList.add('show');
-                }, 100);
-
-                setTimeout(() => {
-                    notification.classList.remove('show');
-                    setTimeout(() => {
-                        notification.remove();
-                    }, 300);
-                }, 3000);
-            }
-
-            newsletterForm.addEventListener('submit', function(e) {
-                e.preventDefault();
-                const email = newsletterInput.value.trim();
-
-                if (!email) {
-                    showNotification('Por favor, ingrese un correo electrónico', false);
-                    return;
-                }
-
-                newsletterButton.disabled = true;
-                newsletterButton.textContent = 'Enviando...';
-
-                fetch('save_newsletter.php', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: 'email=' + encodeURIComponent(email)
-                })
-                .then(response => response.json())
-                .then(data => {
-                    showNotification(data.message, data.success);
-                    if (data.success) {
-                        newsletterInput.value = '';
-                    }
-                })
-                .catch(error => {
-                    showNotification('Error al procesar la solicitud. Por favor, intente más tarde.', false);
-                })
-                .finally(() => {
-                    newsletterButton.disabled = false;
-                    newsletterButton.textContent = 'Suscribirse';
-                });
-            });
-        });
-    </script>
+    <script src="Js/newsletter.js" defer></script>
 </head>
 <body>
     <header>
@@ -83,7 +24,7 @@
             <button class="menu-toggle">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <div class="logo"><a href="index.php"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
+            <div class="logo"><a href="index"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
             <ul class="nav-links">
                 <li></li>
                 <li></li>
@@ -122,15 +63,18 @@
                     <div class="tipo-options">
                         <button class="size-option tipo-option" data-tipo="champions">Champions</button>
                         <button class="size-option tipo-option" data-tipo="ligamx">LigaMX</button>
+                        <button class="size-option tipo-option" data-tipo="Europa">Liga Europea</button>
                     </div>
                 </div>
 
                 <div class="size-selector">
                     <h3>Talla <button class="size-guide-btn">Guía de tallas</button></h3>
                     <div class="size-options">
+                        <button class="size-option" data-size="XS">XS</button>
                         <button class="size-option" data-size="S">S</button>
                         <button class="size-option" data-size="M">M</button>
                         <button class="size-option" data-size="L">L</button>
+                        <button class="size-option" data-size="XL">XL</button>
                     </div>
                 </div>
 
@@ -231,5 +175,7 @@
             </table>
         </div>
     </div>
+
+    <div id="notification" class="notification"></div>
 </body>
 </html>

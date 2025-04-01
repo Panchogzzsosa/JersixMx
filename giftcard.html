@@ -15,6 +15,7 @@
     <script src="Js/search.js"></script>
     <script src="Js/cart.js"></script>
     <script src="Js/giftcard.js" defer></script>
+    <script src="Js/newsletter.js" defer></script>
     <style>
         .giftcard-container {
             display: flex;
@@ -170,7 +171,7 @@
             <button class="menu-toggle">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <div class="logo"><a href="index.php"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
+            <div class="logo"><a href="index"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
             <ul class="nav-links">
                 <li></li>
                 <li></li>
@@ -287,6 +288,8 @@
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
+
+    <div id="notification" class="notification"></div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {

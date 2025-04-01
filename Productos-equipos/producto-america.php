@@ -115,112 +115,71 @@ try {
         });
     </script>
     <style>
-        /* Size Guide Styles */
-        .size-guide-btn {
-            background: none;
-            border: none;
-            color: #007bff;
-            text-decoration: underline;
-            cursor: pointer;
-            font-size: 0.9rem;
-            margin-left: 10px;
-        }
-
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-
-        .modal-content {
-            background-color: white;
-            margin: 15% auto;
-            padding: 20px;
-            border-radius: 8px;
-            width: 80%;
-            max-width: 600px;
-        }
-
-        .close {
-            color: #aaa;
-            float: right;
-            font-size: 28px;
-            font-weight: bold;
-            cursor: pointer;
-        }
-
-        .close:hover {
-            color: black;
-        }
-
-        .size-guide-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 20px;
-        }
-
-        .size-guide-table th,
-        .size-guide-table td {
-            border: 1px solid #ddd;
-            padding: 12px;
-            text-align: center;
-        }
-
-        .size-guide-table th {
-            background-color: #f5f5f5;
-        }
-        .product-detail {
-            max-width: 1200px;
-            margin: 2rem auto;
-            padding: 0 1rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 3rem;
-        }
-
-        .product-image-container {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .product-image {
-            width: 100%;
-            aspect-ratio: 1;
-            object-fit: cover;
-            border-radius: 8px;
-            transition: transform 0.3s ease;
-        }
-
-        .product-image-container:hover .product-image {
-            transform: none;
-            cursor: default;
-        }
-
-        .product-thumbnails {
-            display: flex;
-            gap: 1rem;
-            margin-top: 1rem;
-            overflow-x: auto;
-            padding-bottom: 0.5rem;
-        }
-
-        .thumbnail {
-            width: 80px;
-            height: 80px;
-            border-radius: 4px;
-            cursor: pointer;
-            opacity: 0.6;
-            transition: opacity 0.3s ease;
-            object-fit: cover;
-        }
-
-        .thumbnail:hover,
+        /* Estilos anteriores */
         .thumbnail.active {
+            opacity: 1;
+        }
+        
+        /* Estilos para navegación de imágenes */
+        .image-navigation {
+            position: absolute;
+            width: 100%;
+            top: 50%;
+            left: 0;
+            transform: translateY(-50%);
+            display: flex;
+            justify-content: space-between;
+            padding: 0 10px;
+            pointer-events: none;
+        }
+
+        .prev-image, .next-image {
+            background-color: rgba(255, 255, 255, 0.8);
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            transition: background-color 0.3s ease;
+        }
+
+        .prev-image:hover, .next-image:hover {
+            background-color: rgba(255, 255, 255, 1);
+        }
+
+        .prev-image i, .next-image i {
+            color: #333;
+            font-size: 14px;
+        }
+
+        /* Estilos para indicador de zoom */
+        .zoom-indicator {
+            position: absolute;
+            bottom: 15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(0, 0, 0, 0.6);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            opacity: 0.7;
+            transition: opacity 0.3s ease;
+        }
+
+        .zoom-indicator i {
+            font-size: 14px;
+        }
+
+        .product-image-container:hover .zoom-indicator {
             opacity: 1;
         }
 
@@ -448,8 +407,13 @@ try {
                 </div>
                 <div class="size-selector">
                     <h3>Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button></h3>
-                    <div class="size-options">
+                                        <div class="size-options">
+                        <div class="size-option">XS</div>
                         <div class="size-option">S</div>
+                        <div class="size-option">M</div>
+                        <div class="size-option">L</div>
+                        <div class="size-option">XL</div>
+                    </div>
                         <div class="size-option">M</div>
                         <div class="size-option">L</div>
                     </div>
@@ -469,7 +433,13 @@ try {
                                     <th>Hombros (cm)</th>
                                 </tr>
                             </thead>
-                            <tbody>
+                                                        <tbody>
+                                <tr>
+                                    <td>XS</td>
+                                    <td>91-96</td>
+                                    <td>69</td>
+                                    <td>42</td>
+                                </tr>
                                 <tr>
                                     <td>S</td>
                                     <td>96-101</td>
@@ -487,6 +457,12 @@ try {
                                     <td>106-111</td>
                                     <td>75</td>
                                     <td>48</td>
+                                </tr>
+                                <tr>
+                                    <td>XL</td>
+                                    <td>111-116</td>
+                                    <td>77</td>
+                                    <td>50</td>
                                 </tr>
                             </tbody>
                         </table>

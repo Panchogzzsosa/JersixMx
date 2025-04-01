@@ -1,32 +1,59 @@
 <?php
 // Database connection
+require_once __DIR__ . '/config/database.php';
+
+// Establecer el tipo de contenido como JSON
+header('Content-Type: application/json');
 
 try {
-    $pdo = new PDO('mysql:host=216.245.211.58;dbname=jersixmx_checkout', 'jersixmx_usuario_total', '?O*6o6&Hs&~Q');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-
+    // Obtener la conexión a la base de datos
+    $pdo = getConnection();
+    
+    // Verificar que sea una solicitud POST y que se haya enviado un correo
     if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['email'])) {
         $email = filter_var($_POST['email'], FILTER_VALIDATE_EMAIL);
         
         if ($email) {
-            // Check if email already exists
+            // Verificar si el correo ya existe
             $checkStmt = $pdo->prepare('SELECT id FROM newsletter WHERE email = ?');
             $checkStmt->execute([$email]);
             
             if ($checkStmt->fetch()) {
-                echo json_encode(['success' => false, 'message' => 'Este correo ya está suscrito.']);
+                // El correo ya existe
+                echo json_encode([
+                    'success' => false, 
+                    'message' => 'Este correo ya está suscrito.'
+                ]);
             } else {
-                // Insert new subscription
+                // Insertar nueva suscripción
                 $insertStmt = $pdo->prepare('INSERT INTO newsletter (email) VALUES (?)');
                 $insertStmt->execute([$email]);
-                echo json_encode(['success' => true, 'message' => '¡Gracias por suscribirte!']);
+                
+                // Respuesta exitosa
+                echo json_encode([
+                    'success' => true, 
+                    'message' => '¡Gracias por suscribirte!'
+                ]);
             }
         } else {
-            echo json_encode(['success' => false, 'message' => 'Por favor, ingrese un correo válido.']);
+            // Correo inválido
+            echo json_encode([
+                'success' => false, 
+                'message' => 'Por favor, ingresa un correo válido.'
+            ]);
         }
     } else {
-        echo json_encode(['success' => false, 'message' => 'Método no válido.']);
+        // Método no válido o falta el correo
+        echo json_encode([
+            'success' => false, 
+            'message' => 'Método no válido o datos incompletos.'
+        ]);
     }
 } catch(PDOException $e) {
-    echo json_encode(['success' => false, 'message' => 'Error al procesar la solicitud.']);
+    // Error en la base de datos
+    error_log('Error en save_newsletter.php: ' . $e->getMessage());
+    echo json_encode([
+        'success' => false, 
+        'message' => 'Error al procesar la solicitud: ' . $e->getMessage()
+    ]);
 }

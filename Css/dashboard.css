@@ -112,6 +112,44 @@
     margin: 0;
 }
 
+/* Card Actions */
+.card-action {
+    display: flex;
+    flex-direction: column;
+}
+
+.card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-top: 5px;
+}
+
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.85rem;
+}
+
+.btn-success {
+    background-color: #27ae60;
+    color: white;
+}
+
+.btn-success:hover {
+    background-color: #219653;
+}
+
+.btn-warning {
+    background-color: #f1c40f;
+    color: #2c3e50;
+}
+
+.btn-warning:hover {
+    background-color: #e2b607;
+}
+
+.text-info { color: #3498db; }
+
 /* Tables */
 .data-table {
     width: 100%;

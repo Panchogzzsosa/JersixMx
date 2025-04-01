@@ -15,6 +15,7 @@
     <script src="Js/search.js"></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/cookie-consent.js"></script>
+    <script src="Js/newsletter.js" defer></script>
 
 </head>
 <body>
@@ -131,8 +132,10 @@
             <h2>Colección Destacada</h2>
             <div class="collection-grid">
                 <div class="collection-item">
+                    <a href="productos.php">
                     <img src="img/Retro/AmericaRetro.jpg" alt="Colección Retro América" loading="lazy">
-                    <h3>Colección Retro - Proximamente</h3>
+                    <h3>Colección Retro</h3>
+                    </a>
                 </div>
                 <div class="collection-item">
                     <a href="productos.php">
@@ -141,7 +144,7 @@
                  </a>
                 </div>
                 <div class="collection-item">
-                    <a href="mistery-box.html">
+                    <a href="mistery-box">
                         <img src="img/MysteryBox.webp" alt="Colección Retro Japón" loading="lazy">
                         <h3>Mistery Box</h3>
                     </a>
@@ -240,48 +243,5 @@
         </a>
     </div>
 <div id="notification" class="notification"></div>
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    const newsletterForm = document.querySelector('.newsletter-form');
-    const newsletterInput = document.querySelector('.newsletter-input');
-    const newsletterButton = document.querySelector('.newsletter-button');
-    const notification = document.getElementById('notification');
-
-    function showNotification(message) {
-        notification.textContent = message;
-        notification.classList.add('show');
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-    }
-
-    newsletterButton.addEventListener('click', function() {
-        const email = newsletterInput.value.trim();
-        if (!email) {
-            showNotification('Por favor, ingrese su correo electrónico');
-            return;
-        }
-
-        fetch('save_newsletter.php', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/x-www-form-urlencoded',
-            },
-            body: 'email=' + encodeURIComponent(email)
-        })
-        .then(response => response.json())
-        .then(data => {
-            showNotification(data.message);
-            if (data.success) {
-                newsletterInput.value = '';
-            }
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            showNotification('Error al procesar la suscripción');
-        });
-    });
-});
-</script>
 </body>
 </html>

@@ -2,17 +2,267 @@
 // Database connection
 require_once __DIR__ . '/../config/database.php';
 
-try {
+// Verificar si se ha proporcionado un ID de producto
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$product_slug = isset($_GET['slug']) ? $_GET['slug'] : '';
 
-    // Get product stock and price from database
-    $stmt = $pdo->prepare('SELECT stock, price FROM products WHERE name LIKE ?');
-    $stmt->execute(['%Barcelona%']);
+// Si no hay ID ni slug, intentar obtener el slug del producto de la URL
+if (!$product_id && !$product_slug) {
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $uri_parts = explode('/', $request_uri);
+    $last_part = end($uri_parts);
+    
+    // Extraer el slug si la URL tiene formato producto-something
+    if (strpos($last_part, 'producto-') === 0) {
+        $product_slug = $last_part;
+    }
+    
+    // Eliminar posibles parámetros de la URL
+    if (strpos($product_slug, '?') !== false) {
+        $product_slug = substr($product_slug, 0, strpos($product_slug, '?'));
+    }
+}
+
+try {
+    $pdo = getConnection();
+    
+    // Buscar producto por ID si está disponible
+    if ($product_id > 0) {
+        $stmt = $pdo->prepare('SELECT * FROM products WHERE product_id = ?');
+        $stmt->execute([$product_id]);
+    } else if (!empty($product_slug)) {
+        // Intentar buscar por slug/nombre
+        // Primero, convertimos el slug a un formato posible de nombre
+        $product_name = str_replace('producto-', '', $product_slug);
+        $product_name = str_replace('-', ' ', $product_name);
+        
+        // Buscar cualquier producto que contenga partes del nombre
+        $stmt = $pdo->prepare('SELECT * FROM products WHERE name LIKE ? LIMIT 1');
+        $stmt->execute(['%' . $product_name . '%']);
+    } else {
+        // Si no hay suficiente información, redirigir a la página de productos
+        header('Location: ../productos.php');
+        exit;
+    }
+    
+    // Obtener el producto
     $product = $stmt->fetch(PDO::FETCH_ASSOC);
-    $stock = $product ? $product['stock'] : 0;
-    $price = $product ? $product['price'] : '799.00'; // Get price from database or use default
+    
+    if (!$product) {
+        // Si no se encontró el producto, redirigir a la página de productos
+        header('Location: ../productos.php');
+        exit;
+    }
+    
+    // Obtener datos del producto
+    $product_name = $product['name'];
+    $product_image = $product['image_url'];
+    $stock = $product['stock'];
+    $price = $product['price'];
+    $product_id = $product['product_id'];
+    
+    // Buscar imágenes adicionales en la base de datos (si existe una tabla de imágenes)
+    $additional_images = [];
+    try {
+        $stmt_images = $pdo->prepare("SELECT image_url FROM product_images WHERE product_id = ? ORDER BY sort_order ASC");
+        $stmt_images->execute([$product_id]);
+        $db_images = $stmt_images->fetchAll(PDO::FETCH_COLUMN);
+        
+        if ($db_images && count($db_images) > 0) {
+            foreach ($db_images as $img) {
+                if (!empty($img)) {
+                    $additional_images[] = $img;
+                }
+            }
+        }
+    } catch (PDOException $e) {
+        // Silenciar errores si la tabla no existe
+    }
+    
+    // Asegurarse de que la ruta de la imagen sea completa
+    if ($product_image) {
+        // Si la ruta no comienza con http, / o ../, añadir el prefijo
+        if (!preg_match('/^https?:\/\/|^\/|^\.\.\//', $product_image)) {
+            $product_image = '../' . $product_image;
+        }
+        
+        // Si la ruta no comienza con ../ y no es una URL absoluta
+        if (!preg_match('/^https?:\/\//', $product_image) && !preg_match('/^\.\.\//', $product_image)) {
+            $product_image = '../' . ltrim($product_image, '/');
+        }
+    } else {
+        // Imagen por defecto si no hay imagen
+        $product_image = '../img/default-product.jpg';
+    }
+    
+    // Generar imágenes de miniatura y encontrar imágenes adicionales
+    $thumbnails = [];
+    
+    // Asegurarse de que la imagen principal esté en los thumbnails
+    $thumbnails[] = $product_image;
+    
+    // Añadir imágenes de la base de datos si están disponibles
+    if (!empty($additional_images)) {
+        foreach ($additional_images as $img) {
+            // Verificar la ruta de la imagen
+            if (!empty($img)) {
+                // Si la ruta no comienza con http, / o ../, añadir el prefijo
+                if (!preg_match('/^https?:\/\/|^\/|^\.\.\//', $img)) {
+                    $img = '../' . $img;
+                }
+                
+                // Si la ruta no comienza con ../ y no es una URL absoluta
+                if (!preg_match('/^https?:\/\//', $img) && !preg_match('/^\.\.\//', $img)) {
+                    $img = '../' . ltrim($img, '/');
+                }
+                
+                if (!in_array($img, $thumbnails)) {
+                    $thumbnails[] = $img;
+                }
+            }
+        }
+    }
+    
+    // Buscar imágenes relacionadas con el equipo
+    $team_name = '';
+    
+    // Extraer nombre del equipo del nombre del producto
+    $product_name_lower = strtolower($product_name);
+    $teams = [
+        'barcelona' => ['barca', 'barcelona'],
+        'real madrid' => ['real madrid', 'madrid'],
+        'manchester city' => ['manchester city', 'manchester c'],
+        'bayern munich' => ['bayern', 'munchen', 'munich'],
+        'milan' => ['milan', 'ac milan'],
+        'psg' => ['psg', 'paris'],
+        'tigres' => ['tigres'],
+        'rayados' => ['rayados', 'monterrey'],
+        'america' => ['america', 'águilas'],
+        'chivas' => ['chivas', 'guadalajara'],
+        'cruz azul' => ['cruz azul'],
+        'seleccion mexicana' => ['seleccion', 'mexico', 'tri']
+    ];
+    
+    foreach ($teams as $team => $keywords) {
+        foreach ($keywords as $keyword) {
+            if (strpos($product_name_lower, $keyword) !== false) {
+                $team_name = $team;
+                break 2;
+            }
+        }
+    }
+    
+    // Buscar imágenes relacionadas con el equipo
+    if (!empty($team_name)) {
+        $team_name_formatted = str_replace(' ', '', ucwords($team_name));
+        
+        // Patrones de nombre de archivo a buscar (adaptado a tu estructura de archivos)
+        $patterns = [
+            $team_name_formatted . 'Local.jpg',
+            $team_name_formatted . 'Local.png',
+            $team_name_formatted . 'Local.webp',
+            $team_name_formatted . '1.jpg',
+            $team_name_formatted . '1.png',
+            $team_name_formatted . '1.webp',
+            $team_name_formatted . '2.jpg',
+            $team_name_formatted . '2.png',
+            $team_name_formatted . '2.webp',
+            $team_name_formatted . '3.jpg',
+            $team_name_formatted . '3.png',
+            $team_name_formatted . '3.webp'
+        ];
+        
+        // Variaciones adicionales para algunos equipos
+        if ($team_name == 'barcelona') {
+            $patterns[] = 'Barca2.webp';
+            $patterns[] = 'Barca3.png';
+        } elseif ($team_name == 'real madrid') {
+            $patterns[] = 'RealM2.png';
+            $patterns[] = 'RealM3.png';
+        } elseif ($team_name == 'manchester city') {
+            $patterns[] = 'ManchesterCity.png';
+            $patterns[] = 'ManchsterC2.png';
+            $patterns[] = 'ManchesterC3.webp';
+        } elseif ($team_name == 'bayern munich') {
+            $patterns[] = 'BayerMunchenLocal.jpg';
+            $patterns[] = 'BayernMunchen1.jpg';
+            $patterns[] = 'BayernMunchen2.jpg';
+        }
+        
+        $jersey_dir = $_SERVER['DOCUMENT_ROOT'] . '/img/Jerseys/';
+        
+        // Buscar en directorio de Jerseys
+        foreach ($patterns as $pattern) {
+            if (file_exists($jersey_dir . $pattern)) {
+                $image_path = '../img/Jerseys/' . $pattern;
+                if (!in_array($image_path, $thumbnails)) {
+                    $thumbnails[] = $image_path;
+                }
+            }
+        }
+        
+        // Si no se encuentran imágenes adicionales, buscar por nombre parcial
+        if (count($thumbnails) <= 1) {
+            $dir_contents = scandir($jersey_dir);
+            foreach ($dir_contents as $file) {
+                if ($file == '.' || $file == '..' || $file == '.DS_Store') continue;
+                
+                $file_lower = strtolower($file);
+                foreach ($keywords as $keyword) {
+                    $keyword_lower = strtolower($keyword);
+                    if (strpos($file_lower, $keyword_lower) !== false) {
+                        $image_path = '../img/Jerseys/' . $file;
+                        if (!in_array($image_path, $thumbnails)) {
+                            $thumbnails[] = $image_path;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Si todavía no hay suficientes imágenes, intentar buscar por formato numérico
+    if (count($thumbnails) <= 1) {
+        $image_base = pathinfo($product_image, PATHINFO_FILENAME);
+        $image_ext = pathinfo($product_image, PATHINFO_EXTENSION);
+        $image_dir = pathinfo($product_image, PATHINFO_DIRNAME);
+        
+        for ($i = 2; $i <= 5; $i++) {
+            $possible_thumb = $image_dir . '/' . $image_base . $i . '.' . $image_ext;
+            // Verificar si el archivo existe en el servidor
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . str_replace('../', '/', $possible_thumb))) {
+                $thumbnails[] = $possible_thumb;
+            }
+        }
+    }
+    
+    // Limitar a 5 imágenes para no sobrecargar la página
+    $thumbnails = array_slice($thumbnails, 0, 5);
+    
+    // Eliminar duplicados
+    $thumbnails = array_unique($thumbnails);
+    
+    // Añadir información de depuración (solo en desarrollo)
+    $debug_info = [];
+    $debug_info['product_id'] = $product_id;
+    $debug_info['product_name'] = $product_name;
+    $debug_info['product_image'] = $product_image;
+    $debug_info['thumbnails'] = $thumbnails;
+    $debug_info['team_name'] = $team_name ?? 'No detectado';
+    
+    // Generar título para la página
+    $page_title = $product_name . ' - JerseyZone';
+    
 } catch(PDOException $e) {
-    $stock = 0; // Default value if database connection fails
-    $price = '799.00'; // Default price if database connection fails
+    // En caso de error, establecer valores por defecto
+    $product_name = "Producto no encontrado";
+    $product_image = "../img/default-product.jpg";
+    $stock = 0;
+    $price = '0.00';
+    $product_id = 0;
+    $thumbnails = [$product_image];
+    $page_title = "Producto no encontrado - JerseyZone";
+    
     error_log("Database connection failed: " . $e->getMessage());
 }
 ?>
@@ -21,7 +271,7 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Barcelona Local 24/25 - JerseyZone</title>
+    <title><?php echo $page_title; ?></title>
     <link rel="stylesheet" href="../Css/index.css">
     <link rel="stylesheet" href="../Css/productos.css">
     <link rel="stylesheet" href="../Css/cart.css">
@@ -34,11 +284,115 @@ try {
     <script src="../Js/cart.js" defer></script>
     <script src="../Js/newsletter.js" defer></script>
     <style>
-        /* Estilos anteriores */
+        /* Size Guide Styles */
+        .size-guide-btn {
+            background: none;
+            border: none;
+            color: #007bff;
+            text-decoration: underline;
+            cursor: pointer;
+            font-size: 0.9rem;
+            margin-left: 10px;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 15% auto;
+            padding: 20px;
+            border-radius: 8px;
+            width: 80%;
+            max-width: 600px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: black;
+        }
+
+        .size-guide-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        .size-guide-table th,
+        .size-guide-table td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .size-guide-table th {
+            background-color: #f5f5f5;
+        }
+        .product-detail {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+        }
+
+        .product-image-container {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image {
+            width: 100%;
+            aspect-ratio: 1;
+            object-fit: cover;
+            border-radius: 8px;
+            transition: transform 0.3s ease;
+        }
+
+        .product-image-container:hover .product-image {
+            transform: none;
+            cursor: default;
+        }
+
+        .product-thumbnails {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1rem;
+            overflow-x: auto;
+            padding-bottom: 0.5rem;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            border-radius: 4px;
+            cursor: pointer;
+            opacity: 0.6;
+            transition: opacity 0.3s ease;
+            object-fit: cover;
+        }
+
+        .thumbnail:hover,
         .thumbnail.active {
             opacity: 1;
         }
-        
+
         /* Estilos para navegación de imágenes */
         .image-navigation {
             position: absolute;
@@ -232,6 +586,46 @@ try {
                 grid-template-columns: 1fr;
             }
         }
+
+        /* Estilos para el panel de depuración */
+        .debug-panel {
+            background-color: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 15px;
+            margin-top: 20px;
+            font-family: monospace;
+            font-size: 13px;
+            overflow-x: auto;
+        }
+        
+        .debug-panel h3 {
+            margin-top: 0;
+            color: #333;
+            font-size: 16px;
+        }
+        
+        .debug-panel pre {
+            margin: 0;
+            white-space: pre-wrap;
+        }
+        
+        .refresh-cache-btn {
+            display: inline-block;
+            background-color: #28a745;
+            color: white;
+            text-decoration: none;
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            margin-top: 15px;
+            font-family: Arial, sans-serif;
+            transition: background-color 0.3s;
+        }
+        
+        .refresh-cache-btn:hover {
+            background-color: #218838;
+        }
     </style>
 </head>
 <body>
@@ -265,11 +659,14 @@ try {
     <main>
         <div class="product-detail">
             <div class="product-image-container">
-                <img src="../img/Jerseys/BarcelonaLocal.jpg" alt="Barcelona Jersey" class="product-image" id="mainImage" loading="lazy">
+                <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name); ?>" class="product-image" id="mainImage" loading="lazy">
+                <?php if (count($thumbnails) > 1): ?>
                 <div class="product-thumbnails">
-                    <img src="../img/Jerseys/BarcelonaLocal.jpg" alt="Barcelona Jersey Front" class="thumbnail active" onclick="changeImage(this)" loading="lazy">
-                    <img src="../img/Jerseys/Barca2.webp" alt="Barcelona Jersey Back" class="thumbnail" onclick="changeImage(this)" loading="lazy">
-                    <img src="../img/Jerseys/Barca3.png" alt="Barcelona Jersey Detail" class="thumbnail" onclick="changeImage(this)" loading="lazy">
+                    <?php foreach ($thumbnails as $index => $thumbnail): ?>
+                    <img src="<?php echo $thumbnail; ?>" alt="<?php echo htmlspecialchars($product_name); ?> <?php echo $index+1; ?>" 
+                         class="thumbnail <?php echo ($index === 0) ? 'active' : ''; ?>" 
+                         onclick="changeImage(this)" loading="lazy">
+                    <?php endforeach; ?>
                 </div>
                 
                 <!-- Botones de navegación de imágenes -->
@@ -282,10 +679,20 @@ try {
                 <div class="zoom-indicator">
                     <i class="fas fa-search-plus"></i> Mueva el cursor para hacer zoom
                 </div>
+                <?php endif; ?>
+                
+                <!-- Panel de depuración (oculto por defecto) -->
+                <?php if (isset($_GET['debug'])): ?>
+                <div class="debug-panel">
+                    <h3>Información de Depuración</h3>
+                    <pre><?php echo json_encode($debug_info, JSON_PRETTY_PRINT); ?></pre>
+                    <a href="?id=<?php echo $product_id; ?>&debug=1&refreshCache=<?php echo time(); ?>" class="refresh-cache-btn">Recargar caché de imágenes</a>
+                </div>
+                <?php endif; ?>
             </div>
             <div class="product-info">
-                <h1 class="product-title">Barcelona Local 24/25</h1>
-                <p class="product-price" data-product-id="barcelona">$ <?php echo $price; ?></p>
+                <h1 class="product-title"><?php echo htmlspecialchars($product_name); ?></h1>
+                <p class="product-price" data-product-id="<?php echo $product_id; ?>">$ <?php echo number_format($price, 2); ?></p>
                 <script>
                 document.addEventListener('DOMContentLoaded', function() {
                     const priceElement = document.querySelector('.product-price');
@@ -307,25 +714,6 @@ try {
 
                     // Update price every 30 seconds
                     setInterval(updatePrice, 30000);
-                    
-                    // Funcionalidad de zoom para la imagen
-                    const mainImage = document.getElementById('mainImage');
-                    
-                    if (mainImage) {
-                        mainImage.addEventListener('mousemove', function(e) {
-                            const { left, top, width, height } = this.getBoundingClientRect();
-                            const x = (e.clientX - left) / width;
-                            const y = (e.clientY - top) / height;
-                            
-                            // Aplicar transformación para zoom
-                            this.style.transformOrigin = `${x * 100}% ${y * 100}%`;
-                            this.style.transform = 'scale(1.5)';
-                        });
-                        
-                        mainImage.addEventListener('mouseleave', function() {
-                            this.style.transform = 'scale(1)';
-                        });
-                    }
                 });
                 </script>
                 <div class="shipping-info">
@@ -334,9 +722,11 @@ try {
                 <div class="size-selector">
                     <h3>Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button></h3>
                     <div class="size-options">
+                        <div class="size-option">XS</div>
                         <div class="size-option">S</div>
                         <div class="size-option">M</div>
                         <div class="size-option">L</div>
+                        <div class="size-option">XL</div>
                     </div>
                 </div>
 
@@ -454,4 +844,4 @@ try {
     
     <div id="notification" class="notification"></div>
 </body>
-</html>
+</html> 

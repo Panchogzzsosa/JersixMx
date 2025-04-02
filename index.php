@@ -78,32 +78,65 @@
         </section>
 
         <section class="best-sellers">
-            <h2>Los Más Vendidos</h2>
-            <div class="products-carousel">
-                <div class="product-card">
-                    <a href="Productos-equipos/producto-real-madrid">
-                        <img src="img/Jerseys/RealMadridLocal.jpg" alt="Real Madrid Local 24/25" loading="lazy">
-                        <h3>Real Madrid Local 24/25</h3>
-                        <p class="price" data-product-id="real_madrid">$ <?php echo isset($products['Real Madrid Local 24/25']) ? number_format($products['Real Madrid Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card">
-                    <a href="Productos-equipos/producto-barca">
-                        <img src="img/Jerseys/BarcelonaLocal.jpg" alt="Barcelona Local 24/25" loading="lazy">
-                        <h3>Barcelona Local 24/25</h3>
-                        <p class="price" data-product-id="barcelona">$ <?php echo isset($products['Barcelona Local 24/25']) ? number_format($products['Barcelona Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card">
-                    <a href="Productos-equipos/producto-tigres">
-                        <img src="img/LoMasVendido/Tigres.jpeg" alt="Tigres Local 24/25" loading="lazy">
-                        <h3>Tigres Local 24/25</h3>
-                        <p class="price" data-product-id="tigres">$ <?php echo isset($products['Tigres Local 24/25']) ? number_format($products['Tigres Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
+            <?php
+            // Función para obtener productos aleatorios con caché
+            function getRandomProducts($limit = 4) {
+                $cacheFile = 'cache/random_products.json';
+                $cacheExpiry = 172800; // 2 días en segundos (2 * 24 * 60 * 60)
+                
+                // Verificar si existe el directorio cache, si no, crearlo
+                if (!file_exists('cache')) {
+                    mkdir('cache', 0777, true);
+                }
+                
+                // Verificar si existe el cache y no ha expirado
+                if (file_exists($cacheFile) && (time() - filemtime($cacheFile) < $cacheExpiry)) {
+                    return json_decode(file_get_contents($cacheFile), true);
+                }
+                
+                try {
+                    // Conexión a la base de datos
+                    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
+                    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+                    
+                    // Seleccionar productos aleatorios que estén activos y con stock
+                    $stmt = $pdo->prepare("
+                        SELECT * FROM products 
+                        WHERE status = 1 
+                        AND stock > 0 
+                        ORDER BY RAND() 
+                        LIMIT :limit
+                    ");
+                    
+                    $stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+                    $stmt->execute();
+                    $products = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                    
+                    // Guardar en caché
+                    file_put_contents($cacheFile, json_encode($products));
+                    
+                    return $products;
+                } catch(PDOException $e) {
+                    // En caso de error, retornar array vacío
+                    return [];
+                }
+            }
+
+            // Obtener los productos aleatorios
+            $randomProducts = getRandomProducts(4);
+            ?>
+            <h2>Lo Más Vendido</h2>
+            <div class="collection-grid">
+                <?php foreach ($randomProducts as $product): ?>
+                    <div class="collection-item">
+                        <a href="Productos-equipos/producto.php?id=<?php echo $product['product_id']; ?>">
+                            <img src="<?php echo htmlspecialchars($product['image_url']); ?>" 
+                                 alt="<?php echo htmlspecialchars($product['name']); ?>" 
+                                 loading="lazy">
+                            <h3><?php echo htmlspecialchars($product['name']); ?></h3>
+                        </a>
+                    </div>
+                <?php endforeach; ?>
             </div>
         </section>
 

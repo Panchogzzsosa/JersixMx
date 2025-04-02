@@ -173,6 +173,7 @@ try {
     <title>Agregar Producto - Panel de Administración - Jersix</title>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
     <style>
         :root {
             --primary-color: #007bff;

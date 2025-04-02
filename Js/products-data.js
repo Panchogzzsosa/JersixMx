@@ -115,7 +115,7 @@ const productsData = [
         team: "Cruz Azul",
         category: "local",
         league: "ligamx",
-        price: "799.00",
+        price: "700.00",
         image: "../img/Jerseys/CruzAzulLocal.jpg",
         url: "../Productos-equipos/producto-cruzazul",
         productId: "cruz_azul"

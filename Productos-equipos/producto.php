@@ -54,12 +54,35 @@ try {
         exit;
     }
     
+    // VERIFICAR SI EL PRODUCTO ESTÁ ACTIVO
+    // Primero verificar si existe la columna status
+    $hasStatusColumn = false;
+    try {
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM products LIKE 'status'");
+        $stmt->execute();
+        $hasStatusColumn = ($stmt->rowCount() > 0);
+    } catch (PDOException $e) {
+        // Error al verificar la columna, asumimos que no existe
+        $hasStatusColumn = false;
+    }
+    
+    // Si la columna existe y el producto está inactivo, mostrar mensaje o redirigir
+    if ($hasStatusColumn && isset($product['status']) && $product['status'] == 0) {
+        // Opción 1: Redirigir a la página de productos con un mensaje
+        header('Location: ../productos.php?error=producto_inactivo');
+        exit;
+        
+        // Opción 2 (alternativa): Mostrar un mensaje en esta página
+        // $product_inactive = true;
+    }
+    
     // Obtener datos del producto
     $product_name = $product['name'];
     $product_image = $product['image_url'];
     $stock = $product['stock'];
     $price = $product['price'];
     $product_id = $product['product_id'];
+    $product_status = $hasStatusColumn ? $product['status'] : 1; // Por defecto activo si no existe la columna
     
     // Buscar imágenes adicionales en la base de datos (si existe una tabla de imágenes)
     $additional_images = [];
@@ -522,6 +545,12 @@ try {
             background-color: #333;
         }
 
+        .add-to-cart-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
         /* Modal de guía de tallas */
         .modal {
             display: none;
@@ -610,6 +639,69 @@ try {
         .zoom-indicator {
             display: none;
         }
+
+        /* Estilos para indicador de estado y mensaje de inactividad */
+        .product-inactive-message {
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .alert i {
+            font-size: 24px;
+        }
+        
+        .admin-product-status {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .edit-product-link {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .edit-product-link:hover {
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -641,6 +733,32 @@ try {
     </header>
 
     <main>
+        <?php if (isset($product_inactive) && $product_inactive): ?>
+        <div class="product-inactive-message">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Este producto está actualmente inactivo y no es visible para los clientes.</p>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <?php
+        // Verificar si el usuario es administrador (condición simplificada, ajustar según tu sistema)
+        $isAdmin = isset($_SESSION['admin_id']);
+        
+        // Mostrar indicador de estado solo para administradores
+        if ($isAdmin):
+        ?>
+        <div class="admin-product-status">
+            <span class="status-indicator <?php echo $product_status ? 'status-active' : 'status-inactive'; ?>">
+                <?php echo $product_status ? 'Producto Activo' : 'Producto Inactivo'; ?>
+            </span>
+            <a href="../admin2/edit_product.php?id=<?php echo $product_id; ?>" class="edit-product-link">
+                <i class="fas fa-edit"></i> Editar Producto
+            </a>
+        </div>
+        <?php endif; ?>
+        
         <div class="product-detail">
             <div class="product-image-container">
                 <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name); ?>" class="product-image" id="mainImage" loading="lazy">
@@ -673,9 +791,11 @@ try {
                     Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button>
                 </div>
                 <div class="size-options">
+                    <div class="size-option">XS</div>    
                     <div class="size-option">S</div>
                     <div class="size-option">M</div>
                     <div class="size-option">L</div>
+                    <div class="size-option">XL</div>
                 </div>
 
                 <div class="section-title">Cantidad</div>
@@ -690,7 +810,13 @@ try {
                     <span>Stock disponible: <strong><?php echo $stock; ?></strong> unidades</span>
                 </div>
                 
-                <button class="add-to-cart-btn">Agregar al Carrito</button>
+                <button class="add-to-cart-btn" <?php echo (!$product_status) ? 'disabled' : ''; ?>>
+                    <?php if ($product_status): ?>
+                        Agregar al Carrito
+                    <?php else: ?>
+                        Producto no disponible
+                    <?php endif; ?>
+                </button>
             </div>
         </div>
         
@@ -710,6 +836,12 @@ try {
                     </thead>
                     <tbody>
                         <tr>
+                            <td>XS</td>
+                            <td>96-101</td>
+                            <td>71</td>
+                            <td>44</td>
+                        </tr>
+                        <tr>
                             <td>S</td>
                             <td>96-101</td>
                             <td>71</td>
@@ -726,6 +858,12 @@ try {
                             <td>106-111</td>
                             <td>75</td>
                             <td>48</td>
+                        </tr>
+                        <tr>
+                            <td>XL</td>
+                            <td>96-101</td>
+                            <td>71</td>
+                            <td>44</td>
                         </tr>
                     </tbody>
                 </table>

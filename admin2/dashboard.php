@@ -6,13 +6,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Verificar inicio de sesión (comentado por ahora para facilitar pruebas)
-/*
+// Verificar inicio de sesión
 if (!isset($_SESSION['admin_id'])) {
     header('Location: login.php');
     exit();
 }
-*/
 
 // Conexión a la base de datos (ajusta los parámetros según tu configuración)
 try {

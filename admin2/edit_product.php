@@ -169,10 +169,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $product_id
                     ]);
                 } else {
-                    // Si la columna status no existe, no incluirla en la actualización
+                    // Si la columna status no existe, crearla primero
+                    $pdo->exec("ALTER TABLE products ADD COLUMN status TINYINT(1) DEFAULT 1");
+                    
+                    // Ahora podemos usar la columna status en la actualización
+                    $status = isset($_POST['status']) ? 1 : 0;
+                    
                     $stmt = $pdo->prepare("
                         UPDATE products 
-                        SET name = ?, description = ?, price = ?, stock = ?, category = ?, image_url = ?
+                        SET name = ?, description = ?, price = ?, stock = ?, category = ?, status = ?, image_url = ?
                         WHERE product_id = ?
                     ");
                     
@@ -182,12 +187,11 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         $price,
                         $stock,
                         $category,
+                        $status,
                         $image_url,
                         $product_id
                     ]);
                     
-                    // Opcional: Crear la columna status si quieres habilitarla
-                    $pdo->exec("ALTER TABLE products ADD COLUMN status TINYINT(1) DEFAULT 1");
                     $success_message = "Producto actualizado correctamente. También se ha agregado la columna 'status' a la tabla.";
                 }
                 

@@ -6,13 +6,11 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
-// Verificar inicio de sesión (comentado por ahora para facilitar pruebas)
-/*
+// Verificar inicio de sesión
 if (!isset($_SESSION['admin_id'])) {
     header('Location: login.php');
     exit();
 }
-*/
 
 // Conexión a la base de datos
 try {
@@ -262,6 +260,7 @@ if (isset($_GET['error'])) {
             display: flex;
             justify-content: space-between;
             align-items: center;
+            margin-bottom: 10px;
         }
         
         .panel-title {
@@ -277,6 +276,7 @@ if (isset($_GET['error'])) {
         /* Table */
         .table-container {
             overflow-x: auto;
+            margin: 0 20px 20px;
         }
         
         table {
@@ -401,24 +401,47 @@ if (isset($_GET['error'])) {
         
         .search-filter {
             display: flex;
-            gap: 10px;
-            margin-bottom: 20px;
+            gap: 15px;
+            margin: 0 20px 20px;
+            padding: 15px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
         }
         
         .search-input {
             flex: 1;
-            padding: 10px 15px;
+            padding: 12px 15px;
             border: 1px solid #ced4da;
             border-radius: var(--border-radius);
             font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .search-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
         }
         
         .filter-select {
-            padding: 10px 15px;
+            min-width: 200px;
+            padding: 12px 15px;
             border: 1px solid #ced4da;
             border-radius: var(--border-radius);
             background-color: white;
             font-family: 'Inter', sans-serif;
+            font-size: 14px;
+            box-shadow: 0 1px 2px rgba(0,0,0,0.05);
+            transition: var(--transition);
+        }
+        
+        .filter-select:focus {
+            outline: none;
+            border-color: var(--primary-color);
+            box-shadow: 0 0 0 3px rgba(0,123,255,0.15);
         }
         
         /* Error message */
@@ -502,6 +525,75 @@ if (isset($_GET['error'])) {
                 justify-content: space-between;
             }
         }
+        
+        /* Estilos para el interruptor de activación/desactivación */
+        .toggle-container {
+            display: flex;
+            align-items: center;
+        }
+        
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+            margin-right: 10px;
+        }
+        
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .toggle-slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+        
+        .toggle-slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+        
+        input:checked + .toggle-slider {
+            background-color: var(--success-color);
+        }
+        
+        input:focus + .toggle-slider {
+            box-shadow: 0 0 1px var(--success-color);
+        }
+        
+        input:checked + .toggle-slider:before {
+            transform: translateX(26px);
+        }
+        
+        .toggle-label {
+            font-size: 13px;
+            font-weight: 500;
+        }
+        
+        input:checked ~ .toggle-label {
+            color: var(--success-color);
+        }
+        
+        input:not(:checked) ~ .toggle-label {
+            color: var(--secondary-color);
+        }
     </style>
 </head>
 <body>
@@ -557,7 +649,7 @@ if (isset($_GET['error'])) {
             <div class="topbar">
                 <h1>Gestión de Productos</h1>
                 <div class="user-info">
-                    <span>Usuario: Admin</span>
+                    <span>Usuario: <?php echo htmlspecialchars($_SESSION['admin_name']); ?></span>
                     <a href="add_product.php" class="btn btn-primary">Agregar Producto</a>
                 </div>
             </div>
@@ -633,7 +725,8 @@ if (isset($_GET['error'])) {
                                     <th>Categoría</th>
                                     <th>Precio</th>
                                     <th>Stock</th>
-                                    <th>Estado</th>
+                                    <th>Estado Stock</th>
+                                    <th>Visible</th>
                                     <th style="width: 150px;">Acciones</th>
                                 </tr>
                             </thead>
@@ -674,6 +767,19 @@ if (isset($_GET['error'])) {
                                             <?php else: ?>
                                                 <span class="status-badge status-in-stock">En stock</span>
                                             <?php endif; ?>
+                                        </td>
+                                        <td>
+                                            <div class="toggle-container">
+                                                <label class="toggle-switch">
+                                                    <input type="checkbox" class="status-toggle" 
+                                                           data-product-id="<?php echo $product['product_id']; ?>" 
+                                                           <?php echo (isset($product['status']) && $product['status'] == 1) ? 'checked' : ''; ?>>
+                                                    <span class="toggle-slider"></span>
+                                                </label>
+                                                <span class="toggle-label" id="status-label-<?php echo $product['product_id']; ?>">
+                                                    <?php echo (isset($product['status']) && $product['status'] == 1) ? 'Visible' : 'Oculto'; ?>
+                                                </span>
+                                            </div>
                                         </td>
                                         <td class="actions">
                                             <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="btn btn-sm btn-warning">
@@ -753,6 +859,85 @@ if (isset($_GET['error'])) {
                 
                 searchInput.addEventListener('input', filterProducts);
                 categoryFilter.addEventListener('change', filterProducts);
+            }
+        });
+        
+        // Función para manejar el cambio de estado (activar/desactivar productos)
+        document.addEventListener('DOMContentLoaded', function() {
+            const statusToggles = document.querySelectorAll('.status-toggle');
+            
+            statusToggles.forEach(toggle => {
+                toggle.addEventListener('change', function() {
+                    const productId = this.getAttribute('data-product-id');
+                    const isActive = this.checked ? 1 : 0;
+                    const statusLabel = document.getElementById(`status-label-${productId}`);
+                    
+                    // Mostrar indicador de carga
+                    if (statusLabel) {
+                        statusLabel.textContent = 'Actualizando...';
+                    }
+                    
+                    // Enviar solicitud AJAX para actualizar el estado
+                    fetch('update_product_status.php', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: `product_id=${productId}&status=${isActive}`
+                    })
+                    .then(response => response.json())
+                    .then(data => {
+                        if (data.success) {
+                            // Actualizar la etiqueta de estado
+                            if (statusLabel) {
+                                statusLabel.textContent = isActive ? 'Visible' : 'Oculto';
+                            }
+                            
+                            // Mostrar mensaje de éxito
+                            showNotification('success', `Producto ${isActive ? 'activado' : 'desactivado'} correctamente`);
+                        } else {
+                            // Revertir el toggle si hay error
+                            this.checked = !this.checked;
+                            if (statusLabel) {
+                                statusLabel.textContent = this.checked ? 'Visible' : 'Oculto';
+                            }
+                            
+                            // Mostrar mensaje de error
+                            showNotification('error', data.message || 'Error al actualizar el estado');
+                        }
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                        // Revertir el toggle si hay error
+                        this.checked = !this.checked;
+                        if (statusLabel) {
+                            statusLabel.textContent = this.checked ? 'Visible' : 'Oculto';
+                        }
+                        
+                        // Mostrar mensaje de error
+                        showNotification('error', 'Error de conexión al actualizar el estado');
+                    });
+                });
+            });
+            
+            // Función para mostrar notificaciones
+            function showNotification(type, message) {
+                const notification = document.createElement('div');
+                notification.className = `notification ${type === 'success' ? 'success-message' : 'error-message'}`;
+                notification.innerHTML = `
+                    <i class="fas ${type === 'success' ? 'fa-check-circle' : 'fa-exclamation-circle'}"></i>
+                    <span>${message}</span>
+                `;
+                
+                document.querySelector('.main-content').insertBefore(notification, document.querySelector('.panel'));
+                
+                // Eliminar la notificación después de 3 segundos
+                setTimeout(() => {
+                    notification.style.opacity = '0';
+                    setTimeout(() => {
+                        notification.remove();
+                    }, 300);
+                }, 3000);
             }
         });
     </script>

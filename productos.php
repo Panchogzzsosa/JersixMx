@@ -8,8 +8,19 @@ try {
     // Obtener categorías para los filtros
     $categories = ['Equipos', 'Retro', 'Selecciones'];
     
-    // Consulta para obtener todos los productos
-    $query = "SELECT * FROM products ORDER BY name ASC";
+    // Verificar si la columna status existe en la tabla products
+    $stmt = $pdo->query("SHOW COLUMNS FROM products LIKE 'status'");
+    $statusColumnExists = ($stmt->rowCount() > 0);
+    
+    // Consulta para obtener productos activos
+    if ($statusColumnExists) {
+        // Si la columna status existe, solo mostrar productos activos
+        $query = "SELECT * FROM products WHERE status = 1 ORDER BY name ASC";
+    } else {
+        // Si la columna status no existe, mostrar todos los productos
+        $query = "SELECT * FROM products ORDER BY name ASC";
+    }
+    
     $stmt = $pdo->prepare($query);
     $stmt->execute();
     $db_products = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -144,6 +155,12 @@ try {
     // En caso de error, crear un array vacío
     $db_products = [];
 }
+
+// Verificar si hay un mensaje de error (ej. producto inactivo)
+$error_message = '';
+if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
+    $error_message = 'El producto que estás buscando no está disponible actualmente.';
+}
 ?>
 <!DOCTYPE html>
 <html lang="es">
@@ -162,6 +179,18 @@ try {
     <script src="Js/products-data.js" defer></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/newsletter.js" defer></script>
+    <style>
+        /* Estilo para el mensaje de error */
+        .error-message {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -232,18 +261,27 @@ try {
                 </div>
             </div>
 
+            <?php if (!empty($error_message)): ?>
+            <div class="error-message">
+                <?php echo htmlspecialchars($error_message); ?>
+            </div>
+            <?php endif; ?>
+
             <div class="products-container">
                 <?php 
                 // Mostrar productos desde la base de datos
                 if (!empty($db_products)): 
                     foreach ($db_products as $product): 
-                        // Determinar categoría y liga para filtros
-                        $productCategory = getProductCategory($product['category']);
-                        $productType = getProductType($product['name']);
-                        $productLeague = getProductLeague($product['name']);
-                        
-                        // Generar URL del producto
-                        $productUrl = generateProductUrl($product['name'], $product['product_id']);
+                        // Solo mostrar productos activos
+                        $isActive = !$statusColumnExists || ($statusColumnExists && isset($product['status']) && $product['status'] == 1);
+                        if ($isActive):
+                            // Determinar categoría y liga para filtros
+                            $productCategory = getProductCategory($product['category']);
+                            $productType = getProductType($product['name']);
+                            $productLeague = getProductLeague($product['name']);
+                            
+                            // Generar URL del producto
+                            $productUrl = generateProductUrl($product['name'], $product['product_id']);
                 ?>
                 <div class="product-card" data-category="<?php echo $productType; ?>" data-league="<?php echo $productLeague; ?>">
                     <a href="Productos-equipos/<?php echo $productUrl; ?>">
@@ -254,98 +292,75 @@ try {
                     </a>
                 </div>
                 <?php 
-                    endforeach; 
-                else: 
-                    // Si no hay productos en la base de datos, mostrar los productos estáticos originales 
+                        endif; // Fin if isActive
+                    endforeach;
+                    
+                    // Verificar si no hay productos para mostrar después del filtrado
+                    $activeProductsCount = count(array_filter($db_products, function($product) use ($statusColumnExists) {
+                        return !$statusColumnExists || ($statusColumnExists && isset($product['status']) && $product['status'] == 1);
+                    }));
+                    
+                    if ($activeProductsCount === 0):
                 ?>
-                <div class="product-card" data-category="local" data-league="laliga">
-                    <a href="Productos-equipos/producto-real-madrid">
-                        <img src="img/Jerseys/RealMadridLocal.jpg" alt="Real Madrid Jersey" loading="lazy">
-                        <h3>Real Madrid Local 24/25</h3>
-                        <p class="price" data-product-id="real_madrid">$ <?php echo isset($products['Real Madrid Local 24/25']) ? number_format($products['Real Madrid Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
+                <div class="no-products-message">
+                    <i class="fas fa-tshirt"></i>
+                    <h3>No hay productos disponibles en este momento</h3>
+                    <p>Vuelve a consultar más tarde, estamos trabajando para agregar nuevos productos.</p>
                 </div>
-                <div class="product-card" data-category="local" data-league="laliga">
-                    <a href="Productos-equipos/producto-barca">
-                        <img src="img/Jerseys/BarcelonaLocal.jpg" alt="Barcelona Jersey" loading="lazy">
-                        <h3>Barcelona Local 24/25</h3>
-                        <p class="price" data-product-id="barcelona">$ <?php echo isset($products['Barcelona Local 24/25']) ? number_format($products['Barcelona Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
+                <style>
+                    .no-products-message {
+                        text-align: center;
+                        padding: 50px 20px;
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                        margin: 30px auto;
+                        max-width: 600px;
+                    }
+                    .no-products-message i {
+                        font-size: 48px;
+                        color: #6c757d;
+                        margin-bottom: 20px;
+                    }
+                    .no-products-message h3 {
+                        margin-bottom: 10px;
+                        color: #343a40;
+                    }
+                    .no-products-message p {
+                        color: #6c757d;
+                    }
+                </style>
+                <?php 
+                    endif;
+                else: 
+                    // Si no hay productos en la base de datos, mostrar mensaje
+                ?>
+                <div class="no-products-message">
+                    <i class="fas fa-tshirt"></i>
+                    <h3>No hay productos disponibles en este momento</h3>
+                    <p>Vuelve a consultar más tarde, estamos trabajando para agregar nuevos productos.</p>
                 </div>
-                <div class="product-card" data-category="local" data-league="premier">
-                    <a href="Productos-equipos/producto-manchester-city">
-                        <img src="img/Jerseys/ManchesterCity.png" alt="Manchester City" loading="lazy">
-                        <h3>Manchester City Local 24/25</h3>
-                        <p class="price" data-product-id="manchester_city">$ <?php echo isset($products['Manchester City Local 24/25']) ? number_format($products['Manchester City Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="bundesliga">
-                    <a href="Productos-equipos/producto-bayern-munchen">
-                        <img src="img/Jerseys/BayerMunchenLocal.jpg" alt="Bayern de Múnich Jersey" loading="lazy">
-                        <h3>Bayern Múnich Local 24/25</h3>
-                        <p class="price" data-product-id="bayern_munich">$ <?php echo isset($products['Bayern de Múnich Local 24/25']) ? number_format($products['Bayern de Múnich Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="serieA">
-                    <a href="Productos-equipos/producto-ac-milan">
-                        <img src="img/Jerseys/MilanLocal.png" alt="AC Milan" loading="lazy">
-                        <h3>AC Milan Local 24/25</h3>
-                        <p class="price" data-product-id="ac_milan">$ <?php echo isset($products['AC Milan Local 24/25']) ? number_format($products['AC Milan Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligue1">
-                    <a href="Productos-equipos/producto-Psg">
-                        <img src="img/Jerseys/PSGLocal.jpg" alt="PSG" loading="lazy">
-                        <h3>PSG Local 24/25</h3>
-                        <p class="price" data-product-id="psg">$ <?php echo isset($products['PSG Local 24/25']) ? number_format($products['PSG Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligamx">
-                    <a href="Productos-equipos/producto-rayados">
-                        <img src="img/Jerseys/RayadosLocal.jpg" alt="Rayados Jersey" loading="lazy">
-                        <h3>Rayados Local 24/25</h3>
-                        <p class="price" data-product-id="rayados">$ <?php echo isset($products['Rayados Local 24/25']) ? number_format($products['Rayados Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligamx">
-                    <a href="Productos-equipos/producto-tigres">
-                        <img src="img/Jerseys/TigresLocal.jpg" alt="Tigres Jersey" loading="lazy">
-                        <h3>Tigres Local 24/25</h3>
-                        <p class="price" data-product-id="tigres">$ <?php echo isset($products['Tigres Local 24/25']) ? number_format($products['Tigres Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligamx">
-                    <a href="Productos-equipos/producto-america">
-                        <img src="img/Jerseys/AmericaLocal.jpg" alt="América Jersey" loading="lazy">
-                        <h3>América Local 24/25</h3>
-                        <p class="price" data-product-id="america">$ <?php echo isset($products['América Local 24/25']) ? number_format($products['América Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligamx">
-                    <a href="Productos-equipos/producto-chivas">
-                        <img src="img/Jerseys/ChivasLocal.jpg" alt="Chivas Jersey" loading="lazy">
-                        <h3>Chivas Local 24/25</h3>
-                        <p class="price" data-product-id="chivas">$ <?php echo isset($products['Chivas Local 24/25']) ? number_format($products['Chivas Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
-                <div class="product-card" data-category="local" data-league="ligamx">
-                    <a href="Productos-equipos/producto-cruzazul">
-                        <img src="img/Jerseys/CruzAzulLocal.jpg" alt="Cruz Azul Jersey" loading="lazy">
-                        <h3>Cruz Azul Local 24/25</h3>
-                        <p class="price" data-product-id="cruz_azul">$ <?php echo isset($products['Cruz Azul Local 24/25']) ? number_format($products['Cruz Azul Local 24/25'], 2) : '799.00'; ?></p>
-                        <button class="add-to-cart">Ver Producto</button>
-                    </a>
-                </div>
+                <style>
+                    .no-products-message {
+                        text-align: center;
+                        padding: 50px 20px;
+                        background: #f8f9fa;
+                        border-radius: 8px;
+                        margin: 30px auto;
+                        max-width: 600px;
+                    }
+                    .no-products-message i {
+                        font-size: 48px;
+                        color: #6c757d;
+                        margin-bottom: 20px;
+                    }
+                    .no-products-message h3 {
+                        margin-bottom: 10px;
+                        color: #343a40;
+                    }
+                    .no-products-message p {
+                        color: #6c757d;
+                    }
+                </style>
                 <?php endif; ?>
             </div>
         </section>

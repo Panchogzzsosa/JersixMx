@@ -594,6 +594,61 @@ if (isset($_GET['error'])) {
         input:not(:checked) ~ .toggle-label {
             color: var(--secondary-color);
         }
+        
+        /* Estilos para campos editables */
+        .editable-field {
+            cursor: pointer;
+            padding: 5px;
+            border-radius: 4px;
+            transition: background-color 0.2s;
+            display: inline-block;
+        }
+        
+        .editable-field:hover {
+            background-color: rgba(0,123,255,0.05);
+        }
+        
+        .editable-field.editing {
+            background-color: #fff;
+            border: 2px solid var(--primary-color);
+            padding: 4px;
+        }
+        
+        .edit-input {
+            width: 80px;
+            padding: 4px;
+            border: none;
+            font-size: inherit;
+            font-weight: inherit;
+            font-family: inherit;
+            text-align: left;
+            background: transparent;
+            color: inherit;
+        }
+        
+        .edit-input:focus {
+            outline: none;
+        }
+        
+        /* Tooltip para edición */
+        .editable-field::after {
+            content: 'Doble clic para editar';
+            position: absolute;
+            background-color: #333;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+            margin-top: 5px;
+            z-index: 1000;
+        }
+        
+        .editable-field:hover::after {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -617,13 +672,7 @@ if (isset($_GET['error'])) {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="add_product.php">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Agregar Producto</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#">
+                    <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Pedidos</span>
                     </a>
@@ -754,9 +803,23 @@ if (isset($_GET['error'])) {
                                             <?php endif; ?>
                                         </td>
                                         <td>
-                                            <span class="product-price">$<?php echo number_format($product['price'], 2); ?></span>
+                                            <span class="editable-field product-price" 
+                                                  data-product-id="<?php echo $product['product_id']; ?>" 
+                                                  data-field="price"
+                                                  data-original-value="<?php echo $product['price']; ?>" 
+                                                  ondblclick="makeEditable(this)">
+                                                $<?php echo number_format($product['price'], 2); ?>
+                                            </span>
                                         </td>
-                                        <td><?php echo htmlspecialchars($product['stock']); ?></td>
+                                        <td>
+                                            <span class="editable-field product-stock" 
+                                                  data-product-id="<?php echo $product['product_id']; ?>" 
+                                                  data-field="stock"
+                                                  data-original-value="<?php echo $product['stock']; ?>" 
+                                                  ondblclick="makeEditable(this)">
+                                                <?php echo htmlspecialchars($product['stock']); ?>
+                                            </span>
+                                        </td>
                                         <td>
                                             <?php
                                             $stock = intval($product['stock']);
@@ -940,6 +1003,113 @@ if (isset($_GET['error'])) {
                 }, 3000);
             }
         });
+        
+        function makeEditable(element) {
+            const originalValue = element.getAttribute('data-original-value');
+            const productId = element.getAttribute('data-product-id');
+            const field = element.getAttribute('data-field');
+            const isPrice = field === 'price';
+            
+            // Crear input
+            const input = document.createElement('input');
+            input.type = 'number';
+            input.step = isPrice ? '0.01' : '1';
+            input.min = '0';
+            input.value = originalValue;
+            input.className = 'edit-input';
+            
+            // Guardar el contenido original
+            const originalContent = element.innerHTML;
+            
+            // Añadir clase de edición
+            element.classList.add('editing');
+            
+            // Reemplazar contenido con input
+            element.innerHTML = '';
+            element.appendChild(input);
+            
+            // Enfocar el input
+            input.focus();
+            
+            // Manejar el evento blur
+            input.addEventListener('blur', function() {
+                finishEditing();
+            });
+            
+            // Manejar tecla Enter y Escape
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    finishEditing();
+                } else if (e.key === 'Escape') {
+                    element.classList.remove('editing');
+                    element.innerHTML = originalContent;
+                }
+            });
+            
+            function finishEditing() {
+                const newValue = parseFloat(input.value);
+                
+                if (isNaN(newValue) || newValue < 0) {
+                    showNotification('error', `Por favor ingresa un ${isPrice ? 'precio' : 'stock'} válido`);
+                    element.classList.remove('editing');
+                    element.innerHTML = originalContent;
+                    return;
+                }
+                
+                // Mostrar indicador de carga
+                element.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+                
+                // Enviar actualización al servidor
+                fetch('update_product_field.php', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/x-www-form-urlencoded',
+                    },
+                    body: `product_id=${productId}&field=${field}&value=${newValue}`
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        element.classList.remove('editing');
+                        
+                        // Formatear el valor según el tipo de campo
+                        const displayValue = isPrice ? '$' + newValue.toFixed(2) : newValue.toString();
+                        element.innerHTML = displayValue;
+                        element.setAttribute('data-original-value', newValue);
+                        
+                        // Actualizar el estado del stock si es necesario
+                        if (field === 'stock') {
+                            updateStockStatus(element.closest('tr'), newValue);
+                        }
+                        
+                        showNotification('success', `${isPrice ? 'Precio' : 'Stock'} actualizado correctamente`);
+                    } else {
+                        throw new Error(data.message || `Error al actualizar el ${isPrice ? 'precio' : 'stock'}`);
+                    }
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    element.classList.remove('editing');
+                    element.innerHTML = originalContent;
+                    showNotification('error', error.message || `Error al actualizar el ${isPrice ? 'precio' : 'stock'}`);
+                });
+            }
+        }
+        
+        function updateStockStatus(row, newStock) {
+            const statusCell = row.querySelector('td:nth-child(6)');
+            if (statusCell) {
+                let newStatus;
+                if (newStock <= 0) {
+                    newStatus = '<span class="status-badge status-out-of-stock">Sin stock</span>';
+                } else if (newStock < 5) {
+                    newStatus = '<span class="status-badge status-low-stock">Stock bajo</span>';
+                } else {
+                    newStatus = '<span class="status-badge status-in-stock">En stock</span>';
+                }
+                statusCell.innerHTML = newStatus;
+            }
+        }
     </script>
 </body>
 </html> 

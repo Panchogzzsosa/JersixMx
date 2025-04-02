@@ -805,10 +805,7 @@ try {
                     <button class="quantity-btn plus" id="plusBtn">+</button>
                 </div>
                 
-                <div class="stock-info">
-                    <i class="fas fa-box"></i>
-                    <span>Stock disponible: <strong><?php echo $stock; ?></strong> unidades</span>
-                </div>
+                
                 
                 <button class="add-to-cart-btn" <?php echo (!$product_status) ? 'disabled' : ''; ?>>
                     <?php if ($product_status): ?>

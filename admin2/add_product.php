@@ -87,15 +87,64 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         }
     }
     
-    // Si no hay errores, insertar el producto
+    // Procesar imágenes adicionales
+    $additional_images = [];
+    if (isset($_FILES['additional_images'])) {
+        $files = $_FILES['additional_images'];
+        $total_files = count($files['name']);
+        
+        // Limitar a 5 imágenes
+        $total_files = min($total_files, 5);
+        
+        for ($i = 0; $i < $total_files; $i++) {
+            if ($files['error'][$i] === 0) {
+                $allowed_types = ['image/jpeg', 'image/png', 'image/gif'];
+                if (in_array($files['type'][$i], $allowed_types)) {
+                    $upload_dir = '../img/products/additional/';
+                    
+                    // Crear directorio si no existe
+                    if (!file_exists($upload_dir)) {
+                        mkdir($upload_dir, 0777, true);
+                    }
+                    
+                    $filename = time() . '_' . $i . '_' . $files['name'][$i];
+                    $target_file = $upload_dir . $filename;
+                    
+                    if (move_uploaded_file($files['tmp_name'][$i], $target_file)) {
+                        $additional_images[] = 'img/products/additional/' . $filename;
+                    }
+                }
+            }
+        }
+    }
+    
+    // Si no hay errores, insertar el producto y sus imágenes adicionales
     if (empty($errors)) {
         try {
+            $pdo->beginTransaction();
+
+            // Insertar el producto principal
             $stmt = $pdo->prepare("
                 INSERT INTO products (name, description, price, stock, category, image_url) 
                 VALUES (?, ?, ?, ?, ?, ?)
             ");
             $stmt->execute([$name, $description, $price, $stock, $category, $image_url]);
             
+            $product_id = $pdo->lastInsertId();
+
+            // Insertar imágenes adicionales
+            if (!empty($additional_images)) {
+                $stmt = $pdo->prepare("
+                    INSERT INTO product_images (product_id, image_url) 
+                    VALUES (?, ?)
+                ");
+                
+                foreach ($additional_images as $img_url) {
+                    $stmt->execute([$product_id, $img_url]);
+                }
+            }
+
+            $pdo->commit();
             $success_message = "Producto agregado correctamente";
             
             // Limpiar los campos después de un envío exitoso
@@ -103,6 +152,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             $price = $stock = 0;
             $category = '';
         } catch (PDOException $e) {
+            $pdo->rollBack();
             $errors[] = "Error al guardar el producto: " . $e->getMessage();
         }
     }
@@ -524,74 +574,29 @@ try {
                 width: 100%;
             }
         }
-        
-        /* Nuevos estilos para la sección de jerseys rápidos */
-        .quick-jersey-section {
-            margin-bottom: 30px;
-        }
-        
-        .tabs {
-            display: flex;
-            border-bottom: 1px solid #eaedf3;
-            margin-bottom: 20px;
-        }
-        
-        .tab {
-            padding: 12px 20px;
-            cursor: pointer;
-            font-weight: 500;
-            color: var(--secondary-color);
-            border-bottom: 2px solid transparent;
-            transition: var(--transition);
-        }
-        
-        .tab.active {
-            color: var(--primary-color);
-            border-bottom-color: var(--primary-color);
-        }
-        
-        .tab-content {
-            display: none;
-        }
-        
-        .tab-content.active {
-            display: block;
-        }
-        
-        .jersey-templates {
+
+        /* Estilos para imágenes adicionales */
+        .additional-images-preview {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 15px;
-            margin-bottom: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+            gap: 10px;
+            margin-top: 15px;
         }
-        
-        .jersey-template {
-            border: 1px solid #eaedf3;
-            border-radius: var(--border-radius);
-            padding: 15px;
-            cursor: pointer;
-            transition: var(--transition);
-            text-align: center;
+
+        .additional-image-item {
             position: relative;
+            padding-top: 100%;
+            background-size: cover;
+            background-position: center;
+            border-radius: var(--border-radius);
+            border: 1px solid #ced4da;
         }
-        
-        .jersey-template:hover {
-            border-color: var(--primary-color);
-            transform: translateY(-3px);
-            box-shadow: var(--box-shadow);
-        }
-        
-        .jersey-template.selected {
-            border-color: var(--primary-color);
-            background-color: rgba(0,123,255,0.05);
-        }
-        
-        .jersey-template.selected::after {
-            content: "✓";
+
+        .remove-image {
             position: absolute;
-            top: 10px;
-            right: 10px;
-            background-color: var(--primary-color);
+            top: -8px;
+            right: -8px;
+            background: var(--danger-color);
             color: white;
             width: 20px;
             height: 20px;
@@ -599,81 +604,107 @@ try {
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 12px;
-        }
-        
-        .jersey-img {
-            width: 100%;
-            height: 100px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-        
-        .jersey-info {
-            font-size: 13px;
-        }
-        
-        .jersey-title {
-            font-weight: 500;
-            margin-bottom: 5px;
-        }
-        
-        .jersey-price {
-            color: var(--primary-color);
-            font-weight: 600;
-        }
-        
-        .quick-form {
-            background-color: #f8f9fa;
-            border-radius: var(--border-radius);
-            padding: 20px;
-            margin-top: 20px;
-        }
-        
-        .form-row {
-            display: flex;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-        
-        .jersey-sizes {
-            display: flex;
-            gap: 10px;
-            flex-wrap: wrap;
-            margin-bottom: 15px;
-        }
-        
-        .size-checkbox {
-            display: none;
-        }
-        
-        .size-label {
-            display: inline-block;
-            padding: 8px 12px;
-            border: 1px solid #ced4da;
-            border-radius: 4px;
             cursor: pointer;
-            font-weight: 500;
+            font-size: 12px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .additional-images-container {
+            border: 2px dashed #ced4da;
+            padding: 20px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
             transition: var(--transition);
         }
-        
-        .size-checkbox:checked + .size-label {
-            background-color: var(--primary-color);
+
+        .additional-images-container:hover {
+            border-color: var(--primary-color);
+            background-color: rgba(0,123,255,0.05);
+        }
+
+        .drag-drop-hint {
+            text-align: center;
+            color: var(--secondary-color);
+            margin: 10px 0;
+            font-size: 0.9em;
+        }
+
+        /* Estilos para la previsualización de imagen principal */
+        .image-preview-container {
+            position: relative;
+            margin-top: 15px;
+            display: inline-block;
+        }
+
+        .image-preview {
+            width: 200px;
+            height: 200px;
+            border-radius: var(--border-radius);
+            background-color: #f8f9fa;
+            background-size: contain;
+            background-position: center;
+            background-repeat: no-repeat;
+            border: 1px solid #ced4da;
+            display: none;
+        }
+
+        .remove-image {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--danger-color);
             color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            font-size: 16px;
+            border: 2px solid white;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+            transition: all 0.2s ease;
+            border: none;
+            padding: 0;
+        }
+
+        .remove-image:hover {
+            background: #c82333;
+            transform: scale(1.1);
+        }
+
+        .file-input-button {
+            display: inline-block;
+            padding: 10px 15px;
+            background-color: #f8f9fa;
+            border: 1px dashed #ced4da;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: var(--transition);
+            width: 100%;
+            text-align: center;
+        }
+
+        .file-input-button:hover {
+            background-color: #e9ecef;
             border-color: var(--primary-color);
         }
-        
-        .badge {
-            display: inline-block;
-            padding: 3px 8px;
-            border-radius: 50px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        
-        .badge-primary {
-            background-color: rgba(0,123,255,0.1);
+
+        .file-input-button i {
+            margin-right: 5px;
             color: var(--primary-color);
+        }
+
+        .file-input {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -691,16 +722,10 @@ try {
                         <span>Inicio</span>
                     </a>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item active">
                     <a href="products.php">
                         <i class="fas fa-box"></i>
                         <span>Productos</span>
-                    </a>
-                </li>
-                <li class="nav-item active">
-                    <a href="add_product.php">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Agregar Producto</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -760,297 +785,6 @@ try {
                     <p>El producto ha sido agregado correctamente a la base de datos.</p>
                 </div>
             <?php endif; ?>
-            
-            <!-- New Quick Jersey Section -->
-            <div class="panel quick-jersey-section">
-                <div class="panel-header">
-                    <h3 class="panel-title">Agregar Jersey Rápidamente</h3>
-                    <span class="badge badge-primary">Nuevo</span>
-                </div>
-                <div class="panel-body">
-                    <div class="tabs">
-                        <div class="tab active" data-tab="templates">Plantillas</div>
-                        <div class="tab" data-tab="team">Por Equipo</div>
-                        <div class="tab" data-tab="custom">Personalizado</div>
-                    </div>
-                    
-                    <!-- Templates Tab -->
-                    <div class="tab-content active" id="templates-content">
-                        <p>Selecciona una plantilla para comenzar rápidamente:</p>
-                        
-                        <div class="jersey-templates">
-                            <div class="jersey-template" data-template="local" data-price="799.99" data-category="Jersey Futbol">
-                                <img src="../img/templates/jersey_local.jpg" alt="Jersey Local" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Jersey Local</div>
-                                    <div class="jersey-price">$799.99</div>
-                                </div>
-                            </div>
-                            
-                            <div class="jersey-template" data-template="visitante" data-price="799.99" data-category="Jersey Futbol">
-                                <img src="../img/templates/jersey_visitante.jpg" alt="Jersey Visitante" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Jersey Visitante</div>
-                                    <div class="jersey-price">$799.99</div>
-                                </div>
-                            </div>
-                            
-                            <div class="jersey-template" data-template="alternativo" data-price="899.99" data-category="Jersey Futbol">
-                                <img src="../img/templates/jersey_alternativo.jpg" alt="Jersey Alternativo" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Jersey Alternativo</div>
-                                    <div class="jersey-price">$899.99</div>
-                                </div>
-                            </div>
-                            
-                            <div class="jersey-template" data-template="portero" data-price="899.99" data-category="Jersey Futbol">
-                                <img src="../img/templates/jersey_portero.jpg" alt="Jersey Portero" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Jersey Portero</div>
-                                    <div class="jersey-price">$899.99</div>
-                                </div>
-                            </div>
-                            
-                            <div class="jersey-template" data-template="retro" data-price="999.99" data-category="Jersey Retro">
-                                <img src="../img/templates/jersey_retro.jpg" alt="Jersey Retro" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Jersey Retro</div>
-                                    <div class="jersey-price">$999.99</div>
-                                </div>
-                            </div>
-                            
-                            <div class="jersey-template" data-template="conmemorativo" data-price="1199.99" data-category="Jersey Edición Especial">
-                                <img src="../img/templates/jersey_especial.jpg" alt="Edición Especial" class="jersey-img">
-                                <div class="jersey-info">
-                                    <div class="jersey-title">Edición Especial</div>
-                                    <div class="jersey-price">$1,199.99</div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <div class="quick-form" id="template-form" style="display: none;">
-                            <h4>Completar detalles del jersey</h4>
-                            
-                            <form method="post" enctype="multipart/form-data" id="quick-jersey-form">
-                                <div class="form-row">
-                                    <div class="form-group" style="flex: 2;">
-                                        <label class="form-label" for="quick_name">Nombre del Jersey*</label>
-                                        <input type="text" id="quick_name" name="name" class="form-control" required>
-                                    </div>
-                                    
-                                    <div class="form-group" style="flex: 1;">
-                                        <label class="form-label" for="quick_price">Precio*</label>
-                                        <input type="number" id="quick_price" name="price" class="form-control" step="0.01" min="0" required>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="form-label">Tallas disponibles</label>
-                                    <div class="jersey-sizes">
-                                        <input type="checkbox" id="size_xs" name="sizes[]" value="XS" class="size-checkbox">
-                                        <label for="size_xs" class="size-label">XS</label>
-                                        
-                                        <input type="checkbox" id="size_s" name="sizes[]" value="S" class="size-checkbox">
-                                        <label for="size_s" class="size-label">S</label>
-                                        
-                                        <input type="checkbox" id="size_m" name="sizes[]" value="M" class="size-checkbox" checked>
-                                        <label for="size_m" class="size-label">M</label>
-                                        
-                                        <input type="checkbox" id="size_l" name="sizes[]" value="L" class="size-checkbox" checked>
-                                        <label for="size_l" class="size-label">L</label>
-                                        
-                                        <input type="checkbox" id="size_xl" name="sizes[]" value="XL" class="size-checkbox" checked>
-                                        <label for="size_xl" class="size-label">XL</label>
-                                        
-                                        <input type="checkbox" id="size_xxl" name="sizes[]" value="XXL" class="size-checkbox">
-                                        <label for="size_xxl" class="size-label">XXL</label>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-row">
-                                    <div class="form-group" style="flex: 1;">
-                                        <label class="form-label" for="quick_team">Equipo</label>
-                                        <select id="quick_team" name="team" class="form-control">
-                                            <option value="">Seleccionar equipo</option>
-                                            <?php foreach ($teams as $team): ?>
-                                                <option value="<?php echo htmlspecialchars($team); ?>"><?php echo htmlspecialchars($team); ?></option>
-                                            <?php endforeach; ?>
-                                            <option value="otro">Otro equipo</option>
-                                        </select>
-                                    </div>
-                                    
-                                    <div class="form-group" style="flex: 1;">
-                                        <label class="form-label" for="quick_year">Temporada</label>
-                                        <select id="quick_year" name="year" class="form-control">
-                                            <option value="2023-2024">2023-2024</option>
-                                            <option value="2022-2023">2022-2023</option>
-                                            <option value="2021-2022">2021-2022</option>
-                                            <option value="retro">Retro/Clásico</option>
-                                        </select>
-                                    </div>
-                                </div>
-                                
-                                <div class="form-group">
-                                    <label class="form-label" for="quick_stock">Stock inicial por talla</label>
-                                    <input type="number" id="quick_stock" name="stock" class="form-control" value="10" min="0" required>
-                                    <span class="form-hint">Cantidad inicial para cada talla seleccionada</span>
-                                </div>
-                                
-                                <input type="hidden" id="quick_description" name="description" value="">
-                                <input type="hidden" id="quick_category" name="category" value="">
-                                <input type="hidden" id="quick_template" name="template" value="">
-                                
-                                <div class="form-actions">
-                                    <button type="button" id="cancel-template" class="btn btn-secondary">Cancelar</button>
-                                    <button type="submit" class="btn btn-primary btn-lg">
-                                        <i class="fas fa-bolt"></i> Crear Jersey Rápido
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-                    
-                    <!-- Team Tab -->
-                    <div class="tab-content" id="team-content">
-                        <p>Agrega rápidamente jerseys por equipo:</p>
-                        
-                        <div class="form-group">
-                            <label class="form-label" for="bulk_team">Selecciona un equipo</label>
-                            <select id="bulk_team" name="bulk_team" class="form-control">
-                                <option value="">Seleccionar equipo</option>
-                                <?php foreach ($teams as $team): ?>
-                                    <option value="<?php echo htmlspecialchars($team); ?>"><?php echo htmlspecialchars($team); ?></option>
-                                <?php endforeach; ?>
-                                <option value="nuevo">+ Agregar nuevo equipo</option>
-                            </select>
-                        </div>
-                        
-                        <div id="team-jerseys-form" style="display: none;">
-                            <div class="panel" style="box-shadow: none; border: 1px solid #eaedf3;">
-                                <div class="panel-header">
-                                    <h4 class="panel-title">Jerseys para <span id="selected-team-name">equipo</span></h4>
-                                </div>
-                                <div class="panel-body">
-                                    <form method="post" id="bulk-team-form">
-                                        <div class="jersey-templates" style="grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));">
-                                            <div class="jersey-template">
-                                                <div class="form-check" style="margin-bottom: 10px;">
-                                                    <input type="checkbox" id="team_local" name="team_jerseys[]" value="local" class="form-check-input" checked>
-                                                    <label for="team_local" class="form-check-label">Incluir</label>
-                                                </div>
-                                                <img src="../img/templates/jersey_local.jpg" alt="Local" class="jersey-img" style="height: 80px;">
-                                                <div class="jersey-info">
-                                                    <div class="jersey-title">Local</div>
-                                                    <input type="number" name="price_local" class="form-control" value="799.99" step="0.01" min="0" style="width: 100%; margin-top: 5px;">
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="jersey-template">
-                                                <div class="form-check" style="margin-bottom: 10px;">
-                                                    <input type="checkbox" id="team_visitante" name="team_jerseys[]" value="visitante" class="form-check-input" checked>
-                                                    <label for="team_visitante" class="form-check-label">Incluir</label>
-                                                </div>
-                                                <img src="../img/templates/jersey_visitante.jpg" alt="Visitante" class="jersey-img" style="height: 80px;">
-                                                <div class="jersey-info">
-                                                    <div class="jersey-title">Visitante</div>
-                                                    <input type="number" name="price_visitante" class="form-control" value="799.99" step="0.01" min="0" style="width: 100%; margin-top: 5px;">
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="jersey-template">
-                                                <div class="form-check" style="margin-bottom: 10px;">
-                                                    <input type="checkbox" id="team_alternativo" name="team_jerseys[]" value="alternativo" class="form-check-input">
-                                                    <label for="team_alternativo" class="form-check-label">Incluir</label>
-                                                </div>
-                                                <img src="../img/templates/jersey_alternativo.jpg" alt="Alternativo" class="jersey-img" style="height: 80px;">
-                                                <div class="jersey-info">
-                                                    <div class="jersey-title">Alternativo</div>
-                                                    <input type="number" name="price_alternativo" class="form-control" value="899.99" step="0.01" min="0" style="width: 100%; margin-top: 5px;">
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="jersey-template">
-                                                <div class="form-check" style="margin-bottom: 10px;">
-                                                    <input type="checkbox" id="team_portero" name="team_jerseys[]" value="portero" class="form-check-input">
-                                                    <label for="team_portero" class="form-check-label">Incluir</label>
-                                                </div>
-                                                <img src="../img/templates/jersey_portero.jpg" alt="Portero" class="jersey-img" style="height: 80px;">
-                                                <div class="jersey-info">
-                                                    <div class="jersey-title">Portero</div>
-                                                    <input type="number" name="price_portero" class="form-control" value="899.99" step="0.01" min="0" style="width: 100%; margin-top: 5px;">
-                                                </div>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-row" style="margin-top: 20px;">
-                                            <div class="form-group" style="flex: 1;">
-                                                <label class="form-label">Tallas disponibles</label>
-                                                <div class="jersey-sizes">
-                                                    <input type="checkbox" id="team_size_xs" name="team_sizes[]" value="XS" class="size-checkbox">
-                                                    <label for="team_size_xs" class="size-label">XS</label>
-                                                    
-                                                    <input type="checkbox" id="team_size_s" name="team_sizes[]" value="S" class="size-checkbox">
-                                                    <label for="team_size_s" class="size-label">S</label>
-                                                    
-                                                    <input type="checkbox" id="team_size_m" name="team_sizes[]" value="M" class="size-checkbox" checked>
-                                                    <label for="team_size_m" class="size-label">M</label>
-                                                    
-                                                    <input type="checkbox" id="team_size_l" name="team_sizes[]" value="L" class="size-checkbox" checked>
-                                                    <label for="team_size_l" class="size-label">L</label>
-                                                    
-                                                    <input type="checkbox" id="team_size_xl" name="team_sizes[]" value="XL" class="size-checkbox" checked>
-                                                    <label for="team_size_xl" class="size-label">XL</label>
-                                                    
-                                                    <input type="checkbox" id="team_size_xxl" name="team_sizes[]" value="XXL" class="size-checkbox">
-                                                    <label for="team_size_xxl" class="size-label">XXL</label>
-                                                </div>
-                                            </div>
-                                            
-                                            <div class="form-group" style="flex: 1;">
-                                                <label class="form-label" for="team_stock">Stock inicial por talla</label>
-                                                <input type="number" id="team_stock" name="team_stock" class="form-control" value="10" min="0">
-                                            </div>
-                                            
-                                            <div class="form-group" style="flex: 1;">
-                                                <label class="form-label" for="team_year">Temporada</label>
-                                                <select id="team_year" name="team_year" class="form-control">
-                                                    <option value="2023-2024">2023-2024</option>
-                                                    <option value="2022-2023">2022-2023</option>
-                                                    <option value="2021-2022">2021-2022</option>
-                                                </select>
-                                            </div>
-                                        </div>
-                                        
-                                        <div class="form-actions">
-                                            <button type="button" id="cancel-team" class="btn btn-secondary">Cancelar</button>
-                                            <button type="submit" class="btn btn-primary btn-lg">
-                                                <i class="fas fa-bolt"></i> Crear Jerseys de Equipo
-                                            </button>
-                                        </div>
-                                    </form>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <!-- Custom Tab -->
-                    <div class="tab-content" id="custom-content">
-                        <p>Crea un jersey personalizado con opciones avanzadas:</p>
-                        
-                        <p>Esta sección te permite crear jerseys personalizados con opciones adicionales como:</p>
-                        <ul style="margin-left: 20px; margin-bottom: 20px;">
-                            <li>Personalización de nombres y números</li>
-                            <li>Parches y emblemas especiales</li>
-                            <li>Versiones auténticas vs réplicas</li>
-                            <li>Combinaciones de tallas y precios personalizados</li>
-                        </ul>
-                        
-                        <a href="javascript:void(0)" id="show-custom-form" class="btn btn-primary">
-                            <i class="fas fa-tshirt"></i> Crear Jersey Personalizado
-                        </a>
-                    </div>
-                </div>
-            </div>
             
             <!-- Regular Product Form Panel -->
             <div class="panel">
@@ -1118,15 +852,33 @@ try {
                                 </div>
                                 
                                 <div class="form-group">
-                                    <label class="form-label" for="product_image">Imagen del Producto</label>
+                                    <label class="form-label" for="product_image">Imagen Principal del Producto</label>
                                     <div class="file-input-container">
                                         <label class="file-input-button">
-                                            <i class="fas fa-cloud-upload-alt"></i> Seleccionar Imagen
+                                            <i class="fas fa-cloud-upload-alt"></i> Seleccionar Imagen Principal
                                             <input type="file" id="product_image" name="product_image" class="file-input" accept="image/*">
                                         </label>
                                     </div>
-                                    <div id="image-preview" class="image-preview"></div>
+                                    <div id="main-image-preview" class="image-preview-container">
+                                        <div id="image-preview" class="image-preview"></div>
+                                        <button type="button" id="remove-main-image" class="remove-image" style="display: none;">×</button>
+                                    </div>
                                     <span class="form-hint">Formatos permitidos: JPG, PNG, GIF. Tamaño máximo: 2MB</span>
+                                </div>
+
+                                <!-- Nuevo campo para imágenes adicionales -->
+                                <div class="form-group">
+                                    <label class="form-label">Imágenes Adicionales</label>
+                                    <div class="additional-images-container">
+                                        <div class="file-input-container">
+                                            <label class="file-input-button">
+                                                <i class="fas fa-images"></i> Seleccionar Imágenes Adicionales
+                                                <input type="file" id="additional_images" name="additional_images[]" class="file-input" accept="image/*" multiple>
+                                            </label>
+                                        </div>
+                                        <div id="additional-images-preview" class="additional-images-preview"></div>
+                                        <span class="form-hint">Puedes seleccionar múltiples imágenes. Máximo 5 imágenes adicionales.</span>
+                                    </div>
                                 </div>
                             </div>
                         </div>
@@ -1147,57 +899,84 @@ try {
     <div class="mobile-toggle" style="display: none;">
         <i class="fas fa-bars"></i>
     </div>
-    
+
     <script>
-        // Responsive sidebar toggle
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileToggle = document.querySelector('.mobile-toggle');
-            const sidebar = document.querySelector('.sidebar');
-            
-            if (window.innerWidth <= 768) {
-                mobileToggle.style.display = 'flex';
-            }
-            
-            window.addEventListener('resize', function() {
-                if (window.innerWidth <= 768) {
-                    mobileToggle.style.display = 'flex';
-                } else {
-                    mobileToggle.style.display = 'none';
-                    sidebar.classList.add('active');
-                }
-            });
-            
-            mobileToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-            });
-            
-            // Mostrar/ocultar campo de nueva categoría
-            const categorySelect = document.getElementById('category');
-            const newCategoryGroup = document.getElementById('new-category-group');
-            
-            if (categorySelect && newCategoryGroup) {
-                categorySelect.addEventListener('change', function() {
-                    if (this.value === 'nueva') {
-                        newCategoryGroup.style.display = 'block';
-                    } else {
-                        newCategoryGroup.style.display = 'none';
-                    }
-                });
-                
-                // Si ya está seleccionada "nueva categoría", mostrar el campo
-                if (categorySelect.value === 'nueva') {
-                    newCategoryGroup.style.display = 'block';
-                }
-            }
-            
-            // Vista previa de la imagen
-            const fileInput = document.getElementById('product_image');
+            // Previsualización de imagen principal
+            const mainImageInput = document.getElementById('product_image');
             const imagePreview = document.getElementById('image-preview');
+            const removeMainImage = document.getElementById('remove-main-image');
             
-            if (fileInput && imagePreview) {
-                fileInput.addEventListener('change', function() {
+            if (mainImageInput && imagePreview && removeMainImage) {
+                mainImageInput.addEventListener('change', function() {
                     if (this.files && this.files[0]) {
                         const reader = new FileReader();
                         
                         reader.onload = function(e) {
-                            imagePreview.style.backgroundImage = `
+                            imagePreview.style.backgroundImage = `url(${e.target.result})`;
+                            imagePreview.style.display = 'block';
+                            removeMainImage.style.display = 'flex';
+                        };
+                        
+                        reader.readAsDataURL(this.files[0]);
+                    }
+                });
+                
+                // Eliminar imagen principal
+                removeMainImage.addEventListener('click', function() {
+                    imagePreview.style.backgroundImage = '';
+                    imagePreview.style.display = 'none';
+                    removeMainImage.style.display = 'none';
+                    mainImageInput.value = ''; // Limpiar el input file
+                });
+            }
+
+            // Manejar imágenes adicionales
+            const additionalImagesInput = document.getElementById('additional_images');
+            const additionalImagesPreview = document.getElementById('additional-images-preview');
+            
+            if (additionalImagesInput && additionalImagesPreview) {
+                additionalImagesInput.addEventListener('change', function() {
+                    // Limitar a 5 imágenes
+                    if (this.files.length > 5) {
+                        alert('Por favor, selecciona máximo 5 imágenes adicionales.');
+                        this.value = '';
+                        return;
+                    }
+
+                    additionalImagesPreview.innerHTML = '';
+                    
+                    Array.from(this.files).forEach((file, index) => {
+                        const reader = new FileReader();
+                        
+                        reader.onload = function(e) {
+                            const imageContainer = document.createElement('div');
+                            imageContainer.className = 'additional-image-item';
+                            imageContainer.style.backgroundImage = `url(${e.target.result})`;
+                            
+                            const removeButton = document.createElement('div');
+                            removeButton.className = 'remove-image';
+                            removeButton.innerHTML = '×';
+                            removeButton.onclick = function() {
+                                // Crear un nuevo FileList sin esta imagen
+                                const dt = new DataTransfer();
+                                const files = additionalImagesInput.files;
+                                for (let i = 0; i < files.length; i++) {
+                                    if (i !== index) dt.items.add(files[i]);
+                                }
+                                additionalImagesInput.files = dt.files;
+                                imageContainer.remove();
+                            };
+                            
+                            imageContainer.appendChild(removeButton);
+                            additionalImagesPreview.appendChild(imageContainer);
+                        };
+                        
+                        reader.readAsDataURL(file);
+                    });
+                });
+            }
+        });
+    </script>
+</body>
+</html>

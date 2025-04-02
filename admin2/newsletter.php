@@ -18,34 +18,65 @@ if (!isset($_SESSION['admin_id'])) {
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Obtener correos de newsletter
+    $stmt = $pdo->query("SELECT COUNT(*) as total FROM newsletter");
+    $total_newsletter = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+    // Obtener correos únicos de orders
+    $stmt = $pdo->query("SELECT COUNT(DISTINCT customer_email) as total FROM orders");
+    $total_orders = $stmt->fetch(PDO::FETCH_ASSOC)['total'];
+    
+    // Obtener todos los correos únicos combinados
+    $stmt = $pdo->query("
+        SELECT COUNT(DISTINCT email) as total_unique 
+        FROM (
+            SELECT email FROM newsletter 
+            UNION 
+            SELECT customer_email as email FROM orders
+        ) as combined_emails
+    ");
+    $total_unique_emails = $stmt->fetch(PDO::FETCH_ASSOC)['total_unique'];
+    
+    // Obtener los suscriptores del newsletter
+    $stmt = $pdo->query("
+        SELECT 
+            id,
+            email,
+            subscribed_at
+        FROM newsletter
+        ORDER BY subscribed_at DESC
+    ");
+    $newsletter_subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch(PDOException $e) {
-    die('Error de conexión a la base de datos: ' . $e->getMessage());
+    $total_newsletter = 0;
+    $total_orders = 0;
+    $total_unique_emails = 0;
+    $newsletter_subscribers = [];
+    $error_message = "Error al obtener datos: " . $e->getMessage();
 }
 
-// Obtener suscriptores del newsletter
+// Obtener todos los correos únicos de diferentes tablas
 try {
-    // Verificar si la tabla existe
-    $tables = $pdo->query("SHOW TABLES LIKE 'subscribers'")->fetchAll();
+    // Obtener correos de subscribers
+    $subscriber_emails = $pdo->query("SELECT email FROM subscribers WHERE active = 1")->fetchAll(PDO::FETCH_COLUMN);
     
-    if (empty($tables)) {
-        // La tabla no existe, hay que crearla
-        $pdo->exec("
-            CREATE TABLE subscribers (
-                subscriber_id INT AUTO_INCREMENT PRIMARY KEY,
-                email VARCHAR(255) NOT NULL UNIQUE,
-                subscription_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                active TINYINT(1) DEFAULT 1
-            )
-        ");
-        $subscribers = [];
-    } else {
-        // La tabla existe, obtener los datos
-        $stmt = $pdo->query("SELECT * FROM subscribers ORDER BY subscription_date DESC");
-        $subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    // Obtener correos de orders
+    $order_emails = $pdo->query("SELECT DISTINCT customer_email FROM orders")->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Obtener correos de customers si existe la tabla
+    $customer_emails = [];
+    if ($pdo->query("SHOW TABLES LIKE 'customers'")->rowCount() > 0) {
+        $customer_emails = $pdo->query("SELECT DISTINCT email FROM customers")->fetchAll(PDO::FETCH_COLUMN);
     }
+    
+    // Combinar y eliminar duplicados
+    $all_emails = array_unique(array_merge($subscriber_emails, $order_emails, $customer_emails));
+    sort($all_emails); // Ordenar alfabéticamente
+    
 } catch(PDOException $e) {
-    $subscribers = [];
-    $error_message = "Error al obtener suscriptores: " . $e->getMessage();
+    $all_emails = [];
+    $error_message = "Error al obtener correos: " . $e->getMessage();
 }
 
 // Obtener clientes
@@ -58,42 +89,19 @@ try {
     } else {
         // La tabla existe, obtener los datos
         $stmt = $pdo->query("
-            SELECT 
-                c.customer_id,
-                CONCAT(c.first_name, ' ', c.last_name) as name,
-                c.email,
-                c.phone,
-                c.address_line1,
-                c.city,
-                c.state,
-                c.postal_code
-            FROM customers c
-            ORDER BY c.customer_id DESC
+            SELECT DISTINCT 
+                o.customer_email,
+                o.customer_name,
+                o.phone,
+                MAX(o.created_at) as last_order,
+                COUNT(DISTINCT o.order_id) as total_orders,
+                SUM(oi.quantity * oi.price) as total_spent
+            FROM orders o
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
+            GROUP BY o.customer_email, o.customer_name, o.phone
+            ORDER BY last_order DESC
         ");
         $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-        
-        // Intentar obtener información de pedidos si la tabla existe
-        $hasPedidos = $pdo->query("SHOW TABLES LIKE 'orders'")->fetchAll();
-        
-        if (!empty($hasPedidos)) {
-            foreach ($customers as &$customer) {
-                // Obtener último pedido y total
-                $stmt = $pdo->prepare("
-                    SELECT 
-                        MAX(order_date) as last_order_date,
-                        COUNT(*) as total_orders,
-                        SUM(total_amount) as total_spent
-                    FROM orders
-                    WHERE customer_id = ?
-                ");
-                $stmt->execute([$customer['customer_id']]);
-                $orderData = $stmt->fetch(PDO::FETCH_ASSOC);
-                
-                $customer['last_order_date'] = $orderData['last_order_date'] ?? null;
-                $customer['total_orders'] = $orderData['total_orders'] ?? 0;
-                $customer['total_spent'] = $orderData['total_spent'] ?? 0;
-            }
-        }
     }
 } catch(PDOException $e) {
     $customers = [];
@@ -137,13 +145,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
     
     if (empty($errors)) {
         try {
-            $stmt = $pdo->prepare("INSERT INTO subscribers (email) VALUES (?)");
+            $stmt = $pdo->prepare("INSERT INTO newsletter (email, status) VALUES (?, 1)");
             $stmt->execute([$email]);
             $success_message = "Suscriptor agregado correctamente";
             
             // Actualizar la lista de suscriptores
-            $stmt = $pdo->query("SELECT * FROM subscribers ORDER BY subscription_date DESC");
-            $subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $stmt = $pdo->query("SELECT * FROM newsletter ORDER BY email ASC");
+            $newsletter_subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
             if ($e->getCode() == 23000) { // Error de duplicado
                 $errors[] = "El correo ya está registrado como suscriptor";
@@ -414,7 +422,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
         /* Stats */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 20px;
         }
@@ -642,13 +650,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="add_product.php">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Agregar Producto</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#">
+                    <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Pedidos</span>
                     </a>
@@ -702,45 +704,21 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
             <!-- Estadísticas -->
             <div class="stats-grid">
                 <div class="stat-card">
-                    <div class="stat-label">Total de Clientes</div>
-                    <div class="stat-value"><?php echo count($customers); ?></div>
-                    <div class="stat-label">Registrados</div>
+                    <div class="stat-label">Total de Correos</div>
+                    <div class="stat-value"><?php echo $total_unique_emails; ?></div>
+                    <div class="stat-label">Base de Datos</div>
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-label">Suscriptores</div>
-                    <div class="stat-value"><?php echo count($subscribers); ?></div>
+                    <div class="stat-value"><?php echo $total_newsletter; ?></div>
                     <div class="stat-label">Newsletter</div>
                 </div>
                 
                 <div class="stat-card">
-                    <div class="stat-label">Clientes Activos</div>
-                    <div class="stat-value">
-                        <?php 
-                            $activeCustomers = 0;
-                            foreach ($customers as $customer) {
-                                if (!empty($customer['last_order_date']) && strtotime($customer['last_order_date']) > strtotime('-30 days')) {
-                                    $activeCustomers++;
-                                }
-                            }
-                            echo $activeCustomers;
-                        ?>
-                    </div>
-                    <div class="stat-label">Últimos 30 días</div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-label">Ventas Totales</div>
-                    <div class="stat-value">
-                        $<?php 
-                            $totalSales = 0;
-                            foreach ($customers as $customer) {
-                                $totalSales += $customer['total_spent'] ?? 0;
-                            }
-                            echo number_format($totalSales, 2);
-                        ?>
-                    </div>
-                    <div class="stat-label">De todos los clientes</div>
+                    <div class="stat-label">Clientes con Correo</div>
+                    <div class="stat-value"><?php echo $total_orders; ?></div>
+                    <div class="stat-label">Compradores</div>
                 </div>
             </div>
             
@@ -763,7 +741,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                 </div>
                                 <h3 class="empty-state-title">No hay clientes registrados</h3>
                                 <p class="empty-state-description">
-                                    Aún no hay clientes en la base de datos. Los clientes aparecerán aquí cuando realicen una compra.
+                                    Aún no hay clientes que hayan realizado compras.
                                 </p>
                             </div>
                         <?php else: ?>
@@ -772,10 +750,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                     <thead>
                                         <tr>
                                             <th>Cliente</th>
-                                            <th>Contacto</th>
-                                            <th>Dirección</th>
+                                            <th>Correo</th>
+                                            <th>Teléfono</th>
                                             <th>Último Pedido</th>
-                                            <th>Pedidos</th>
+                                            <th>Total Pedidos</th>
                                             <th>Total Gastado</th>
                                             <th>Acciones</th>
                                         </tr>
@@ -783,47 +761,33 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                     <tbody>
                                         <?php foreach ($customers as $customer): ?>
                                             <tr>
-                                                <td><?php echo htmlspecialchars($customer['name']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['customer_name']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['customer_email']); ?></td>
+                                                <td><?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?></td>
                                                 <td>
-                                                    <div><?php echo htmlspecialchars($customer['email']); ?></div>
-                                                    <div><?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?></div>
-                                                </td>
-                                                <td>
-                                                    <?php if (!empty($customer['address_line1'])): ?>
-                                                        <div><?php echo htmlspecialchars($customer['address_line1']); ?></div>
-                                                        <div>
-                                                            <?php echo htmlspecialchars(($customer['city'] ?? '') . ', ' . ($customer['state'] ?? '') . ' ' . ($customer['postal_code'] ?? '')); ?>
-                                                        </div>
+                                                    <?php 
+                                                        $last_order_date = new DateTime($customer['last_order']);
+                                                        echo $last_order_date->format('d/m/Y');
+                                                        
+                                                        $days = $last_order_date->diff(new DateTime())->days;
+                                                        if ($days < 30): 
+                                                    ?>
+                                                        <span class="badge badge-success">Reciente</span>
+                                                    <?php elseif ($days < 90): ?>
+                                                        <span class="badge badge-warning">Hace <?php echo $days; ?> días</span>
                                                     <?php else: ?>
-                                                        <div>Sin dirección registrada</div>
+                                                        <span class="badge badge-danger">Inactivo</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td>
-                                                    <?php if (!empty($customer['last_order_date'])): ?>
-                                                        <div><?php echo date('d/m/Y', strtotime($customer['last_order_date'])); ?></div>
-                                                        <?php 
-                                                            $days = (time() - strtotime($customer['last_order_date'])) / (60 * 60 * 24);
-                                                            if ($days < 30): 
-                                                        ?>
-                                                            <span class="badge badge-success">Reciente</span>
-                                                        <?php elseif ($days < 90): ?>
-                                                            <span class="badge badge-warning">Hace <?php echo floor($days); ?> días</span>
-                                                        <?php else: ?>
-                                                            <span class="badge badge-danger">Inactivo</span>
-                                                        <?php endif; ?>
-                                                    <?php else: ?>
-                                                        <div>Sin pedidos</div>
-                                                    <?php endif; ?>
-                                                </td>
-                                                <td><?php echo $customer['total_orders'] ?? 0; ?></td>
-                                                <td>$<?php echo number_format($customer['total_spent'] ?? 0, 2); ?></td>
+                                                <td><?php echo $customer['total_orders']; ?></td>
+                                                <td>$<?php echo number_format($customer['total_spent'], 2); ?></td>
                                                 <td>
                                                     <div style="display: flex; gap: 5px;">
-                                                        <a href="javascript:void(0)" onclick="emailSingleCustomer('<?php echo htmlspecialchars($customer['email']); ?>')" class="btn btn-sm btn-primary">
+                                                        <a href="javascript:void(0)" onclick="emailSingleCustomer('<?php echo htmlspecialchars($customer['customer_email']); ?>')" class="btn btn-sm btn-primary">
                                                             <i class="fas fa-envelope"></i> Correo
                                                         </a>
-                                                        <a href="javascript:void(0)" class="btn btn-sm btn-secondary">
-                                                            <i class="fas fa-eye"></i> Ver
+                                                        <a href="orders.php?email=<?php echo urlencode($customer['customer_email']); ?>" class="btn btn-sm btn-secondary">
+                                                            <i class="fas fa-shopping-cart"></i> Ver Pedidos
                                                         </a>
                                                     </div>
                                                 </td>
@@ -837,38 +801,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                     
                     <!-- Tab de Suscriptores -->
                     <div class="tab-content" id="subscribers-content">
+                        <?php if (isset($error_message)): ?>
+                            <div class="alert alert-danger">
+                                <?php echo htmlspecialchars($error_message); ?>
+                            </div>
+                        <?php endif; ?>
+
                         <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                             <div>
-                                <h3 style="margin-bottom: 5px;">Lista de Suscriptores</h3>
-                                <p style="color: var(--secondary-color);">Personas suscritas al newsletter</p>
+                                <h3 style="margin-bottom: 5px;">Suscriptores Newsletter</h3>
+                                <p style="color: var(--secondary-color);">
+                                    Total de suscriptores: <?php echo $total_newsletter; ?>
+                                </p>
                             </div>
                             <button class="btn btn-primary" id="add-subscriber-btn">
                                 <i class="fas fa-plus"></i> Agregar Suscriptor
                             </button>
                         </div>
-                        
-                        <div id="add-subscriber-form" style="display: none; background: #f8f9fa; padding: 15px; border-radius: 8px; margin-bottom: 20px;">
-                            <h4 style="margin-bottom: 15px;">Agregar Nuevo Suscriptor</h4>
-                            <form method="post" style="display: flex; gap: 10px;">
-                                <input type="email" name="subscriber_email" placeholder="Correo electrónico" class="form-control" required>
-                                <input type="hidden" name="add_subscriber" value="1">
-                                <button type="submit" class="btn btn-success">
-                                    <i class="fas fa-check"></i> Guardar
-                                </button>
-                                <button type="button" class="btn btn-secondary" id="cancel-add-subscriber">
-                                    <i class="fas fa-times"></i> Cancelar
-                                </button>
-                            </form>
-                        </div>
-                        
-                        <?php if (empty($subscribers)): ?>
+
+                        <?php if (empty($newsletter_subscribers)): ?>
                             <div class="empty-state">
                                 <div class="empty-state-icon">
                                     <i class="fas fa-envelope-open"></i>
                                 </div>
                                 <h3 class="empty-state-title">No hay suscriptores</h3>
                                 <p class="empty-state-description">
-                                    Aún no hay personas suscritas al newsletter. Puedes agregar suscriptores manualmente o integrar un formulario en el sitio web.
+                                    Aún no hay personas suscritas al newsletter.
                                 </p>
                             </div>
                         <?php else: ?>
@@ -876,32 +834,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                 <table>
                                     <thead>
                                         <tr>
-                                            <th>Email</th>
+                                            <th>Correo</th>
                                             <th>Fecha de Suscripción</th>
-                                            <th>Estado</th>
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <?php foreach ($subscribers as $subscriber): ?>
+                                        <?php foreach ($newsletter_subscribers as $subscriber): ?>
                                             <tr>
                                                 <td><?php echo htmlspecialchars($subscriber['email']); ?></td>
-                                                <td><?php echo date('d/m/Y H:i', strtotime($subscriber['subscription_date'])); ?></td>
                                                 <td>
-                                                    <?php if ($subscriber['active']): ?>
-                                                        <span class="badge badge-success">Activo</span>
-                                                    <?php else: ?>
-                                                        <span class="badge badge-danger">Inactivo</span>
-                                                    <?php endif; ?>
+                                                    <?php 
+                                                        $sub_date = new DateTime($subscriber['subscribed_at']);
+                                                        echo $sub_date->format('d/m/Y H:i');
+                                                    ?>
                                                 </td>
                                                 <td>
                                                     <div style="display: flex; gap: 5px;">
                                                         <a href="javascript:void(0)" onclick="emailSingleSubscriber('<?php echo htmlspecialchars($subscriber['email']); ?>')" class="btn btn-sm btn-primary">
-                                                            <i class="fas fa-envelope"></i> Correo
+                                                            <i class="fas fa-envelope"></i> Enviar Correo
                                                         </a>
-                                                        <a href="javascript:void(0)" class="btn btn-sm btn-danger">
+                                                        <button onclick="deleteSubscriber(<?php echo $subscriber['id']; ?>)" class="btn btn-sm btn-danger">
                                                             <i class="fas fa-trash"></i> Eliminar
-                                                        </a>
+                                                        </button>
                                                     </div>
                                                 </td>
                                             </tr>
@@ -927,7 +882,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                     
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
                                         <input type="checkbox" name="select_subscribers" id="select-subscribers">
-                                        <span>Todos los Suscriptores (<?php echo count($subscribers); ?>)</span>
+                                        <span>Todos los Suscriptores (<?php echo count($subscriber_emails); ?>)</span>
                                     </label>
                                     
                                     <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
@@ -937,20 +892,20 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                 </div>
                                 
                                 <div style="margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #ced4da; border-radius: var(--border-radius); padding: 10px;">
-                                    <?php if (empty($customers) && empty($subscribers)): ?>
+                                    <?php if (empty($customers) && empty($subscriber_emails)): ?>
                                         <p>No hay destinatarios disponibles</p>
                                     <?php else: ?>
-                                        <?php foreach ($subscribers as $subscriber): ?>
+                                        <?php foreach ($subscriber_emails as $email): ?>
                                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 0;">
-                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($subscriber['email']); ?>" class="subscriber-checkbox recipient-checkbox">
-                                                <span><?php echo htmlspecialchars($subscriber['email']); ?> <span class="badge badge-primary">Suscriptor</span></span>
+                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($email); ?>" class="subscriber-checkbox recipient-checkbox">
+                                                <span><?php echo htmlspecialchars($email); ?> <span class="badge badge-primary">Suscriptor</span></span>
                                             </label>
                                         <?php endforeach; ?>
                                         
                                         <?php foreach ($customers as $customer): ?>
                                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 0;">
-                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($customer['email']); ?>" class="customer-checkbox recipient-checkbox">
-                                                <span><?php echo htmlspecialchars($customer['email']); ?> (<?php echo htmlspecialchars($customer['name']); ?>) <span class="badge badge-success">Cliente</span></span>
+                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($customer['customer_email']); ?>" class="customer-checkbox recipient-checkbox">
+                                                <span><?php echo htmlspecialchars($customer['customer_email']); ?> (<?php echo htmlspecialchars($customer['customer_name']); ?>) <span class="badge badge-success">Cliente</span></span>
                                             </label>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -1096,7 +1051,23 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
         }
         
         function emailSingleSubscriber(email) {
-            emailSingleCustomer(email); // Reutilizamos la misma función
+            // Cambiar a la pestaña de envío de correo
+            document.querySelector('.tab[data-tab="send-email"]').click();
+            
+            // Seleccionar solo este correo en la lista de destinatarios
+            document.querySelectorAll('.recipient-checkbox').forEach(checkbox => {
+                checkbox.checked = checkbox.value === email;
+            });
+            
+            // Enfocar el campo de asunto
+            document.getElementById('email_subject').focus();
+        }
+        
+        function deleteSubscriber(id) {
+            if (confirm('¿Estás seguro de que deseas eliminar este suscriptor?')) {
+                // Aquí puedes agregar la lógica para eliminar el suscriptor
+                alert('Funcionalidad en desarrollo: Eliminar suscriptor ' + id);
+            }
         }
     </script>
 </body>

@@ -16,19 +16,44 @@ if (!isset($_SESSION['admin_id'])) {
 try {
     $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    // Contar productos
+    $productCount = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
+
+    // Obtener estadísticas de pedidos
+    $stmt = $pdo->query("
+        SELECT 
+            COUNT(*) as total_orders,
+            COUNT(CASE WHEN status = 'completed' THEN 1 END) as completed_orders,
+            SUM(CASE WHEN status = 'completed' THEN 
+                (SELECT SUM(quantity * price) 
+                FROM order_items 
+                WHERE order_id = orders.order_id)
+            END) as total_sales
+        FROM orders
+    ");
+    $stats = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Obtener el último pedido
+    $stmt = $pdo->query("
+        SELECT 
+            o.order_id,
+            o.customer_name,
+            o.customer_email,
+            o.status,
+            o.created_at,
+            COUNT(oi.order_item_id) as total_items,
+            SUM(oi.quantity * oi.price) as total_amount
+        FROM orders o
+        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+        GROUP BY o.order_id
+        ORDER BY o.created_at DESC
+        LIMIT 1
+    ");
+    $lastOrder = $stmt->fetch(PDO::FETCH_ASSOC);
 } catch(PDOException $e) {
     die('Error de conexión a la base de datos: ' . $e->getMessage());
-}
-
-// Contar productos (ejemplo básico)
-$productCount = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
-
-// Obtener ingresos totales
-try {
-    $totalRevenue = $pdo->query("SELECT SUM(price * stock) AS total FROM products")->fetchColumn();
-    $totalRevenue = $totalRevenue ? $totalRevenue : 0;
-} catch(PDOException $e) {
-    $totalRevenue = 0;
+    $lastOrder = null;
 }
 ?>
 <!DOCTYPE html>
@@ -177,7 +202,7 @@ try {
         /* Stats cards */
         .stats-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 20px;
             margin-bottom: 30px;
         }
@@ -188,15 +213,6 @@ try {
             padding: 20px;
             box-shadow: var(--box-shadow);
             transition: var(--transition);
-            border-top: 4px solid var(--primary-color);
-        }
-        
-        .stat-card:nth-child(2) {
-            border-top-color: var(--success-color);
-        }
-        
-        .stat-card:nth-child(3) {
-            border-top-color: var(--warning-color);
         }
         
         .stat-card:hover {
@@ -229,6 +245,18 @@ try {
             font-size: 18px;
         }
         
+        .stat-card-value {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 5px;
+        }
+        
+        .stat-card-label {
+            font-size: 13px;
+            color: var(--secondary-color);
+        }
+        
         .stat-card:nth-child(2) .stat-card-icon {
             background: rgba(40,167,69,0.1);
             color: var(--success-color);
@@ -237,20 +265,6 @@ try {
         .stat-card:nth-child(3) .stat-card-icon {
             background: rgba(255,193,7,0.1);
             color: var(--warning-color);
-        }
-        
-        .stat-card-value {
-            font-size: 24px;
-            font-weight: 600;
-            color: var(--dark-color);
-        }
-        
-        .stat-card-change {
-            font-size: 12px;
-            color: var(--success-color);
-            display: flex;
-            align-items: center;
-            margin-top: 5px;
         }
         
         /* Quick actions panel */
@@ -293,12 +307,15 @@ try {
             transition: var(--transition);
             cursor: pointer;
             border: 1px solid #eaedf3;
+            text-decoration: none;
+            color: #333;
         }
         
         .action-card:hover {
             transform: translateY(-3px);
             box-shadow: var(--box-shadow);
             border-color: var(--primary-color);
+            color: #333;
         }
         
         .action-icon {
@@ -310,6 +327,7 @@ try {
         .action-title {
             font-weight: 500;
             margin-bottom: 5px;
+            color: #333;
         }
         
         .action-description {
@@ -389,6 +407,95 @@ try {
                 box-shadow: 0 2px 10px rgba(0,0,0,0.1);
             }
         }
+
+        .last-order {
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .order-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 15px 20px;
+            border-bottom: 1px solid #eee;
+        }
+
+        .order-id {
+            font-size: 16px;
+            font-weight: 600;
+            color: #333;
+        }
+
+        .order-status {
+            padding: 6px 12px;
+            border-radius: 20px;
+            color: white;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .order-details {
+            padding: 20px;
+        }
+
+        .order-info {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .info-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #666;
+        }
+
+        .info-group i {
+            width: 16px;
+            color: #888;
+        }
+
+        .info-group span {
+            font-size: 14px;
+        }
+
+        .view-orders-btn {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            padding: 12px 20px;
+            background: #f8f9fa;
+            color: #007bff;
+            text-decoration: none;
+            border-top: 1px solid #eee;
+            transition: all 0.3s ease;
+        }
+
+        .view-orders-btn:hover {
+            background: #007bff;
+            color: white;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: #666;
+        }
+
+        .empty-state i {
+            font-size: 40px;
+            color: #ddd;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            margin: 0;
+            font-size: 15px;
+        }
     </style>
 </head>
 <body>
@@ -412,21 +519,15 @@ try {
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="add_product.php">
-                        <i class="fas fa-plus-circle"></i>
-                        <span>Agregar Producto</span>
-                    </a>
-                </li>
-                <li class="nav-item">
-                    <a href="#">
+                    <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Pedidos</span>
                     </a>
                 </li>
                 <li class="nav-item">
-                    <a href="#">
+                    <a href="newsletter.php">
                         <i class="fas fa-users"></i>
-                        <span>Clientes</span>
+                        <span>Clientes / Newsletter</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -453,32 +554,37 @@ try {
             <div class="stats-grid">
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <h3 class="stat-card-title">Productos Totales</h3>
+                        <h3 class="stat-card-title">Productos</h3>
                         <div class="stat-card-icon">
                             <i class="fas fa-box"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value"><?php echo $productCount; ?></div>
+                    <div class="stat-card-value"><?php echo number_format($productCount); ?></div>
+                    <div class="stat-card-label">Total en catálogo</div>
                 </div>
                 
                 <div class="stat-card">
                     <div class="stat-card-header">
-                        <h3 class="stat-card-title">Valor de Inventario</h3>
+                        <h3 class="stat-card-title">Pedidos</h3>
+                        <div class="stat-card-icon">
+                            <i class="fas fa-shopping-cart"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value"><?php echo number_format($stats['total_orders']); ?></div>
+                    <div class="stat-card-label">
+                        <?php echo number_format($stats['completed_orders']); ?> completados
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Ventas Totales</h3>
                         <div class="stat-card-icon">
                             <i class="fas fa-dollar-sign"></i>
                         </div>
                     </div>
-                    <div class="stat-card-value">$<?php echo number_format($totalRevenue, 2); ?></div>
-                </div>
-                
-                <div class="stat-card">
-                    <div class="stat-card-header">
-                        <h3 class="stat-card-title">Acciones Rápidas</h3>
-                        <div class="stat-card-icon">
-                            <i class="fas fa-bolt"></i>
-                        </div>
-                    </div>
-                    <a href="add_product.php" class="btn btn-primary" style="margin-top: 10px; width: 100%;">Agregar Producto</a>
+                    <div class="stat-card-value">$<?php echo number_format($stats['total_sales'] ?? 0, 2); ?></div>
+                    <div class="stat-card-label">De pedidos completados</div>
                 </div>
             </div>
             
@@ -489,14 +595,6 @@ try {
                 </div>
                 <div class="panel-body">
                     <div class="quick-actions">
-                        <a href="add_product.php" class="action-card">
-                            <div class="action-icon">
-                                <i class="fas fa-plus-circle"></i>
-                            </div>
-                            <h4 class="action-title">Agregar Producto</h4>
-                            <p class="action-description">Añade un nuevo producto a tu tienda</p>
-                        </a>
-                        
                         <a href="products.php" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-list"></i>
@@ -505,12 +603,12 @@ try {
                             <p class="action-description">Gestiona tu inventario</p>
                         </a>
                         
-                        <a href="#" class="action-card">
+                        <a href="orders.php" class="action-card">
                             <div class="action-icon">
-                                <i class="fas fa-tags"></i>
+                                <i class="fas fa-shopping-cart"></i>
                             </div>
-                            <h4 class="action-title">Promociones</h4>
-                            <p class="action-description">Crea nuevas ofertas</p>
+                            <h4 class="action-title">Ver Pedidos</h4>
+                            <p class="action-description">Gestiona los pedidos de clientes</p>
                         </a>
                         
                         <a href="#" class="action-card">
@@ -519,6 +617,14 @@ try {
                             </div>
                             <h4 class="action-title">Estadísticas</h4>
                             <p class="action-description">Analiza tus ventas</p>
+                        </a>
+                        
+                        <a href="newsletter.php" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h4 class="action-title">Clientes</h4>
+                            <p class="action-description">Gestiona tus clientes</p>
                         </a>
                     </div>
                 </div>
@@ -530,8 +636,68 @@ try {
                     <h3 class="panel-title">Actividad Reciente</h3>
                 </div>
                 <div class="panel-body">
-                    <p>Bienvenido al nuevo panel de administración minimalista. Aquí podrás gestionar tus productos y ver estadísticas de tu tienda de manera más eficiente.</p>
-                    <p style="margin-top: 10px;">Utiliza el menú lateral para navegar entre las diferentes secciones del panel de administración.</p>
+                    <?php if ($lastOrder): ?>
+                        <div class="last-order">
+                            <div class="order-header">
+                                <div class="order-id">
+                                    Pedido #<?php echo $lastOrder['order_id']; ?>
+                                </div>
+                                <?php
+                                $status_colors = [
+                                    'pending' => '#ffc107',
+                                    'processing' => '#007bff',
+                                    'completed' => '#28a745',
+                                    'cancelled' => '#dc3545'
+                                ];
+                                $status_text = [
+                                    'pending' => 'Pendiente',
+                                    'processing' => 'Procesando',
+                                    'completed' => 'Completado',
+                                    'cancelled' => 'Cancelado'
+                                ];
+                                $status_color = $status_colors[$lastOrder['status']] ?? '#6c757d';
+                                ?>
+                                <div class="order-status" style="background-color: <?php echo $status_color; ?>">
+                                    <?php echo $status_text[$lastOrder['status']] ?? $lastOrder['status']; ?>
+                                </div>
+                            </div>
+                            <div class="order-details">
+                                <div class="order-info">
+                                    <div class="info-group">
+                                        <i class="fas fa-user"></i>
+                                        <span><?php echo htmlspecialchars($lastOrder['customer_name']); ?></span>
+                                    </div>
+                                    <div class="info-group">
+                                        <i class="fas fa-envelope"></i>
+                                        <span><?php echo htmlspecialchars($lastOrder['customer_email']); ?></span>
+                                    </div>
+                                    <div class="info-group">
+                                        <i class="fas fa-box"></i>
+                                        <span><?php echo $lastOrder['total_items']; ?> artículos</span>
+                                    </div>
+                                    <div class="info-group">
+                                        <i class="fas fa-dollar-sign"></i>
+                                        <span>$<?php echo number_format($lastOrder['total_amount'], 2); ?></span>
+                                    </div>
+                                    <div class="info-group">
+                                        <i class="fas fa-calendar"></i>
+                                        <span><?php 
+                                            $date = new DateTime($lastOrder['created_at']);
+                                            echo $date->format('d/m/Y H:i'); 
+                                        ?></span>
+                                    </div>
+                                </div>
+                            </div>
+                            <a href="orders.php" class="view-orders-btn">
+                                Ver todos los pedidos <i class="fas fa-arrow-right"></i>
+                            </a>
+                        </div>
+                    <?php else: ?>
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <p>No hay pedidos registrados aún.</p>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </main>

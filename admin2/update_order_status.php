@@ -2,17 +2,13 @@
 session_start();
 
 // Verificar inicio de sesión
-if (!isset($_SESSION['admin_id'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'No autorizado']);
-    exit();
+if (!isset($_SESSION['admin_logged_in']) || $_SESSION['admin_logged_in'] !== true) {
+    exit(json_encode(['success' => false, 'message' => 'Acceso denegado']));
 }
 
 // Verificar datos necesarios
 if (!isset($_POST['order_id']) || !isset($_POST['status'])) {
-    header('Content-Type: application/json');
-    echo json_encode(['success' => false, 'message' => 'Datos incompletos']);
-    exit();
+    exit(json_encode(['success' => false, 'message' => 'Datos incompletos']));
 }
 
 try {

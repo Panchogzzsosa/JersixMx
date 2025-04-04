@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Verificar inicio de sesión
+// Simplificar la verificación de sesión
 if (!isset($_SESSION['admin_id'])) {
     header('Location: login.php');
     exit();
@@ -23,14 +23,22 @@ try {
     $stats = ['total_sales' => 0, 'total_orders' => 0];
 }
 
-// Obtener pedidos con información del cliente
+// Obtener pedidos con información del cliente y total del pedido
 try {
     $stmt = $pdo->query("
         SELECT 
-            o.order_id,
-            o.customer_name,
-            o.customer_email,
-            o.status,
+            o.*,
+            COUNT(DISTINCT oi.order_item_id) as total_items,
+            SUM(oi.quantity * oi.price) as order_total,
+            GROUP_CONCAT(DISTINCT CONCAT(p.name, ' (', oi.quantity, ')') SEPARATOR ', ') as products_summary
+        FROM orders o
+        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+        LEFT JOIN products p ON oi.product_id = p.product_id
+        GROUP BY 
+            o.order_id, 
+            o.customer_name, 
+            o.customer_email, 
+            o.status, 
             o.created_at,
             o.phone,
             o.street,
@@ -38,10 +46,7 @@ try {
             o.city,
             o.state,
             o.zip_code,
-            COUNT(oi.order_item_id) as total_items
-        FROM orders o
-        LEFT JOIN order_items oi ON o.order_id = oi.order_id
-        GROUP BY o.order_id
+            o.payment_status
         ORDER BY o.created_at DESC
     ");
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -198,6 +203,127 @@ try {
             box-shadow: var(--box-shadow);
             margin-bottom: 30px;
             overflow: hidden;
+        }
+
+        .order-card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.2s;
+        }
+
+        .order-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+
+        .order-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .order-date {
+            font-size: 0.9em;
+            color: var(--secondary-color);
+        }
+
+        .status-badges {
+            display: flex;
+            gap: 10px;
+        }
+
+        .status-badge, .payment-badge {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 500;
+        }
+
+        .status-badge.completed {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+
+        .status-badge.pending {
+            background-color: #fff3e0;
+            color: #ef6c00;
+        }
+
+        .payment-badge.paid {
+            background-color: #e3f2fd;
+            color: #1565c0;
+        }
+
+        .payment-badge.pending {
+            background-color: #fce4ec;
+            color: #c2185b;
+        }
+
+        .order-details {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+            padding: 20px;
+            background-color: #f8f9fa;
+            border-radius: var(--border-radius);
+        }
+
+        .customer-info, .shipping-info, .order-summary {
+            padding: 15px;
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .customer-info h4, .shipping-info h4, .order-summary h4 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-size: 1.1em;
+        }
+
+        .order-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid #eee;
+        }
+
+        .btn-view, .btn-edit, .btn-print {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            border: none;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            font-weight: 500;
+            transition: var(--transition);
+        }
+
+        .btn-view {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        .btn-edit {
+            background-color: var(--warning-color);
+            color: var(--dark-color);
+        }
+
+        .btn-print {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .btn-view:hover, .btn-edit:hover, .btn-print:hover {
+            opacity: 0.9;
+            transform: translateY(-1px);
         }
         
         .panel-header {
@@ -1584,4 +1710,4 @@ try {
         }
     </script>
 </body>
-</html> 
+</html>

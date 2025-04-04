@@ -26,7 +26,7 @@ if ($price <= 0) {
 }
 
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
+    
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Actualizar el precio

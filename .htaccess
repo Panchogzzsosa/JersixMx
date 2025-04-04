@@ -27,3 +27,14 @@ RewriteRule ^([^/]+)/?$ $1.html [L]
 Order allow,deny
 Deny from all
 </Files>
+
+# Permitir acceso directo a archivos existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Reglas para las URLs amigables
+RewriteRule ^Productos-equipos/producto$ producto.php [L,QSA]
+
+# Evitar bucles de redirección
+RewriteCond %{ENV:REDIRECT_STATUS} !^$
+RewriteRule ^ - [L]

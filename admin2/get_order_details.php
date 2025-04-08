@@ -59,6 +59,7 @@ try {
                     <th>Cantidad</th>
                     <th>Precio</th>
                     <th>Total</th>
+                    <th>Personalización</th>
                 </tr>
             </thead>
             <tbody>
@@ -83,11 +84,61 @@ try {
                         <td><?php echo $item['quantity']; ?></td>
                         <td>$<?php echo number_format($item['price'], 2); ?></td>
                         <td>$<?php echo number_format($itemTotal, 2); ?></td>
+                        <td>
+                            <?php if (!empty($item['personalization_name']) || !empty($item['personalization_number']) || !empty($item['personalization_patch'])): ?>
+                                <div style="font-size: 0.9em;">
+                                    <?php if (!empty($item['personalization_name'])): ?>
+                                        <div>
+                                            <span style="color: #6b7280;">Nombre:</span> 
+                                            <span style="font-weight: 500;"><?php echo htmlspecialchars($item['personalization_name']); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($item['personalization_number'])): ?>
+                                        <div style="margin-top: 2px;">
+                                            <span style="color: #6b7280;">Número:</span> 
+                                            <span style="font-weight: 500;"><?php echo htmlspecialchars($item['personalization_number']); ?></span>
+                                        </div>
+                                    <?php endif; ?>
+                                    <?php if (!empty($item['personalization_patch'])): ?>
+                                        <?php if (strpos($item['personalization_patch'], 'TIPO:') === 0): ?>
+                                            <?php
+                                                // Extraer y decodificar el tipo
+                                                $tipoEncoded = substr($item['personalization_patch'], 5);
+                                                $tipo = base64_decode($tipoEncoded);
+                                            ?>
+                                            <div style="margin-top: 2px;">
+                                                <span style="color: #6b7280;">Tipo:</span> 
+                                                <span style="font-weight: 500;"><?php echo htmlspecialchars($tipo); ?></span>
+                                            </div>
+                                        <?php elseif ($item['product_name'] === 'Mystery Box'): ?>
+                                            <div style="margin-top: 2px;">
+                                                <span style="color: #6b7280;">Tipo:</span> 
+                                                <span style="font-weight: 500;"><?php 
+                                                    $tipos = [
+                                                        '1' => 'Champions League',
+                                                        '2' => 'Liga MX',
+                                                        '3' => 'Liga Europea'
+                                                    ];
+                                                    echo isset($tipos[$item['personalization_patch']]) ? $tipos[$item['personalization_patch']] : 'No especificado';
+                                                ?></span>
+                                            </div>
+                                        <?php else: ?>
+                                            <div style="margin-top: 2px; color: #16a34a;">
+                                                <i class="fas fa-check-circle" style="margin-right: 2px;"></i>Parche
+                                            </div>
+                                        <?php endif; ?>
+                                    <?php endif; ?>
+                                </div>
+                            <?php else: ?>
+                                <span style="color: #6b7280;">-</span>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
                 <tr>
                     <td colspan="4" class="text-end"><strong>Total:</strong></td>
                     <td><strong>$<?php echo number_format($total, 2); ?></strong></td>
+                    <td></td>
                 </tr>
             </tbody>
         </table>

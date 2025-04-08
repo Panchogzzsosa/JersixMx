@@ -1,0 +1,30 @@
+[2025-04-07 08:00:34] Verificando código de Gift Card: GC-fc72cfb
+[2025-04-07 08:00:34] Error de base de datos: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'checkout.giftcard_redemptions' doesn't exist
+[2025-04-07 08:14:42] Verificando código de Gift Card: GC-fc72cfb
+[2025-04-07 08:14:42] Gift Card no válida - Orden no completada: GC-fc72cfb
+[2025-04-07 08:18:11] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:18:11] Gift Card no válida - Orden no completada: GC-0eddea0
+[2025-04-07 08:19:15] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:19:15] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:19:53] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:19:53] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:20:21] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:20:21] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:22:50] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:22:50] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:26:56] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:26:56] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:28:04] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:04] Gift Card válida: GC-0eddea0 - Saldo: $201.01
+[2025-04-07 08:28:11] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:11] Gift Card válida: GC-0eddea0 - Saldo: $201.01
+[2025-04-07 08:28:58] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:58] Gift Card ya utilizada completamente: GC-0eddea0
+[2025-04-07 08:33:13] Verificando código de Gift Card: GC-0824bec
+[2025-04-07 08:33:13] Gift Card válida: GC-0824bec - Saldo: $2000.00
+[2025-04-07 08:52:44] Verificando código de Gift Card: GC-0824bec
+[2025-04-07 08:52:44] Gift Card válida: GC-0824bec - Saldo: $1201.00
+[2025-04-08 05:33:43] Verificando código de Gift Card: GC-d263e2b
+[2025-04-08 05:33:43] Gift Card no válida - Orden no completada: GC-d263e2b
+[2025-04-08 05:34:13] Verificando código de Gift Card: GC-d263e2b
+[2025-04-08 05:34:13] Gift Card válida: GC-d263e2b - Saldo: $799.00

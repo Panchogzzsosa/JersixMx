@@ -70,19 +70,17 @@ if ($order_data) {
             throw new Exception('Order items are missing');
         }
 
-        $stmt = $pdo->prepare('INSERT INTO order_items (order_id, product_id, quantity, price_per_unit, subtotal, size) VALUES (?, ?, ?, ?, ?, ?)');
+        $stmt = $pdo->prepare('INSERT INTO order_items (order_id, product_id, quantity, price, size) VALUES (?, ?, ?, ?, ?)');
         foreach ($order_data->items as $item) {
             if (!isset($item->id) || !isset($item->quantity) || !isset($item->unit_price)) {
                 throw new Exception('Invalid item data');
             }
 
-            $subtotal = $item->quantity * $item->unit_price;
             $stmt->execute([
                 $order_id,
                 $item->id,
                 $item->quantity,
                 $item->unit_price,
-                $subtotal,
                 $item->size ?? 'M' // Default size if not specified
             ]);
 

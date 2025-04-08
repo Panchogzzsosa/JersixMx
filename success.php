@@ -5,6 +5,9 @@ error_reporting(E_ALL);
 ini_set('log_errors', 1);
 ini_set('error_log', __DIR__ . '/success_error.log');
 
+// Importar archivo de envío de correos
+require_once __DIR__ . '/order_confirmation_email.php';
+
 // Get the preference ID from the URL
 $preference_id = $_GET['preference_id'] ?? null;
 $payment_id = $_GET['payment_id'] ?? null;
@@ -28,6 +31,44 @@ if ($status === 'approved' && $payment_id) {
         
         if ($stmt->affected_rows === 0) {
             error_log("No order found with preference_id: " . $preference_id);
+        } else {
+            // Obtener detalles de la orden para enviar el correo
+            $orderStmt = $conn->prepare("
+                SELECT o.*, c.email as customer_email
+                FROM orders o
+                LEFT JOIN customers c ON o.customer_id = c.id
+                WHERE o.preference_id = ?
+            ");
+            $orderStmt->bind_param("s", $preference_id);
+            $orderStmt->execute();
+            $orderResult = $orderStmt->get_result();
+            $orderData = $orderResult->fetch_assoc();
+            
+            if ($orderData) {
+                // Obtener los productos del pedido
+                $itemsStmt = $conn->prepare("
+                    SELECT * FROM order_items 
+                    WHERE order_id = ?
+                ");
+                $itemsStmt->bind_param("i", $orderData['order_id']);
+                $itemsStmt->execute();
+                $itemsResult = $itemsStmt->get_result();
+                $orderItems = [];
+                
+                while ($item = $itemsResult->fetch_assoc()) {
+                    $orderItems[] = $item;
+                }
+                
+                // Enviar correo de confirmación
+                if (!empty($orderData['customer_email']) && count($orderItems) > 0) {
+                    sendOrderConfirmationEmail($orderData, $orderItems);
+                    error_log("Correo de confirmación enviado para la orden #" . $orderData['order_id']);
+                }
+                
+                $itemsStmt->close();
+            }
+            
+            $orderStmt->close();
         }
         
         $stmt->close();
@@ -96,6 +137,7 @@ if ($status === 'approved' && $payment_id) {
         <div class="success-icon">✓</div>
         <h1 class="success-title">¡Pago Exitoso!</h1>
         <p class="success-message">Tu pago ha sido procesado correctamente. Gracias por tu compra.</p>
+        <p class="success-message">Hemos enviado un correo de confirmación con los detalles de tu pedido.</p>
         <a href="index.php" class="back-button">Volver al inicio</a>
     </div>
 </body>

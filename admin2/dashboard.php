@@ -51,6 +51,46 @@ try {
         LIMIT 1
     ");
     $lastOrder = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    // Total de pedidos
+    $totalOrders = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+    
+    // Pedidos recientes
+    $recentOrdersStmt = $pdo->prepare("
+        SELECT o.order_id, o.customer_name, o.status, o.created_at, 
+               SUM(oi.price * oi.quantity) as total
+        FROM orders o
+        JOIN order_items oi ON o.order_id = oi.order_id
+        GROUP BY o.order_id
+        ORDER BY o.created_at DESC
+        LIMIT 5
+    ");
+    $recentOrdersStmt->execute();
+    $recentOrders = $recentOrdersStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Total de ingresos
+    $totalRevenue = $pdo->query("
+        SELECT SUM(oi.price * oi.quantity) 
+        FROM order_items oi
+    ")->fetchColumn() ?? 0;
+    
+    // Gift cards vendidas
+    $giftcardsSold = $pdo->query("
+        SELECT COUNT(*) 
+        FROM order_items oi
+        JOIN products p ON oi.product_id = p.product_id
+        WHERE p.name LIKE '%Tarjeta de Regalo%' OR oi.personalization_name LIKE '%@%'
+    ")->fetchColumn() ?? 0;
+    
+    // Gift cards enviadas
+    $giftcardsSent = $pdo->query("
+        SELECT COUNT(*) 
+        FROM order_items 
+        WHERE giftcard_sent = 1
+    ")->fetchColumn() ?? 0;
+    
+    // Gift cards pendientes
+    $giftcardsPending = $giftcardsSold - $giftcardsSent;
 } catch(PDOException $e) {
     die('Error de conexión a la base de datos: ' . $e->getMessage());
     $lastOrder = null;
@@ -73,6 +113,7 @@ try {
             --success-color: #28a745;
             --danger-color: #dc3545;
             --warning-color: #ffc107;
+            --info-color: #17a2b8;
             --light-color: #f8f9fa;
             --dark-color: #343a40;
             --sidebar-width: 240px;
@@ -497,6 +538,80 @@ try {
             margin: 0;
             font-size: 15px;
         }
+
+        /* Notifications */
+        .notification-badge {
+            position: relative;
+            display: inline-block;
+            margin-right: 15px;
+            font-size: 20px;
+            color: var(--secondary-color);
+        }
+        
+        .notification-badge.warning {
+            color: var(--warning-color);
+        }
+        
+        .notification-badge .badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: var(--danger-color);
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .card-notification {
+            margin-bottom: 20px;
+            border-left: 4px solid var(--warning-color);
+        }
+        
+        .notification-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+        }
+        
+        .notification-item i {
+            font-size: 20px;
+            color: var(--warning-color);
+            margin-top: 3px;
+        }
+        
+        .notification-item h4 {
+            margin: 0 0 5px 0;
+            font-size: 16px;
+        }
+        
+        .notification-item p {
+            margin: 0 0 10px 0;
+            color: var(--secondary-color);
+        }
+        
+        .notification-item .btn {
+            display: inline-block;
+            text-decoration: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+        
+        .notification-item .btn-warning {
+            background-color: var(--warning-color);
+            color: #333;
+        }
+        
+        .notifications {
+            display: flex;
+            align-items: center;
+        }
     </style>
 </head>
 <body>
@@ -532,6 +647,12 @@ try {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="giftcards.php">
+                        <i class="fas fa-gift"></i>
+                        <span>Gift Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión</span>
@@ -544,12 +665,21 @@ try {
         <main class="main-content">
             <!-- Top Bar -->
             <div class="topbar">
-                <h1>Panel de Control</h1>
-                <div class="user-info">
-                    <span>Usuario: Admin</span>
-                    <a href="logout.php" class="btn btn-outline">Cerrar Sesión</a>
+                <div>
+                    <h2>Panel de Administración</h2>
+                </div>
+                <div class="user-menu">
+                    <div class="notifications">
+                        <?php /* Eliminar notificación de giftcards */ ?>
+                    </div>
+                    <div class="user-info">
+                        <img src="../img/ICON.png" alt="User" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                        <span><?php echo $_SESSION['admin_username'] ?? 'Administrador'; ?></span>
+                    </div>
                 </div>
             </div>
+            
+            <?php /* Eliminar alerta de giftcards pendientes */ ?>
             
             <!-- Stats Grid -->
             <div class="stats-grid">
@@ -587,7 +717,22 @@ try {
                     <div class="stat-card-value">$<?php echo number_format($stats['total_sales'] ?? 0, 2); ?></div>
                     <div class="stat-card-label">De pedidos completados</div>
                 </div>
+
+                <?php if ($giftcardsPending > 0): ?>
+                <div class="stat-card">
+                    <div class="stat-card-header">
+                        <h3 class="stat-card-title">Gift Cards Pendientes</h3>
+                        <div class="stat-card-icon" style="background: rgba(106, 90, 205, 0.15);">
+                            <i class="fas fa-gift" style="color: #6a5acd;"></i>
+                        </div>
+                    </div>
+                    <div class="stat-card-value"><?php echo number_format($giftcardsPending); ?></div>
+                    <a href="giftcards.php" style="display: inline-block; text-align: center; margin-top: 0.5rem; background-color: #6a5acd; color: white; border: none; padding: 6px 12px; border-radius: 4px; text-decoration: none; font-size: 13px; font-weight: 500;">Enviar ahora</a>
+                </div>
+                <?php endif; ?>
             </div>
+            
+            <?php /* Eliminar panel dedicado a gift cards pendientes */ ?>
             
             <!-- Quick Actions Panel -->
             <div class="panel">
@@ -704,33 +849,12 @@ try {
         </main>
     </div>
     
-    <!-- Mobile menu toggle (visible on small screens) -->
-    <div class="mobile-toggle" style="display: none;">
-        <i class="fas fa-bars"></i>
-    </div>
-    
     <script>
-        // Responsive sidebar toggle
+        // Script básico para inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            const mobileToggle = document.querySelector('.mobile-toggle');
+            // La barra lateral siempre estará visible
             const sidebar = document.querySelector('.sidebar');
-            
-            if (window.innerWidth <= 768) {
-                mobileToggle.style.display = 'flex';
-            }
-            
-            window.addEventListener('resize', function() {
-                if (window.innerWidth <= 768) {
-                    mobileToggle.style.display = 'flex';
-                } else {
-                    mobileToggle.style.display = 'none';
-                    sidebar.classList.add('active');
-                }
-            });
-            
-            mobileToggle.addEventListener('click', function() {
-                sidebar.classList.toggle('active');
-            });
+            sidebar.classList.add('active');
         });
     </script>
 </body>

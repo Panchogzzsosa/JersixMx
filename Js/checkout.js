@@ -21,6 +21,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 <div class="cart-item-price" style="border-radius: 8px;">$${item.price.toFixed(2)} MXN</div>
                 <div class="cart-item-quantity" style="border-radius: 8px;">Cantidad: ${item.quantity}</div>
                 ${item.size ? `<div class="cart-item-size" style="border-radius: 8px;">Talla: ${item.size}</div>` : ''}
+                ${item.tipo ? `<div class="cart-item-tipo" style="border-radius: 8px;">Tipo: ${item.tipo === 'champions' ? 'Champions' : item.tipo === 'ligamx' ? 'LigaMX' : 'Liga Europea'}</div>` : ''}
+                ${item.personalization ? `
+                <div class="cart-item-personalization" style="margin-top: 8px; padding: 8px; background-color: #f8f9fa; border-radius: 8px;">
+                    <div style="font-weight: 500; margin-bottom: 4px;">Personalización:</div>
+                    ${item.personalization.name ? `<div>Nombre: ${item.personalization.name}</div>` : ''}
+                    ${item.personalization.number ? `<div>Número: ${item.personalization.number}</div>` : ''}
+                    ${item.personalization.patch ? `<div>Parche: Sí</div>` : ''}
+                </div>
+                ` : ''}
+                ${item.isGiftCard && item.details ? `
+                <div class="cart-item-personalization" style="margin-top: 8px; padding: 8px; background-color: #f8f9fa; border-radius: 8px;">
+                    <div style="font-weight: 500; margin-bottom: 4px;">Detalles de la Gift Card:</div>
+                    <div>Para: ${item.details.recipientName}</div>
+                    <div>Email: ${item.details.recipientEmail}</div>
+                    ${item.details.message ? `<div>Mensaje: ${item.details.message}</div>` : ''}
+                    <div>De: ${item.details.senderName}</div>
+                </div>
+                ` : ''}
             </div>
         `;
 
@@ -31,10 +49,77 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update totals
     const shipping = 0; // Fixed shipping cost
     const total = subtotal + shipping;
+    
+    // Almacenar el total original para referencia
+    window.originalTotal = total;
 
     document.getElementById('subtotal-amount').textContent = `$${subtotal.toFixed(2)} MXN`;
     document.getElementById('shipping-amount').textContent = `$${shipping.toFixed(2)} MXN`;
     document.getElementById('total-amount').textContent = `$${total.toFixed(2)} MXN`;
+    
+    // Crear un elemento oculto para almacenar el total original
+    const originalTotalEl = document.createElement('div');
+    originalTotalEl.className = 'original-total';
+    originalTotalEl.style.display = 'none';
+    originalTotalEl.textContent = `$${total.toFixed(2)}`;
+    document.body.appendChild(originalTotalEl);
+
+    // Función para calcular el total final considerando GiftCard
+    function calculateFinalTotal() {
+        let finalTotal = window.originalTotal || total;
+        let fullDiscount = false;
+        
+        // Verificar si hay una Gift Card aplicada (desde la variable global)
+        if (window.giftcardDiscount && window.giftcardDiscount.amount > 0) {
+            const discountAmount = parseFloat(window.giftcardDiscount.amount);
+            
+            // Verificar si el descuento cubre completamente el total
+            if (discountAmount >= finalTotal) {
+                fullDiscount = true;
+                // Limitar el descuento para dejar al menos 0.01 para PayPal
+                window.giftcardDiscount.actualAmount = finalTotal - 0.01;
+                finalTotal = 0.01;
+            } else {
+                window.giftcardDiscount.actualAmount = discountAmount;
+                finalTotal = finalTotal - discountAmount;
+            }
+            
+            console.log('Descuento aplicado de Gift Card:', window.giftcardDiscount.actualAmount, 'Total final:', finalTotal, 'Descuento completo:', fullDiscount);
+        } else {
+            // Alternativamente, verificar los campos ocultos del formulario
+            const giftcardAmountField = document.querySelector('input[name="giftcard_amount"]');
+            if (giftcardAmountField && !isNaN(parseFloat(giftcardAmountField.value))) {
+                const discountAmount = parseFloat(giftcardAmountField.value);
+                
+                // Verificar si el descuento cubre completamente el total
+                if (discountAmount >= finalTotal) {
+                    fullDiscount = true;
+                    // Crear objeto global si no existe
+                    window.giftcardDiscount = window.giftcardDiscount || {};
+                    window.giftcardDiscount.actualAmount = finalTotal - 0.01;
+                    // Actualizar el campo oculto con el valor ajustado
+                    giftcardAmountField.value = window.giftcardDiscount.actualAmount.toFixed(2);
+                    finalTotal = 0.01;
+                } else {
+                    window.giftcardDiscount = window.giftcardDiscount || {};
+                    window.giftcardDiscount.actualAmount = discountAmount;
+                    finalTotal = finalTotal - discountAmount;
+                }
+                
+                console.log('Descuento aplicado desde campo oculto:', window.giftcardDiscount.actualAmount, 'Total final:', finalTotal, 'Descuento completo:', fullDiscount);
+            }
+        }
+        
+        // Almacenar si es un descuento completo para usarlo después
+        window.isFullDiscount = fullDiscount;
+        
+        return finalTotal;
+    }
+    
+    // Escuchar evento de Gift Card aplicada
+    document.addEventListener('giftcard:applied', function(e) {
+        console.log('Evento giftcard:applied recibido', e.detail);
+    });
 
     // Initialize PayPal button
     paypal.Buttons({
@@ -52,10 +137,15 @@ document.addEventListener('DOMContentLoaded', function() {
                 return false;
             }
 
+            // Calcular el valor final considerando Gift Card
+            const finalTotal = calculateFinalTotal();
+            
+            console.log('Creando orden de PayPal con total:', finalTotal);
+
             return actions.order.create({
                 purchase_units: [{
                     amount: {
-                        value: total.toFixed(2)
+                        value: finalTotal.toFixed(2)
                     }
                 }]
             });
@@ -102,6 +192,45 @@ document.addEventListener('DOMContentLoaded', function() {
                 // Agregar el carrito
                 formData.append('cart_items', JSON.stringify(cart));
 
+                // Incluir información de Gift Card si está presente (desde variable global o campos ocultos)
+                if (window.giftcardDiscount && window.giftcardDiscount.code) {
+                    // Usar el monto ajustado si hubo un descuento completo
+                    const amountToUse = window.isFullDiscount ? 
+                        window.giftcardDiscount.actualAmount : 
+                        window.giftcardDiscount.amount;
+                    
+                    formData.append('giftcard_code', window.giftcardDiscount.code);
+                    formData.append('giftcard_amount', amountToUse.toFixed(2));
+                    
+                    // Si es un descuento completo, indicarlo
+                    if (window.isFullDiscount) {
+                        formData.append('is_full_discount', 'true');
+                    }
+                    
+                    console.log('Aplicando Gift Card desde variable global:', window.giftcardDiscount.code, 
+                                'por $' + amountToUse.toFixed(2), 
+                                window.isFullDiscount ? '(Descuento completo)' : '');
+                } else {
+                    // Buscar en campos ocultos
+                    const giftcardCode = document.querySelector('input[name="giftcard_code"]');
+                    const giftcardAmount = document.querySelector('input[name="giftcard_amount"]');
+
+                    if (giftcardCode && giftcardAmount) {
+                        // El valor de giftcardAmount ya debería estar ajustado en calculateFinalTotal
+                        formData.append('giftcard_code', giftcardCode.value);
+                        formData.append('giftcard_amount', giftcardAmount.value);
+                        
+                        // Si es un descuento completo, indicarlo
+                        if (window.isFullDiscount) {
+                            formData.append('is_full_discount', 'true');
+                        }
+                        
+                        console.log('Aplicando Gift Card desde campos ocultos:', giftcardCode.value, 
+                                    'por $' + giftcardAmount.value, 
+                                    window.isFullDiscount ? '(Descuento completo)' : '');
+                    }
+                }
+
                 // Mostrar mensaje de procesamiento
                 const processingMessage = document.createElement('div');
                 processingMessage.className = 'processing-message';
@@ -123,9 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     console.log('Respuesta del servidor:', data);
                     
                     if (data.success) {
-                        // Mostrar mensaje de éxito con el ID de la orden
-                        const successMessage = `¡Pago completado! Su número de orden es: ${data.order_id}\n\nPuede ver los detalles de su orden en el panel de administración.`;
-                        alert(successMessage);
+                        // No mostrar alerta, solo redirigir directamente
                         
                         // Limpiar carrito
                         localStorage.removeItem('cart');

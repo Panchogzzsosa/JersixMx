@@ -3,7 +3,7 @@
         'name' => 'prueba/ecommerce',
         'pretty_version' => 'dev-main',
         'version' => 'dev-main',
-        'reference' => '6a1411413909bb9e4c71155cd88887721c07af46',
+        'reference' => '93882de908d66636c8096b959c29578dfc82b26d',
         'type' => 'project',
         'install_path' => __DIR__ . '/../../',
         'aliases' => array(),
@@ -31,7 +31,7 @@
         'prueba/ecommerce' => array(
             'pretty_version' => 'dev-main',
             'version' => 'dev-main',
-            'reference' => '6a1411413909bb9e4c71155cd88887721c07af46',
+            'reference' => '93882de908d66636c8096b959c29578dfc82b26d',
             'type' => 'project',
             'install_path' => __DIR__ . '/../../',
             'aliases' => array(),

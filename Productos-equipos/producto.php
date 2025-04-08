@@ -294,17 +294,21 @@ try {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo $page_title; ?></title>
+    <title><?php echo isset($product_name) ? htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8') : 'Detalle de Producto'; ?> | Jersix</title>
     <link rel="stylesheet" href="../Css/index.css">
     <link rel="stylesheet" href="../Css/productos.css">
     <link rel="stylesheet" href="../Css/cart.css">
     <link rel="stylesheet" href="../Css/notificacion.css">
+    <link rel="stylesheet" href="../Css/notificacion.css">
+    <link rel="stylesheet" href="../Css/producto-mobile.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
     <script src="../Js/search.js" defer></script>
     <script src="../Js/products-data.js" defer></script>
     <script src="../Js/cart.js" defer></script>
+    <script src="../Js/notification.js"></script>
     <script src="../Js/newsletter.js" defer></script>
+    <script src="../Js/producto-mobile.js" defer></script>
     <style>
         /* Estilos generales de la página de producto */
         body {
@@ -313,6 +317,14 @@ try {
             color: #333;
             background-color: #fff;
             font-size: 16px; /* Tamaño base de fuente aumentado */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #111;
+            font-size: 16px;
+            font-weight: 550;
+            padding: 8px 12px;
         }
 
         main {
@@ -324,90 +336,107 @@ try {
         .product-detail {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 60px; /* Gap aumentado */
-            margin-top: 30px; /* Margen superior aumentado */
-            margin-bottom: 60px; /* Margen inferior aumentado */
+            gap: 60px;
+            margin-top: 30px;
+            margin-bottom: 30px; /* Reducido de 60px a 30px */
+            position: relative;
         }
 
-        /* Estilos de imágenes */
         .product-image-container {
-            position: relative;
+            position: sticky;
+            top: 30px;
+            height: fit-content;
             margin-bottom: 30px;
-            overflow: visible; /* Cambiado de hidden para evitar comportamientos de zoom */
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-image-container {
+            position: relative;
+            height: 650px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
         }
 
         .product-image {
             width: 100%;
             height: auto;
-            display: block;
-            margin: 0 auto;
             max-height: 650px;
             object-fit: contain;
-            cursor: default; /* Asegura que no aparezca cursor de zoom */
+            cursor: default;
         }
 
         .product-thumbnails {
             display: flex;
-            gap: 15px; /* Gap aumentado */
-            margin-top: 25px; /* Margen superior aumentado */
-            justify-content: center; /* Cambiado de flex-start a center para centrar */
-            flex-wrap: wrap; /* Permite que las miniaturas se envuelvan en varias líneas si es necesario */
+            gap: 10px; /* Reducido de 15px a 10px */
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 0 15px;
+            margin-top: -10px; /* Añadido margen negativo para subir las miniaturas */
         }
 
         .thumbnail {
-            width: 75px; /* Tamaño de miniatura */
-            height: 75px; /* Tamaño de miniatura */
+            width: 75px;
+            height: 75px;
             object-fit: cover;
-            border: 1px solid #e0e0e0; /* Borde más fino y de color más claro */
+            border: 1px solid #e0e0e0;
             cursor: pointer;
             transition: all 0.2s;
-            margin-bottom: 10px; /* Margen inferior */
-            padding: 2px; /* Padding reducido */
-            box-shadow: none; /* Eliminar cualquier sombra */
+            margin-bottom: 10px;
+            padding: 2px;
         }
 
         .thumbnail.active {
             border: 2px solid #333; /* Borde más fino para la miniatura activa */
         }
 
-    
-
         /* Botones de navegación de imágenes - Solo flechas */
         .image-navigation {
             position: absolute;
-            top: 50%;
+            top: 45%;
+            left: 0;
+            right: 0;
             width: 100%;
             display: flex;
             justify-content: space-between;
             transform: translateY(-50%);
-            padding: 0 15px; /* Padding horizontal */
-            pointer-events: none; /* Para que los clics pasen a través del contenedor */
+            padding: 0 15px;
+            pointer-events: none;
+            z-index: 10;
         }
 
         .prev-image, .next-image {
             width: 40px;
             height: 40px;
-            background: transparent; /* Fondo transparente */
+            background: rgba(255, 255, 255, 0.8);
             border: none;
+            border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
             cursor: pointer;
-            pointer-events: auto; /* Para que los botones reciban clics */
+            pointer-events: auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .prev-image:hover, .next-image:hover {
+            background: rgba(255, 255, 255, 1);
         }
 
         .prev-image i, .next-image i {
-            font-size: 24px; /* Tamaño de icono aumentado */
-            color: #333; /* Color oscuro para las flechas */
-        }
-
-        .prev-image:hover i, .next-image:hover i {
-            color: #000; /* Color negro al pasar el mouse */
+            font-size: 24px;
+            color: #333;
         }
 
         /* Estilos de información del producto */
         .product-info {
-            padding: 0;
+            height: fit-content;
         }
 
         .product-title {
@@ -560,40 +589,86 @@ try {
             top: 0;
             width: 100%;
             height: 100%;
-            background-color: rgba(0,0,0,0.5);
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
         }
 
         .modal-content {
             background-color: white;
-            margin: 10% auto;
-            padding: 30px; /* Padding aumentado */
-            width: 90%; /* Ancho aumentado */
-            max-width: 700px; /* Ancho máximo aumentado */
-            border-radius: 8px; /* Radio de borde aumentado */
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            animation: modalFadeIn 0.3s ease;
+            margin: 0;
         }
 
         .close {
+            color: #333;
             float: right;
-            font-size: 30px; /* Tamaño de texto aumentado */
+            font-size: 28px;
             font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
             cursor: pointer;
         }
 
-        .size-guide-table {
+        .close:hover {
+            color: #000;
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .size-chart {
             width: 100%;
             border-collapse: collapse;
-            margin-top: 25px; /* Margen superior aumentado */
-            font-size: 18px; /* Tamaño de texto aumentado */
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px #eee;
         }
 
-        .size-guide-table th, .size-guide-table td {
-            border: 1px solid #ddd;
-            padding: 15px; /* Padding aumentado */
+        .size-chart th,
+        .size-chart td {
+            border: none;
+            padding: 15px;
             text-align: center;
+            border-bottom: 1px solid #eee;
         }
 
-        .size-guide-table th {
-            background-color: #f5f5f5;
+        .size-chart th {
+            background-color: #000;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .size-chart td {
+            font-size: 15px;
+        }
+
+        .size-chart tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .size-chart tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .size-chart tr:last-child td {
+            border-bottom: none;
         }
 
         /* Responsive */
@@ -610,6 +685,24 @@ try {
             .thumbnail {
                 width: 60px;
                 height: 60px;
+            }
+
+            body {
+                padding-top: 450px; /* Reservar espacio para la imagen fija */
+            }
+
+            .product-image-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 450px;
+                z-index: 999;
+            }
+
+            .main-image-container {
+                height: 400px;
             }
         }
 
@@ -703,6 +796,127 @@ try {
             text-decoration: underline;
         }
     </style>
+    <style>
+        /* Animación para el modal */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estilo para la modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow: auto;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            max-width: 500px;
+            width: 85%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s ease;
+            margin: 20px 0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px !important;
+        }
+        
+        .modal h2 {
+            font-size: 20px !important;
+            margin-bottom: 15px !important;
+        }
+        
+        .modal label {
+            font-size: 14px !important;
+            margin-bottom: 5px !important;
+        }
+        
+        .modal input[type="text"],
+        .modal textarea {
+            padding: 8px !important;
+            font-size: 14px !important;
+        }
+        
+        .modal .rating-input label {
+            font-size: 24px !important;
+            margin-right: 3px !important;
+        }
+        
+        .modal button[type="submit"] {
+            padding: 10px 15px !important;
+            font-size: 15px !important;
+        }
+        
+        /* Ajuste para pantallas más pequeñas */
+        @media (max-height: 700px) {
+            .modal-content {
+                max-height: 85vh;
+                padding: 15px;
+            }
+            
+            .form-group {
+                margin-bottom: 10px !important;
+            }
+        }
+    </style>
+    <style>
+        /* Sistema de calificación con estrellas - Versión simplificada */
+        .rating-container {
+            display: inline-block;
+            margin-bottom: 20px;
+        }
+        
+        .stars {
+            display: flex;
+            flex-direction: row;
+            font-size: 45px; /* Estrellas más grandes */
+        }
+        
+        .stars input {
+            position: absolute;
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        
+        .stars label {
+            cursor: pointer;
+            color: #ddd;
+            padding: 0 3px; /* Más espacio entre estrellas */
+        }
+        
+        .stars label.active,
+        .stars label.hovered {
+            color: #FFD700;
+        }
+        
+        .rating-text {
+            margin-top: 10px;
+            font-size: 16px; /* Texto un poco más grande */
+            color: #666;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -710,21 +924,23 @@ try {
             <button class="menu-toggle">
                 <span class="material-symbols-outlined">menu</span>
             </button>
-            <div class="logo"><img src="../img/LogoNav.png" alt="JerSix Logo"></div>
+            <div class="logo"><a href="../index.php"><img src="../img/LogoNav.png" alt="JerSix Logo"></a></div>
             <ul class="nav-links">
                 <li></li>
                 <li></li>
                 <li></li>
                 <li><a href="../index">Inicio</a></li>
                 <li><a href="../productos">Productos</a></li>
-                <li><a href="../mistery-box">Mistery Box</a></li>
+                <li><a href="../mistery-box">Mystery Box</a></li>
                 <li><a href="../giftcard">Giftcard</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
             </ul>
             <div class="search-container">
-                <input type="text" placeholder="Buscar productos..." class="search-input">
-                <button class="search-button">
+                <input type="text" class="search-input" placeholder="Buscar productos..." id="searchInput">
+                <button class="search-button" onclick="performSearch(document.querySelector('.search-input').value)">
                     <span class="material-symbols-outlined">search</span>
                 </button>
+                <div class="search-results" id="searchResults"></div>
             </div>
             <div class="cart-icon">
                 <span class="material-symbols-outlined">shopping_cart</span>
@@ -761,7 +977,9 @@ try {
         
         <div class="product-detail">
             <div class="product-image-container">
-                <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name); ?>" class="product-image" id="mainImage" loading="lazy">
+                <div class="main-image-container">
+                    <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8'); ?>" class="product-image" id="mainImage" loading="lazy">
+                </div>
                 
                 <?php if (count($thumbnails) > 1): ?>
                 <div class="image-navigation">
@@ -771,7 +989,7 @@ try {
                 
                 <div class="product-thumbnails">
                     <?php foreach ($thumbnails as $index => $thumbnail): ?>
-                    <img src="<?php echo $thumbnail; ?>" alt="<?php echo htmlspecialchars($product_name); ?> <?php echo $index+1; ?>" 
+                    <img src="<?php echo $thumbnail; ?>" alt="<?php echo htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8'); ?> <?php echo $index+1; ?>" 
                          class="thumbnail <?php echo ($index === 0) ? 'active' : ''; ?>" 
                          onclick="changeImage(this)" loading="lazy">
                     <?php endforeach; ?>
@@ -780,7 +998,7 @@ try {
             </div>
             
             <div class="product-info">
-                <h1 class="product-title"><?php echo htmlspecialchars($product_name); ?></h1>
+                <h1 class="product-title"><?php echo htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8'); ?></h1>
                 <p class="product-price" data-product-id="<?php echo $product_id; ?>">$ <?php echo number_format($price, 2); ?></p>
                 
                 <div class="shipping-info">
@@ -790,12 +1008,36 @@ try {
                 <div class="section-title">
                     Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button>
                 </div>
-                <div class="size-options">
-                    <div class="size-option">XS</div>    
+                <div class="size-options">    
                     <div class="size-option">S</div>
                     <div class="size-option">M</div>
                     <div class="size-option">L</div>
                     <div class="size-option">XL</div>
+                    <div class="size-option">XXL</div>
+                </div>
+
+                <div class="section-title">Personalizar Camiseta</div>
+                <div class="customization-toggle" style="margin-bottom: 15px;">
+                    <select id="customizationSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"><path fill="%23007CB2" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.6 5.4-7.9 5.4-12.9 0-5-1.9-9.2-5.5-12.7z"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;">
+                        <option value="no">Sin Personalizar</option>
+                        <option value="yes">Personalizar (+$100)</option>
+                    </select>
+                </div>
+                <div class="customization-options" id="customizationFields" style="margin-bottom: 30px; display: none;">
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label for="jerseyName" style="display: block; margin-bottom: 8px; font-weight: 500;">Nombre en la camiseta:</label>
+                        <input type="text" id="jerseyName" name="jerseyName" maxlength="20" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el nombre">
+                    </div>
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label for="jerseyNumber" style="display: block; margin-bottom: 8px; font-weight: 500;">Número:</label>
+                        <input type="number" id="jerseyNumber" name="jerseyNumber" min="0" max="99" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el número" oninput="validateJerseyNumber(this)">
+                    </div>
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="patchOption" name="patchOption" style="margin-right: 10px;">
+                            <span>Agregar parche (+$50)</span>
+                        </label>
+                    </div>
                 </div>
 
                 <div class="section-title">Cantidad</div>
@@ -805,68 +1047,627 @@ try {
                     <button class="quantity-btn plus" id="plusBtn">+</button>
                 </div>
                 
-                
-                
-                <button class="add-to-cart-btn" <?php echo (!$product_status) ? 'disabled' : ''; ?>>
+                <button class="add-to-cart-btn" <?php echo (!$product_status) ? 'disabled' : ''; ?> onclick="addToCartWithCustomization()">
                     <?php if ($product_status): ?>
                         Agregar al Carrito
                     <?php else: ?>
                         Producto no disponible
                     <?php endif; ?>
                 </button>
+
+                <script>
+                function addToCartWithCustomization() {
+                    const selectedSize = document.querySelector('.size-option.selected');
+                    if (!selectedSize) {
+                        showNotification('Por favor selecciona una talla', false);
+                        return;
+                    }
+
+                    // Verificar si la personalización está habilitada
+                    const isCustomizationEnabled = document.getElementById('customizationSelect').value === 'yes';
+                    
+                    // Obtener datos de personalización
+                    const personalization = {
+                        name: '',
+                        number: '',
+                        patch: false
+                    };
+                    
+                    if (isCustomizationEnabled) {
+                        personalization.name = document.getElementById('jerseyName').value.trim();
+                        personalization.number = document.getElementById('jerseyNumber').value.trim();
+                        personalization.patch = document.getElementById('patchOption').checked;
+                        
+                        // Validar que se hayan ingresado tanto el nombre como el número
+                        if (!personalization.name || !personalization.number) {
+                            showNotification('Para personalizar la camiseta, debes ingresar tanto el nombre como el número.', false);
+                            return;
+                        }
+                    }
+
+                    // Crear el objeto de producto
+                    const productData = {
+                        productId: document.querySelector('.product-price').getAttribute('data-product-id'),
+                        title: document.querySelector('.product-title').textContent,
+                        price: currentPrice,
+                        size: selectedSize.textContent,
+                        quantity: parseInt(document.getElementById('quantityInput').value),
+                        image: document.getElementById('mainImage').src,
+                        personalization: isCustomizationEnabled ? personalization : null,
+                        isCustomEvent: true
+                    };
+
+                    // Disparar evento personalizado
+                    const event = new CustomEvent('addToCart', {
+                        detail: productData
+                    });
+                    document.dispatchEvent(event);
+                }
+                </script>
             </div>
         </div>
         
         <!-- Size Guide Modal -->
-        <div id="sizeGuideModal" class="modal">
+        <div id="sizeGuideModal" class="modal" style="display: none;">
             <div class="modal-content">
                 <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
-                <h2 style="font-size: 26px; margin-bottom: 20px;">Guía de Tallas</h2>
-                <table class="size-guide-table">
+                <h2>Guía de Tallas</h2>
+                <table class="size-chart">
                     <thead>
                         <tr>
                             <th>Talla</th>
-                            <th>Pecho (cm)</th>
                             <th>Largo (cm)</th>
-                            <th>Hombros (cm)</th>
+                            <th>Ancho (cm)</th>
+                            <th>Altura (cm)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
-                            <td>XS</td>
-                            <td>96-101</td>
-                            <td>71</td>
-                            <td>44</td>
-                        </tr>
-                        <tr>
                             <td>S</td>
-                            <td>96-101</td>
-                            <td>71</td>
-                            <td>44</td>
+                            <td>69-71</td>
+                            <td>53-55</td>
+                            <td>162-170</td>
                         </tr>
                         <tr>
                             <td>M</td>
-                            <td>101-106</td>
-                            <td>73</td>
-                            <td>46</td>
+                            <td>71-73</td>
+                            <td>55-57</td>
+                            <td>170-176</td>
                         </tr>
                         <tr>
                             <td>L</td>
-                            <td>106-111</td>
-                            <td>75</td>
-                            <td>48</td>
+                            <td>73-75</td>
+                            <td>57-58</td>
+                            <td>176-182</td>
                         </tr>
                         <tr>
                             <td>XL</td>
-                            <td>96-101</td>
-                            <td>71</td>
-                            <td>44</td>
+                            <td>75-78</td>
+                            <td>58-60</td>
+                            <td>182-190</td>
+                        </tr>
+                        <tr>
+                            <td>XXL</td>
+                            <td>78-81</td>
+                            <td>60-62</td>
+                            <td>190-195</td>
                         </tr>
                     </tbody>
                 </table>
             </div>
         </div>
     </main>
+
+    <div class="shipping-info-section" style="max-width: 1200px; margin: -20px auto 40px; padding: 40px 20px;">
+        <div class="shipping-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="shipping-header" onclick="toggleShippingInfo()" style="text-align: center; margin-bottom: 20px; cursor: pointer; user-select: none;">
+                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    Información de Envío
+                    <i class="fas fa-chevron-down" id="shipping-arrow" style="font-size: 20px; transition: transform 0.3s ease;"></i>
+                </h2>
+            </div>
+
+            <div id="shipping-content" style="display: none; transition: all 0.3s ease;">
+                <p style="text-align: center; font-size: 20px; color: #333; margin-bottom: 30px;">
+                    ¡Disfruta de envío <strong>GRATIS</strong> en todos tus pedidos!
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">📦</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Tiempo de Envío</h3>
+                        <p style="color: #555;">15 días hábiles promedio</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">💬</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Contacto Personal</h3>
+                        <p style="color: #555;">Un "Player" de Jersix te contactará por WhatsApp en 3-5 días hábiles</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">🚚</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Seguimiento</h3>
+                        <p style="color: #555;">Recibirás tu número de rastreo en 8 - 12 días hábiles</p>
+                    </div>
+                </div>
+
+                <div style="background-color: #f8f8f8; padding: 25px; border-radius: 10px; text-align: center;">
+                    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+                        <strong>Garantía de satisfacción:</strong> Si tu espera supera los 30 días hábiles, 
+                        recibirás un reembolso de tu compra y tus Jersix serán gratis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Separador -->
+    <div style="max-width: 80%; margin: 0 auto 40px; height: 1px; background-color: #e0e0e0;"></div>
+
+    <!-- Sección de Reseñas -->
+    <div class="reviews-section" style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
+        <div class="reviews-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="reviews-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; color: #000;">Opiniones de Clientes</h2>
+                <?php
+                // Obtener calificación promedio y número de reseñas DE TODAS LAS RESEÑAS
+                try {
+                    $stmt = $pdo->prepare('SELECT COUNT(*) as total, AVG(calificacion) as promedio FROM resenas');
+                    $stmt->execute();
+                    $reviewStats = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    $totalReviews = $reviewStats['total'] ?? 0;
+                    $avgRating = number_format($reviewStats['promedio'] ?? 0, 1);
+                } catch (PDOException $e) {
+                    $totalReviews = 0;
+                    $avgRating = 0;
+                }
+                ?>
+                
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <div class="rating-stars" style="font-size: 22px; color: #FFD700; margin-right: 10px;">
+                        <?php
+                        $fullStars = floor($avgRating);
+                        $halfStar = ($avgRating - $fullStars) >= 0.5;
+                        
+                        for ($i = 1; $i <= 5; $i++) {
+                            if ($i <= $fullStars) {
+                                echo '<i class="fas fa-star"></i>';
+                            } elseif ($i == $fullStars + 1 && $halfStar) {
+                                echo '<i class="fas fa-star-half-alt"></i>';
+                            } else {
+                                echo '<i class="far fa-star"></i>';
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div style="font-size: 18px; font-weight: 500; color: #333;">
+                        <span style="color: #FFD700; font-weight: bold;"><?php echo $avgRating; ?></span> <span style="color: #666; font-size: 16px; font-weight: normal;">(<?php echo $totalReviews; ?> opiniones)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <?php if ($totalReviews > 0): ?>
+            <!-- Carrusel de Reseñas -->
+            <div class="reviews-carousel-container" style="position: relative;">
+                <div class="reviews-carousel" style="overflow: hidden; position: relative; margin: 0 40px;">
+                    <div class="reviews-track" id="reviewsTrack" style="display: flex; transition: transform 0.5s ease;">
+                        <?php
+                        try {
+                            // Obtener TODAS las reseñas de la base de datos, no solo para este producto
+                            $stmt = $pdo->prepare('
+                                SELECT r.*, p.name as product_name, 
+                                DATE_FORMAT(r.fecha_creacion, "%d/%m/%Y") as fecha_formateada
+                                FROM resenas r
+                                JOIN products p ON r.producto_id = p.product_id
+                                ORDER BY r.fecha_creacion DESC
+                            ');
+                            $stmt->execute();
+                            $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        } catch (PDOException $e) {
+                            $reviews = [];
+                        }
+                        
+                        foreach ($reviews as $review):
+                        ?>
+                        <div class="review-card" style="min-width: 300px; flex: 0 0 calc(100% - 20px); max-width: 100%; padding: 30px; margin: 0 10px; background-color: #f9f9f9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 3px solid #cc0000;">
+                            <div class="review-card-header" style="margin-bottom: 15px;">
+                                <div class="reviewer-name" style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    <?php echo htmlspecialchars($review['nombre']); ?>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="review-rating" style="color: #FFD700; font-size: 22px;">
+                                        <?php
+                                        $rating = $review['calificacion'];
+                                        $fullStars = floor($rating);
+                                        $halfStar = ($rating - $fullStars) >= 0.5;
+                                        
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            if ($i <= $fullStars) {
+                                                echo '<i class="fas fa-star"></i>';
+                                            } elseif ($i == $fullStars + 1 && $halfStar) {
+                                                echo '<i class="fas fa-star-half-alt"></i>';
+                                            } else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    
+                                    <div class="review-date" style="color: #888; font-size: 14px;">
+                                        <?php echo $review['fecha_formateada']; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mostrar el nombre del producto -->
+                            <div style="font-size: 14px; color: #666; margin-bottom: 10px; border-left: 3px solid #cc0000; padding-left: 10px;">
+                                Producto: <a href="producto.php?id=<?php echo $review['producto_id']; ?>" style="color: #000; text-decoration: underline; font-weight: 500;"><?php echo htmlspecialchars($review['product_name']); ?></a>
+                            </div>
+                            
+                            <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;"><?php echo htmlspecialchars($review['titulo']); ?></h3>
+                            <p style="color: #555; line-height: 1.6; margin-bottom: 15px; font-size: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?php echo nl2br(htmlspecialchars($review['contenido'])); ?></p>
+                            
+                            <?php if (isset($review['imagen_path']) && !empty($review['imagen_path'])): 
+                                $images = [];
+                                // Intentar decodificar JSON (para múltiples imágenes)
+                                $decoded = json_decode(str_replace('\\/', '/', $review['imagen_path']), true);
+                                
+                                // Verificar si es un array válido después de decodificar
+                                if (is_array($decoded) && json_last_error() === JSON_ERROR_NONE) {
+                                    $images = $decoded;
+                                } else {
+                                    // Si no es JSON válido, asumir que es una sola imagen en formato de cadena
+                                    $images = [$review['imagen_path']];
+                                }
+                                
+                                // Eliminar valores vacíos o nulos
+                                $images = array_filter($images, function($img) {
+                                    return !empty($img);
+                                });
+                                
+                                if (!empty($images)):
+                            ?>
+                            <div class="review-gallery" style="margin: 10px 0; border-radius: 6px; overflow: hidden;">
+                                <!-- Imágenes en horizontal -->
+                                <div class="images-row" style="display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; max-width: 100%; scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;">
+                                    <?php 
+                                    // Mostrar hasta 5 imágenes
+                                    $max_images = 5;
+                                    $count = 0;
+                                    
+                                    foreach ($images as $index => $image_path): 
+                                        if ($count >= $max_images) break;
+                                        $count++;
+                                        
+                                        // Limpiar ruta de imagen
+                                        $image_path = str_replace('\\/', '/', $image_path);
+                                        
+                                        // Construir ruta completa
+                                        if (strpos($image_path, 'uploads/') === 0) {
+                                            $full_path = '../' . $image_path;
+                                        } elseif (strpos($image_path, '../uploads/') === 0) {
+                                            $full_path = $image_path;
+                                        } else {
+                                            $full_path = '../uploads/reviews/' . basename($image_path);
+                                        }
+                                        
+                                        // Determinar si es la última imagen visible y hay más para mostrar
+                                        $show_overlay = ($count == $max_images && count($images) > $max_images);
+                                    ?>
+                                    <div onclick="openImageModal('<?php echo htmlspecialchars($full_path); ?>')" 
+                                         style="flex: 0 0 auto; width: 80px; height: 80px; position: relative; overflow: hidden; border-radius: 6px; cursor: pointer; border: 1px solid #eee; transition: transform 0.2s ease;">
+                                        
+                                        <img src="<?php echo htmlspecialchars($full_path); ?>" 
+                                             alt="Foto <?php echo $index + 1; ?>" 
+                                             style="width: 100%; height: 100%; object-fit: cover;" 
+                                             onerror="this.src='../uploads/reviews/imagen_no_disponible.jpg'; this.style.opacity=0.6;">
+                                        
+                                        <?php if ($show_overlay): ?>
+                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 500;">
+                                            +<?php echo count($images) - $max_images + 1; ?>
+                                        </div>
+                                        <?php endif; ?>
+                                    </div>
+                                    <?php endforeach; ?>
+                                </div>
+                                
+                                <!-- Pequeña etiqueta de fotos -->
+                                <div style="display: flex; align-items: center; margin-top: 6px;">
+                                    <i class="fas fa-camera" style="color: #777; margin-right: 5px; font-size: 12px;"></i>
+                                    <span style="color: #777; font-size: 12px;">
+                                        <?php echo count($images) > 1 ? count($images) . ' fotos' : '1 foto'; ?>
+                                    </span>
+                                </div>
+                            </div>
+                            <?php endif; endif; ?>
+                            
+                            <?php if ($review['recomienda'] == 'si'): ?>
+                            <div style="color: #2e7d32; font-size: 14px; display: flex; align-items: center;">
+                                <i class="fas fa-thumbs-up" style="margin-right: 5px;"></i> Recomendado
+                            </div>
+                            <?php else: ?>
+                            <div style="color: #c62828; font-size: 14px; display: flex; align-items: center;">
+                                <i class="fas fa-thumbs-down" style="margin-right: 5px;"></i> No recomendado
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <!-- Controles del carrusel -->
+                <button id="prevReview" class="carousel-control prev" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
+                    <i class="fas fa-chevron-left" style="color: #000;"></i>
+                </button>
+                <button id="nextReview" class="carousel-control next" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
+                    <i class="fas fa-chevron-right" style="color: #000;"></i>
+                </button>
+                
+                <!-- Indicadores de página -->
+                <div class="review-page-indicators" style="display: flex; justify-content: center; margin-top: 20px; gap: 6px;">
+                    <?php 
+                    $totalReviews = count($reviews);
+                    $maxIndicators = 5; // Limitar a 5 indicadores
+                    $visibleIndicators = min($totalReviews, $maxIndicators);
+                    
+                    for ($i = 0; $i < $visibleIndicators; $i++): 
+                        $isActive = ($i === 0) ? true : false;
+                    ?>
+                    <button class="review-indicator <?php echo $isActive ? 'active' : ''; ?>" 
+                            data-index="<?php echo $i; ?>" 
+                            data-position="<?php echo $i / max(1, min($maxIndicators-1, $totalReviews-1)) * max(1, $totalReviews-1); ?>"
+                            aria-label="Grupo de reseñas <?php echo $i+1; ?>"
+                            style="width: 8px; height: 8px; border-radius: 50%; background-color: <?php echo $isActive ? '#cc0000' : '#ddd'; ?>; border: none; cursor: pointer; padding: 0; transition: background-color 0.3s;">
+                    </button>
+                    <?php endfor; ?>
+                </div>
+            </div>
+            <?php else: ?>
+            <div class="no-reviews" style="text-align: center; padding: 40px; background-color: #f9f9f9; border-radius: 12px; border-top: 3px solid #cc0000;">
+                <div style="font-size: 50px; color: #cc0000; margin-bottom: 15px;">
+                    <i class="far fa-comment-dots"></i>
+                </div>
+                <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #333;">¡Sé el primero en dejar una reseña!</h3>
+                <p style="color: #666; max-width: 500px; margin: 0 auto;">Tu opinión es muy importante para nosotros y para otros clientes. Comparte tu experiencia con este producto.</p>
+            </div>
+            <?php endif; ?>
+            
+            <!-- Botón para escribir una reseña -->
+            <div style="text-align: center; margin-top: 40px;">
+                <button id="openReviewForm" style="background-color: #000; color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease; font-weight: 500; letter-spacing: 0.2px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
+                    <i class="fas fa-pencil-alt" style="margin-right: 10px; font-size: 16px;"></i>Escribir una reseña
+                </button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para escribir reseñas -->
+    <div id="reviewModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 1000; overflow: auto; justify-content: center; align-items: center;">
+        <div class="modal-content" style="position: relative; background-color: #fff; max-width: 500px; width: 85%; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: modalFadeIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
+            <span class="close" onclick="document.getElementById('reviewModal').style.display='none'" style="position: absolute; right: 15px; top: 10px; font-size: 24px; font-weight: bold; cursor: pointer; color: #333;">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 15px; text-align: center; font-size: 20px;">Escribir una reseña</h2>
+            
+            <form id="reviewForm" action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" enctype="multipart/form-data" style="margin-top: 20px;">
+                <input type="hidden" name="producto_id" value="<?php echo $product_id; ?>">
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="nombre" style="display: block; margin-bottom: 8px; font-weight: 500;">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="titulo" style="display: block; margin-bottom: 8px; font-weight: 500;">Título de la reseña</label>
+                    <input type="text" id="titulo" name="titulo" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Calificación</label>
+                    <div class="rating-container">
+                        <div class="stars">
+                            <input type="radio" id="star1" name="calificacion" value="1" required />
+                            <label for="star1" title="1 estrella" data-value="1">★</label>
+                            
+                            <input type="radio" id="star2" name="calificacion" value="2" />
+                            <label for="star2" title="2 estrellas" data-value="2">★</label>
+                            
+                            <input type="radio" id="star3" name="calificacion" value="3" />
+                            <label for="star3" title="3 estrellas" data-value="3">★</label>
+                            
+                            <input type="radio" id="star4" name="calificacion" value="4" />
+                            <label for="star4" title="4 estrellas" data-value="4">★</label>
+                            
+                            <input type="radio" id="star5" name="calificacion" value="5" />
+                            <label for="star5" title="5 estrellas" data-value="5">★</label>
+                        </div>
+                        <div class="rating-text">Selecciona una calificación</div>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="contenido" style="display: block; margin-bottom: 8px; font-weight: 500;">Tu reseña</label>
+                    <textarea id="contenido" name="contenido" rows="5" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="review_images" style="display: block; margin-bottom: 8px; font-weight: 500;">Sube fotos del producto (opcional)</label>
+                    <input type="file" id="review_images" name="review_images[]" accept="image/jpeg, image/png, image/jpg" multiple style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                    <p style="margin-top: 5px; font-size: 13px; color: #666;">Puedes seleccionar hasta 3 imágenes. Formatos permitidos: JPG, JPEG, PNG. Tamaño máximo por imagen: 5MB</p>
+                    <div id="images_preview" style="margin-top: 10px; display: flex; flex-wrap: wrap; gap: 10px; justify-content: center;"></div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label style="font-weight: 500; display: block; margin-bottom: 10px;">¿Recomendarías este producto?</label>
+                    <div style="display: flex; gap: 20px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="radio" name="recomienda" value="si" checked style="margin-right: 8px;">
+                            <span>Sí</span>
+                        </label>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="radio" name="recomienda" value="no" style="margin-right: 8px;">
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" name="submit_review" style="background-color: #000; color: white; padding: 14px 25px; border: none; border-radius: 4px; font-size: 16px; width: 100%; cursor: pointer;">Enviar reseña</button>
+            </form>
+
+            <script>
+            // Previsualización de múltiples imágenes
+            document.getElementById('review_images').addEventListener('change', function(e) {
+                const files = this.files;
+                const previewContainer = document.getElementById('images_preview');
+                
+                // Limitar a 3 imágenes
+                if (files.length > 3) {
+                    alert('Solo puedes subir hasta 3 imágenes por reseña.');
+                    this.value = '';
+                    previewContainer.innerHTML = '';
+                    return;
+                }
+                
+                // Limpiar previsualizaciones anteriores
+                previewContainer.innerHTML = '';
+                
+                // Procesar cada archivo
+                for (let i = 0; i < files.length; i++) {
+                    const file = files[i];
+                    
+                    // Verificar tamaño (5MB máximo)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert(`La imagen ${file.name} es demasiado grande. El tamaño máximo es 5MB.`);
+                        this.value = '';
+                        previewContainer.innerHTML = '';
+                        return;
+                    }
+                    
+                    // Verificar tipo
+                    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+                        alert(`El archivo ${file.name} no es una imagen válida. Solo se permiten archivos JPG, JPEG o PNG.`);
+                        this.value = '';
+                        previewContainer.innerHTML = '';
+                        return;
+                    }
+                    
+                    // Crear un contenedor para la imagen y el botón de eliminar
+                    const imgContainer = document.createElement('div');
+                    imgContainer.style.position = 'relative';
+                    imgContainer.style.marginBottom = '10px';
+                    
+                    // Mostrar la vista previa
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.createElement('img');
+                        img.src = e.target.result;
+                        img.style.width = '100px';
+                        img.style.height = '100px';
+                        img.style.objectFit = 'cover';
+                        img.style.borderRadius = '8px';
+                        img.style.boxShadow = '0 2px 10px rgba(0,0,0,0.1)';
+                        
+                        imgContainer.appendChild(img);
+                        previewContainer.appendChild(imgContainer);
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            </script>
+        </div>
+    </div>
+    
+    <?php
+    // Procesar el envío de la reseña
+    if (isset($_POST['submit_review'])) {
+        // Sanitizar y validar los datos
+        $producto_id = intval($_POST['producto_id']);
+        $nombre = trim(htmlspecialchars($_POST['nombre']));
+        $calificacion = floatval($_POST['calificacion']);
+        $titulo = trim(htmlspecialchars($_POST['titulo']));
+        $contenido = trim(htmlspecialchars($_POST['contenido']));
+        $recomienda = $_POST['recomienda'] === 'si' ? 'si' : 'no';
+        $imagen_path = null;
+        $imagen_paths = [];
+        
+        // Procesar las imágenes si se han subido
+        if(isset($_FILES['review_images']) && is_array($_FILES['review_images']['name'])) {
+            // Crear directorio para las imágenes de reseñas si no existe
+            $upload_dir = "../uploads/reviews/";
+            if(!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+            
+            // Validar y subir cada imagen
+            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png'];
+            
+            for ($i = 0; $i < count($_FILES['review_images']['name']); $i++) {
+                // Verificar que haya una imagen y no haya errores
+                if ($_FILES['review_images']['error'][$i] !== 0 || empty($_FILES['review_images']['tmp_name'][$i])) {
+                    continue;
+                }
+                
+                $file_type = $_FILES['review_images']['type'][$i];
+                $file_size = $_FILES['review_images']['size'][$i];
+                $file_tmp = $_FILES['review_images']['tmp_name'][$i];
+                $file_name = $_FILES['review_images']['name'][$i];
+                
+                // Validar tipo y tamaño
+                if (in_array($file_type, $allowed_types) && $file_size <= 5 * 1024 * 1024) {
+                    // Generar un nombre único para la imagen basado en timestamp + producto_id + índice
+                    $file_extension = pathinfo($file_name, PATHINFO_EXTENSION);
+                    $unique_filename = 'review_' . $producto_id . '_' . time() . '_' . uniqid() . '_' . $i . '.' . $file_extension;
+                    $upload_path = $upload_dir . $unique_filename;
+                    
+                    // Intentar mover el archivo
+                    if (move_uploaded_file($file_tmp, $upload_path)) {
+                        // Usar ruta relativa en la base de datos (sin ../)
+                        $imagen_paths[] = 'uploads/reviews/' . $unique_filename;
+                        
+                        // Asegurar los permisos del archivo para que sea accesible
+                        chmod($upload_path, 0644);
+                    }
+                }
+            }
+        }
+        
+        // Convertir las rutas de las imágenes a formato JSON para guardarlas
+        $imagen_paths_json = !empty($imagen_paths) ? json_encode($imagen_paths) : null;
+        
+        // Validar datos
+        if (empty($nombre) || empty($titulo) || empty($contenido) || $calificacion < 1 || $calificacion > 5) {
+            echo "<script>alert('Por favor, complete todos los campos correctamente.');</script>";
+        } else {
+            try {
+                // Insertar la reseña en la base de datos con la imagen (si existe)
+                if ($imagen_paths_json) {
+                    $stmt = $pdo->prepare('
+                        INSERT INTO resenas (producto_id, nombre, calificacion, titulo, contenido, recomienda, imagen_path)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ');
+                    $result = $stmt->execute([$producto_id, $nombre, $calificacion, $titulo, $contenido, $recomienda, $imagen_paths_json]);
+                } else {
+                    $stmt = $pdo->prepare('
+                        INSERT INTO resenas (producto_id, nombre, calificacion, titulo, contenido, recomienda)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ');
+                    $result = $stmt->execute([$producto_id, $nombre, $calificacion, $titulo, $contenido, $recomienda]);
+                }
+                
+                if ($result) {
+                    echo "<script>
+                        alert('¡Gracias por tu reseña!');
+                        window.location.href = window.location.pathname + '?id=" . $product_id . "';
+                        </script>";
+                } else {
+                    echo "<script>alert('Hubo un error al guardar tu reseña. Por favor, intenta nuevamente.');</script>";
+                }
+            } catch (PDOException $e) {
+                echo "<script>alert('Error en el servidor. Por favor, intenta nuevamente más tarde.');</script>";
+                error_log("Error al guardar reseña: " . $e->getMessage());
+            }
+        }
+    }
+    ?>
 
     <footer class="footer">
         <div class="footer-content">
@@ -903,19 +1704,106 @@ try {
             <div class="social-links">
                 <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
             <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
         </div>
     </footer>
     
     <div class="whatsapp-button">
-        <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
 
     <script>
+    // Variables para personalización
+    let basePrice = parseFloat(document.querySelector('.product-price').textContent.replace('$', '').trim());
+    let currentPrice = basePrice;
+    const PATCH_PRICE = 50;
+    const CUSTOMIZATION_PRICE = 100;
+
+    // Función para validar el número del jersey
+    function validateJerseyNumber(input) {
+        // Limitar a máximo 2 dígitos
+        if (input.value.length > 2) {
+            input.value = input.value.slice(0, 2);
+        }
+        
+        // Solo validar si hay un valor
+        if (input.value !== '') {
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 0) {
+                input.value = '';
+            } else if (value > 99) {
+                input.value = 99;
+            }
+        }
+    }
+
+    // Función para actualizar el precio
+    function updatePrice() {
+        const patchOption = document.getElementById('patchOption');
+        const customizationSelect = document.getElementById('customizationSelect');
+        
+        // Calcular precio base + personalización + parche
+        currentPrice = basePrice;
+        
+        // Añadir costo de personalización si está seleccionado
+        if (customizationSelect.value === 'yes') {
+            currentPrice += CUSTOMIZATION_PRICE;
+        }
+        
+        // Añadir costo de parche si está seleccionado
+        if (patchOption.checked) {
+            currentPrice += PATCH_PRICE;
+        }
+        
+        document.querySelector('.product-price').textContent = '$ ' + currentPrice.toFixed(2);
+    }
+
+    // Event listeners para personalización
+    document.getElementById('patchOption').addEventListener('change', updatePrice);
+    document.getElementById('customizationSelect').addEventListener('change', function() {
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        if (this.value === 'yes') {
+            document.getElementById('customizationFields').style.display = 'block';
+            // Desactivar el botón de agregar al carrito hasta que se completen los campos
+            addToCartBtn.disabled = true;
+            // Verificar si los campos ya tienen valores
+            validatePersonalizationFields();
+        } else {
+            document.getElementById('customizationFields').style.display = 'none';
+            // Limpiar campos de personalización
+            document.getElementById('jerseyName').value = '';
+            document.getElementById('jerseyNumber').value = '';
+            document.getElementById('patchOption').checked = false;
+            // Habilitar el botón de agregar al carrito
+            addToCartBtn.disabled = false;
+        }
+        updatePrice();
+    });
+
+
+    // Añadir validación en tiempo real para los campos de personalización
+    document.getElementById('jerseyName').addEventListener('input', validatePersonalizationFields);
+    document.getElementById('jerseyNumber').addEventListener('input', validatePersonalizationFields);
+
+    // Función para validar los campos de personalización y actualizar el estado del botón
+    function validatePersonalizationFields() {
+        const customizationSelect = document.getElementById('customizationSelect');
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        
+        // Solo validar si la personalización está habilitada
+        if (customizationSelect.value === 'yes') {
+            const name = document.getElementById('jerseyName').value.trim();
+            const number = document.getElementById('jerseyNumber').value.trim();
+            
+            // Habilitar el botón solo si ambos campos están completos
+            addToCartBtn.disabled = !(name && number);
+        }
+    }
+
     // Funciones básicas para el manejo de imágenes
     function changeImage(element) {
         document.getElementById('mainImage').src = element.src;
@@ -940,9 +1828,53 @@ try {
         changeImage(thumbnails[newIndex]);
     }
 
+    // Nueva función para manejar la imagen fija en móviles
+    function handleFixedImages() {
+        // Solo ejecutar en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            const imageContainer = document.querySelector('.product-image-container');
+            const productInfo = document.querySelector('.product-info');
+            const imageContainerHeight = imageContainer.offsetHeight;
+            
+            // Función para manejar el scroll
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Si hemos scrolleado más allá de la posición original del contenedor
+                if (scrollTop > imageContainer.offsetTop) {
+                    imageContainer.classList.add('image-fixed');
+                    productInfo.classList.add('content-shifted');
+                } else {
+                    imageContainer.classList.remove('image-fixed');
+                    productInfo.classList.remove('content-shifted');
+                }
+            }
+            
+            // Añadir event listener para el scroll
+            window.addEventListener('scroll', handleScroll);
+            
+            // Llamar a la función una vez para establecer el estado inicial
+            handleScroll();
+        }
+    }
+
     // Asegurar que el DOM esté completamente cargado
     document.addEventListener('DOMContentLoaded', function() {
         console.log("DOM fully loaded");
+        
+        // Inicializar la funcionalidad de imagen fija
+        handleFixedImages();
+        
+        // Funcionalidad para el botón del menú móvil
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+        }
         
         // Manejo de selección de tallas
         const sizeOptions = document.querySelectorAll('.size-option');
@@ -1002,7 +1934,7 @@ try {
         
         if (sizeGuideBtn && sizeGuideModal && closeBtn) {
             sizeGuideBtn.onclick = function() {
-                sizeGuideModal.style.display = 'block';
+                sizeGuideModal.style.display = 'flex';
             };
             
             closeBtn.onclick = function() {
@@ -1024,6 +1956,440 @@ try {
             mainImage.style.cursor = 'default';
         }
     });
+
+    function toggleShippingInfo() {
+        const content = document.getElementById('shipping-content');
+        const arrow = document.getElementById('shipping-arrow');
+        
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+        } else {
+            content.style.display = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Código para manejar las reseñas
+    document.addEventListener('DOMContentLoaded', function() {
+        // Abrir el modal de reseñas al hacer clic en el botón
+        const openReviewBtn = document.getElementById('openReviewForm');
+        const reviewModal = document.getElementById('reviewModal');
+        
+        if (openReviewBtn && reviewModal) {
+            openReviewBtn.addEventListener('click', function() {
+                reviewModal.style.display = 'flex';
+            });
+        }
+        
+        // Cerrar modal al hacer clic fuera de él
+        window.addEventListener('click', function(event) {
+            if (event.target === reviewModal) {
+                reviewModal.style.display = 'none';
+            }
+        });
+        
+        // Sistema de calificación por estrellas
+        const starLabels = document.querySelectorAll('.rating-input label');
+        if (starLabels.length > 0) {
+            starLabels.forEach(function(label) {
+                label.addEventListener('mouseover', function() {
+                    // Al pasar el ratón, colorea esta estrella y todas las anteriores
+                    const currentId = this.getAttribute('for');
+                    const currentStar = parseInt(currentId.replace('star', ''));
+                    
+                    starLabels.forEach(function(innerLabel) {
+                        const innerLabelId = innerLabel.getAttribute('for');
+                        const innerStar = parseInt(innerLabelId.replace('star', ''));
+                        
+                        // En el sistema RTL (right-to-left), las estrellas más altas están a la izquierda
+                        if (innerStar >= currentStar) {
+                            innerLabel.style.color = '#FFD700'; // Color dorado
+                        } else {
+                            innerLabel.style.color = '#ddd'; // Color gris
+                        }
+                    });
+                });
+            });
+            
+            // Restablecer colores al salir del área de calificación
+            const ratingInput = document.querySelector('.rating-input');
+            if (ratingInput) {
+                ratingInput.addEventListener('mouseout', function() {
+                    // Restaurar colores basados en la selección actual
+                    const selectedStar = document.querySelector('.rating-input input:checked');
+                    if (selectedStar) {
+                        const selectedValue = parseInt(selectedStar.value);
+                        
+                        starLabels.forEach(function(label) {
+                            const labelId = label.getAttribute('for');
+                            const star = parseInt(labelId.replace('star', ''));
+                            
+                            if (star >= selectedValue) {
+                                label.style.color = '#FFD700';
+                            } else {
+                                label.style.color = '#ddd';
+                            }
+                        });
+                    } else {
+                        // Si no hay selección, todas las estrellas son grises
+                        starLabels.forEach(function(label) {
+                            label.style.color = '#ddd';
+                        });
+                    }
+                });
+            }
+            
+            // Actualizar selección al hacer clic
+            document.querySelectorAll('.rating-input input').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    const value = parseInt(this.value);
+                    
+                    starLabels.forEach(function(label) {
+                        const labelId = label.getAttribute('for');
+                        const star = parseInt(labelId.replace('star', ''));
+                        
+                        if (star >= value) {
+                            label.style.color = '#FFD700';
+                        } else {
+                            label.style.color = '#ddd';
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Carrusel de reseñas
+        const track = document.getElementById('reviewsTrack');
+        const prevButton = document.getElementById('prevReview');
+        const nextButton = document.getElementById('nextReview');
+        const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+        
+        if (track && prevButton && nextButton) {
+            let currentIndex = 0;
+            const reviewCards = document.querySelectorAll('.review-card');
+            const totalReviews = reviewCards.length;
+            
+            // No hacer nada si no hay reseñas
+            if (totalReviews === 0) return;
+            
+            // Actualizar la posición del track
+            function updatePosition() {
+                if (!track) return;
+                
+                // Calcular el ancho a desplazar
+                const cardWidth = reviewCards[0].offsetWidth;
+                const margin = 20; // 10px a cada lado
+                const offset = -(currentIndex * (cardWidth + margin));
+                
+                track.style.transform = `translateX(${offset}px)`;
+                
+                // Actualizar indicadores
+                indicators.forEach((indicator, i) => {
+                    indicator.style.backgroundColor = i === currentIndex ? '#000' : '#ddd';
+                });
+                
+                // Actualizar estado de los botones
+                prevButton.disabled = currentIndex === 0;
+                prevButton.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                nextButton.disabled = currentIndex === totalReviews - 1;
+                nextButton.style.opacity = currentIndex === totalReviews - 1 ? '0.5' : '1';
+            }
+            
+            // Botón anterior
+            prevButton.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updatePosition();
+                }
+            });
+            
+            // Botón siguiente
+            nextButton.addEventListener('click', function() {
+                if (currentIndex < totalReviews - 1) {
+                    currentIndex++;
+                    updatePosition();
+                }
+            });
+            
+            // Indicadores
+            indicators.forEach((indicator, i) => {
+                indicator.addEventListener('click', function() {
+                    currentIndex = i;
+                    updatePosition();
+                });
+            });
+            
+            // Inicializar posición
+            updatePosition();
+            
+            // Adaptar carrusel al redimensionar la ventana
+            window.addEventListener('resize', updatePosition);
+        }
+    });
+
+    // Sistema de calificación con estrellas - Implementación JavaScript
+    document.addEventListener('DOMContentLoaded', function() {
+        const starsContainer = document.querySelector('.stars');
+        const ratingLabels = document.querySelectorAll('.stars label');
+        const ratingInputs = document.querySelectorAll('.stars input');
+        const ratingText = document.querySelector('.rating-text');
+        
+        if (!starsContainer || !ratingLabels.length || !ratingInputs.length || !ratingText) return;
+        
+        // Función para actualizar estrellas activas
+        function updateStars(selectedValue) {
+            ratingLabels.forEach(label => {
+                const value = parseInt(label.getAttribute('data-value'));
+                if (value <= selectedValue) {
+                    label.classList.add('active');
+                } else {
+                    label.classList.remove('active');
+                }
+            });
+            
+            if (selectedValue > 0) {
+                ratingText.textContent = selectedValue + ' de 5 estrellas';
+            } else {
+                ratingText.textContent = 'Selecciona una calificación';
+            }
+        }
+        
+        // Manejo de eventos click
+        ratingInputs.forEach(input => {
+            input.addEventListener('change', function() {
+                updateStars(parseInt(this.value));
+            });
+        });
+        
+        // Manejo de eventos hover
+        ratingLabels.forEach(label => {
+            label.addEventListener('mouseenter', function() {
+                const hoverValue = parseInt(this.getAttribute('data-value'));
+                
+                ratingLabels.forEach(l => {
+                    const value = parseInt(l.getAttribute('data-value'));
+                    if (value <= hoverValue) {
+                        l.classList.add('hovered');
+                    } else {
+                        l.classList.remove('hovered');
+                    }
+                });
+            });
+        });
+        
+        starsContainer.addEventListener('mouseleave', function() {
+            ratingLabels.forEach(label => label.classList.remove('hovered'));
+            
+            // Restaurar la selección actual
+            const checkedInput = document.querySelector('.stars input:checked');
+            if (checkedInput) {
+                updateStars(parseInt(checkedInput.value));
+            }
+        });
+    });
+
+    // Función para abrir el modal de imagen
+    function openImageModal(imageSrc) {
+        const modal = document.getElementById('imageModal');
+        const modalImg = document.getElementById('modalImage');
+        
+        // Verificar que existen los elementos
+        if (!modal || !modalImg) {
+            console.error("Error: No se encontró el modal o la imagen");
+            return;
+        }
+        
+        // Mostrar modal
+        modal.style.display = 'flex';
+        
+        // Mostrar imagen con manejadores de error mejorados
+        modalImg.onerror = function() {
+            console.error("Error al cargar la imagen:", imageSrc);
+            
+            // Probar diferentes formatos de ruta
+            let newSrc = imageSrc;
+            
+            // Si la ruta empieza con ../
+            if (imageSrc.startsWith('../')) {
+                newSrc = imageSrc.substring(3); // Quitar ../
+                console.log("Intentando ruta sin ../:", newSrc);
+            } 
+            // Si no tiene el prefijo ../
+            else if (!imageSrc.startsWith('../')) {
+                newSrc = '../' + imageSrc; // Añadir ../
+                console.log("Intentando ruta con ../:", newSrc);
+            }
+            
+            // Intentar con la nueva ruta
+            modalImg.src = newSrc;
+            
+            // Si sigue fallando
+            this.onerror = function() {
+                // Última opción: intentar ruta directa a uploads/reviews
+                const filename = imageSrc.split('/').pop();
+                newSrc = '../uploads/reviews/' + filename;
+                console.log("Último intento con:", newSrc);
+                
+                modalImg.src = newSrc;
+                
+                // Si todo falla, mostrar imagen por defecto
+                this.onerror = function() {
+                    console.error("No se pudo cargar la imagen después de varios intentos");
+                    modalImg.src = '../uploads/reviews/imagen_no_disponible.jpg';
+                    modalImg.style.opacity = 0.5;
+                };
+            };
+        };
+        
+        // Establecer la fuente de la imagen
+        modalImg.src = imageSrc;
+        
+        // Evitar que se desplace la página cuando el modal está abierto
+        document.body.style.overflow = 'hidden';
+        
+        // Cerrar el modal al hacer clic fuera de la imagen
+        modal.addEventListener('click', function(event) {
+            if (event.target === modal) {
+                closeImageModal();
+            }
+        });
+        
+        // Añadir manejador para la tecla Escape
+        document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    // Función para cerrar el modal de imagen
+    function closeImageModal() {
+        document.getElementById('imageModal').style.display = 'none';
+        document.body.style.overflow = 'auto';
+        document.removeEventListener('keydown', handleEscapeKey);
+    }
+
+    // Manejador para la tecla Escape
+    function handleEscapeKey(event) {
+        if (event.key === 'Escape') {
+            closeImageModal();
+        }
+    }
+    </script>
+
+    <!-- Modal para mostrar imagen de reseña ampliada -->
+    <div id="imageModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.9); z-index: 1050; opacity: 0; transition: opacity 0.3s ease;">
+        <div class="modal-content" style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); width: 90%; max-width: 900px;">
+            <button onclick="closeImageModal()" style="position: absolute; top: -40px; right: 0; background: rgba(0,0,0,0.5); color: white; border: none; border-radius: 50%; width: 36px; height: 36px; font-size: 18px; cursor: pointer; display: flex; align-items: center; justify-content: center; z-index: 1060;">
+                <i class="fas fa-times"></i>
+            </button>
+            
+            <div style="position: relative;">
+                <img id="modalImage" src="" alt="<?php echo htmlspecialchars($product_name, ENT_QUOTES, 'UTF-8'); ?>" style="max-width: 100%; max-height: 80vh; display: block; margin: 0 auto; border-radius: 8px; box-shadow: 0 4px 25px rgba(0,0,0,0.3);">
+                
+                <div style="position: absolute; bottom: -40px; left: 0; width: 100%; text-align: center; color: white; font-size: 14px; padding: 10px;">
+                    <span>Foto de cliente</span>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script>
+    function openImageModal(imageSrc) {
+        var modal = document.getElementById('imageModal');
+        var modalImg = document.getElementById('modalImage');
+        
+        // Mostrar modal con animación
+        modal.style.display = 'block';
+        setTimeout(function() {
+            modal.style.opacity = '1';
+        }, 10);
+        
+        // Establecer imagen con manejo de errores
+        modalImg.src = imageSrc;
+        modalImg.onerror = function() {
+            this.src = '../uploads/reviews/imagen_no_disponible.jpg';
+            this.style.opacity = '0.7';
+        };
+        
+        // Prevenir scroll
+        document.body.style.overflow = 'hidden';
+        
+        // Evento para cerrar al hacer clic fuera
+        modal.addEventListener('click', function(e) {
+            if (e.target === modal) {
+                closeImageModal();
+            }
+        });
+        
+        // Agregar manejador para tecla Escape
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeImageModal();
+            }
+        });
+    }
+    
+    function closeImageModal() {
+        var modal = document.getElementById('imageModal');
+        modal.style.opacity = '0';
+        setTimeout(function() {
+            modal.style.display = 'none';
+            document.body.style.overflow = 'auto';
+        }, 300);
+    }
+    </script>
+
+    <script>
+    // Inicializar el slider de reseñas
+    document.addEventListener('DOMContentLoaded', function() {
+        const track = document.getElementById('reviewsTrack');
+        const indicators = document.querySelectorAll('.review-indicator');
+        const prevButton = document.getElementById('prevReview');
+        const nextButton = document.getElementById('nextReview');
+        const reviewCount = <?php echo count($reviews); ?>;
+        const maxIndicators = <?php echo min(count($reviews), 5); ?>;
+        let currentIndex = 0;
+        
+        // Función para actualizar la posición del track
+        function updateTrackPosition() {
+            track.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Calcular qué indicador activar
+            const normalizedIndex = Math.min(Math.round(currentIndex / reviewCount * (maxIndicators-1)), maxIndicators-1);
+            
+            // Actualizar indicadores
+            indicators.forEach((indicator, i) => {
+                indicator.style.backgroundColor = i === normalizedIndex ? '#cc0000' : '#ddd';
+            });
+        }
+        
+        // Event listeners para los indicadores
+        indicators.forEach((indicator, i) => {
+            indicator.addEventListener('click', () => {
+                const targetPosition = parseFloat(indicator.getAttribute('data-position') || i);
+                currentIndex = Math.round(targetPosition);
+                updateTrackPosition();
+            });
+        });
+        
+        // Event listeners para los botones de navegación
+        if (prevButton) {
+            prevButton.addEventListener('click', () => {
+                currentIndex = (currentIndex - 1 + reviewCount) % reviewCount;
+                updateTrackPosition();
+            });
+        }
+        
+        if (nextButton) {
+            nextButton.addEventListener('click', () => {
+                currentIndex = (currentIndex + 1) % reviewCount;
+                updateTrackPosition();
+            });
+        }
+    });
+
+    // Función para abrir el modal de reseña
+    document.getElementById('openReviewForm').addEventListener('click', function() {
+        document.getElementById('reviewModal').style.display = 'flex';
+    });
     </script>
 </body>
-</html> 
+</html>

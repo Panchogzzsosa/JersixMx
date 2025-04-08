@@ -89,26 +89,34 @@
 
 .modal-content {
     background-color: white;
-    margin: 15% auto;
-    padding: 20px;
-    border-radius: 8px;
+    margin: 10% auto;
+    padding: 30px;
+    border-radius: 10px;
     width: 80%;
     max-width: 600px;
     position: relative;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.15);
 }
 
 .close {
-    color: #aaa;
+    color: #333;
     float: right;
     font-size: 28px;
     font-weight: bold;
     cursor: pointer;
     position: absolute;
     right: 20px;
-    top: 10px;
+    top: 15px;
 }
 
 .close:hover {
+    color: #000;
+}
+
+.modal-content h2 {
+    margin-bottom: 20px;
+    text-align: center;
+    font-size: 28px;
     color: #333;
 }
 
@@ -116,22 +124,41 @@
     width: 100%;
     border-collapse: collapse;
     margin-top: 20px;
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 0 0 1px #eee;
 }
 
 .size-chart th,
 .size-chart td {
-    border: 1px solid #ddd;
-    padding: 12px;
+    border: none;
+    padding: 15px;
     text-align: center;
+    border-bottom: 1px solid #eee;
 }
 
 .size-chart th {
-    background-color: #f8f9fa;
-    color: #333333;
+    background-color: #000;
+    color: #fff;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.size-chart td {
+    font-size: 15px;
 }
 
 .size-chart tr:nth-child(even) {
-    background-color: #f8f9fa;
+    background-color: #f9f9f9;
+}
+
+.size-chart tr:hover {
+    background-color: #f2f2f2;
+}
+
+.size-chart tr:last-child td {
+    border-bottom: none;
 }
 
 .size-selector {

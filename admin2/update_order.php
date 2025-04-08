@@ -76,6 +76,69 @@ try {
         ]);
     }
     
+    // Recalcular el total de la orden para actualizar las estadísticas si es necesario
+    $total_stmt = $pdo->prepare("
+        SELECT SUM(quantity * price) as order_total 
+        FROM order_items 
+        WHERE order_id = ?
+    ");
+    $total_stmt->execute([$_POST['order_id']]);
+    $order_total = $total_stmt->fetch(PDO::FETCH_ASSOC)['order_total'];
+    
+    // Verificar si hay descuentos aplicados por gift card
+    $payment_notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
+    $payment_notes_stmt->execute([$_POST['order_id']]);
+    $payment_notes = $payment_notes_stmt->fetchColumn();
+    
+    // Si hay notas de pago, buscar información de descuento
+    if (!empty($payment_notes)) {
+        // Buscar información de descuento con gift card
+        if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+            $discount_amount = floatval($matches[1]);
+            // Restar el descuento del total
+            $order_total = max(0, $order_total - $discount_amount);
+            
+            // Registrar el ajuste para depuración
+            error_log("Ajustando total de orden #{$_POST['order_id']} por descuento de Gift Card: {$discount_amount}. Total ajustado: {$order_total}");
+        }
+    }
+    
+    // Actualizar estadísticas si la orden estaba completada
+    $status_stmt = $pdo->prepare("SELECT status FROM orders WHERE order_id = ?");
+    $status_stmt->execute([$_POST['order_id']]);
+    $order_status = $status_stmt->fetchColumn();
+    
+    if ($order_status === 'completed') {
+        // Actualizar las estadísticas con el nuevo total
+        $stats_stmt = $pdo->query("SELECT total_sales FROM sales_stats LIMIT 1");
+        $current_sales = $stats_stmt->fetchColumn();
+        
+        // Obtener el total anterior de esta orden (si existe registro)
+        $old_total_stmt = $pdo->prepare("
+            SELECT order_total FROM order_history 
+            WHERE order_id = ? ORDER BY updated_at DESC LIMIT 1
+        ");
+        $old_total_stmt->execute([$_POST['order_id']]);
+        $old_total = $old_total_stmt->fetchColumn();
+        
+        if ($old_total) {
+            // Ajustar las ventas totales: restar el viejo total y sumar el nuevo
+            $new_total_sales = $current_sales - $old_total + $order_total;
+        } else {
+            // Si no hay registro previo, simplemente sumar el nuevo total
+            $new_total_sales = $current_sales + $order_total;
+        }
+        
+        $pdo->exec("UPDATE sales_stats SET total_sales = {$new_total_sales}");
+        
+        // Registrar este cambio en el historial
+        $history_stmt = $pdo->prepare("
+            INSERT INTO order_history (order_id, order_total, updated_at)
+            VALUES (?, ?, NOW())
+        ");
+        $history_stmt->execute([$_POST['order_id'], $order_total]);
+    }
+    
     $pdo->commit();
     
     header('Content-Type: application/json');

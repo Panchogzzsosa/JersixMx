@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="Css/checkout2.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="Js/giftcard-redemption.js" defer></script>
     <style>
         .cart-item {
             display: flex;
@@ -33,6 +34,100 @@
         .cart-item-quantity {
             color: #666;
             font-size: 0.9rem;
+        }
+        
+        /* Estilos específicos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .checkout-container {
+                padding: 10px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+            }
+            
+            .checkout-main {
+                flex-direction: column-reverse;
+                gap: 20px;
+                align-items: flex-start; /* Alinear a la izquierda */
+            }
+            
+            /* Estilos para la información de contacto y dirección */
+            .checkout-form {
+                width: 100%;
+                padding-left: 0; /* Eliminar padding izquierdo */
+                margin-left: -5px; /* Mover hacia la izquierda */
+            }
+            
+            .checkout-form h2, .checkout-form h3 {
+                margin-left: 0; /* Sin margen a la izquierda */
+                text-align: left; /* Alinear texto a la izquierda */
+            }
+            
+            .form-group, .form-row {
+                margin-left: 0; /* Sin margen a la izquierda */
+                width: 100%;
+            }
+            
+            .form-group label, .form-group input {
+                margin-left: 0; /* Sin margen a la izquierda */
+                width: 100%;
+            }
+            
+            .order-summary {
+                width: 100%;
+                margin-top: 20px;
+                padding: 15px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+                margin-left: -8px; /* Mover más a la izquierda */
+                position: relative;
+                right: 10px; /* Mover más a la izquierda */
+            }
+            
+            .order-summary h2 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+                color: #333;
+                text-align: left; /* Alinear a la izquierda */
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-items {
+                max-height: none;
+                overflow-y: visible;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-item {
+                padding: 12px 8px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+                background-color: white;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-item-details {
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .order-total {
+                margin-top: 15px;
+                padding-top: 15px;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .subtotal, .shipping, .total {
+                padding: 8px 0;
+                font-size: 1rem;
+                margin-left: 0; /* Sin margen a la izquierda */
+                text-align: left; /* Alinear a la izquierda */
+            }
+            
+            .cart-total {
+                font-size: 1.2rem;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
         }
     </style>
 </head>
@@ -66,41 +161,41 @@
                 <h2>Información de Contacto</h2>
                 <form id="contact-form" class="contact-info">
                     <div class="form-group">
-                        <label for="email">Correo Electrónico *</label>
+                        <label for="email">Correo Electrónico</label>
                         <input type="email" id="email" name="email" required>
                     </div>
                     <div class="form-group">
-                        <label for="phone">Teléfono *</label>
+                        <label for="phone">Teléfono</label>
                         <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" maxlength="10" title="Por favor ingresa un número de teléfono válido de 10 dígitos" required onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onpaste="return false">
                     </div>
                     
                     <h3>Dirección de Envío</h3>
                     <div class="form-group">
-                        <label for="fullname">Nombre Completo *</label>
+                        <label for="fullname">Nombre Completo</label>
                         <input type="text" id="fullname" name="fullname" required>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="street">Calle y Número *</label>
+                            <label for="street">Calle y Número</label>
                             <input type="text" id="street" name="street" required>
                         </div>
                         <div class="form-group">
-                            <label for="colonia">Colonia *</label>
+                            <label for="colonia">Colonia</label>
                             <input type="text" id="colonia" name="colonia" required>
                         </div>
                     </div>
                     <div class="form-row">
                         <div class="form-group">
-                            <label for="city">Ciudad *</label>
+                            <label for="city">Ciudad</label>
                             <input type="text" id="city" name="city" required>
                         </div>
                         <div class="form-group">
-                            <label for="state">Estado *</label>
+                            <label for="state">Estado</label>
                             <input type="text" id="state" name="state" required>
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="postal">Código Postal *</label>
+                        <label for="postal">Código Postal</label>
                         <input type="text" id="postal" name="postal" pattern="[0-9]{5}" maxlength="5" title="Por favor ingresa un código postal válido de 5 dígitos" required onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onpaste="return false">
                     </div>
                     <div class="form-group privacy-policy">

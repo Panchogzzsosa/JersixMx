@@ -48,64 +48,103 @@ try {
         ORDER BY subscribed_at DESC
     ");
     $newsletter_subscribers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Obtener todos los correos únicos de diferentes tablas
+    // Obtener correos de newsletter
+    $subscriber_emails = $pdo->query("SELECT email FROM newsletter")->fetchAll(PDO::FETCH_COLUMN);
+    
+    // Obtener correos únicos de orders con nombre del cliente
+    $stmt = $pdo->query("
+        SELECT DISTINCT 
+            customer_email as email,
+            customer_name,
+            MAX(created_at) as last_order,
+            COUNT(*) as total_orders
+        FROM orders 
+        GROUP BY customer_email, customer_name
+        ORDER BY MAX(created_at) DESC
+    ");
+    $order_emails = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Combinar y eliminar duplicados manteniendo la información del cliente
+    $all_emails = array_merge(
+        array_map(function($email) {
+            return [
+                'email' => $email,
+                'type' => 'subscriber',
+                'name' => null,
+                'last_order' => null,
+                'total_orders' => 0
+            ];
+        }, $subscriber_emails),
+        array_map(function($order) {
+            return [
+                'email' => $order['email'],
+                'type' => 'customer',
+                'name' => $order['customer_name'],
+                'last_order' => $order['last_order'],
+                'total_orders' => $order['total_orders']
+            ];
+        }, $order_emails)
+    );
+
+    // Eliminar duplicados manteniendo la información más completa
+    $unique_emails = [];
+    foreach ($all_emails as $email_data) {
+        $email = $email_data['email'];
+        if (!isset($unique_emails[$email]) || 
+            ($email_data['type'] === 'customer' && $unique_emails[$email]['type'] === 'subscriber')) {
+            $unique_emails[$email] = $email_data;
+        }
+    }
+    $all_emails = array_values($unique_emails);
+    
 } catch(PDOException $e) {
     $total_newsletter = 0;
     $total_orders = 0;
     $total_unique_emails = 0;
     $newsletter_subscribers = [];
-    $error_message = "Error al obtener datos: " . $e->getMessage();
-}
-
-// Obtener todos los correos únicos de diferentes tablas
-try {
-    // Obtener correos de subscribers
-    $subscriber_emails = $pdo->query("SELECT email FROM subscribers WHERE active = 1")->fetchAll(PDO::FETCH_COLUMN);
-    
-    // Obtener correos de orders
-    $order_emails = $pdo->query("SELECT DISTINCT customer_email FROM orders")->fetchAll(PDO::FETCH_COLUMN);
-    
-    // Obtener correos de customers si existe la tabla
-    $customer_emails = [];
-    if ($pdo->query("SHOW TABLES LIKE 'customers'")->rowCount() > 0) {
-        $customer_emails = $pdo->query("SELECT DISTINCT email FROM customers")->fetchAll(PDO::FETCH_COLUMN);
-    }
-    
-    // Combinar y eliminar duplicados
-    $all_emails = array_unique(array_merge($subscriber_emails, $order_emails, $customer_emails));
-    sort($all_emails); // Ordenar alfabéticamente
-    
-} catch(PDOException $e) {
     $all_emails = [];
-    $error_message = "Error al obtener correos: " . $e->getMessage();
+    $error_message = "Error al obtener datos: " . $e->getMessage();
 }
 
 // Obtener clientes
 try {
-    // Verificar si la tabla customers existe
-    $tables = $pdo->query("SHOW TABLES LIKE 'customers'")->fetchAll();
+    // Obtener todos los clientes que han realizado pedidos
+    $stmt = $pdo->query("
+        SELECT 
+            o.customer_email,
+            o.customer_name,
+            o.phone,
+            MAX(o.created_at) as last_order,
+            COUNT(DISTINCT o.order_id) as total_orders,
+            SUM(oi.quantity * oi.price) as total_spent
+        FROM orders o
+        LEFT JOIN order_items oi ON o.order_id = oi.order_id
+        GROUP BY o.customer_email, o.customer_name, o.phone
+        ORDER BY MAX(o.created_at) DESC
+    ");
+    $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Debug: Imprimir la consulta y los resultados
+    error_log("Consulta de clientes ejecutada");
+    error_log("Número de clientes encontrados: " . count($customers));
     
-    if (empty($tables)) {
-        $customers = [];
-    } else {
-        // La tabla existe, obtener los datos
-        $stmt = $pdo->query("
-            SELECT DISTINCT 
-                o.customer_email,
-                o.customer_name,
-                o.phone,
-                MAX(o.created_at) as last_order,
-                COUNT(DISTINCT o.order_id) as total_orders,
-                SUM(oi.quantity * oi.price) as total_spent
-            FROM orders o
-            LEFT JOIN order_items oi ON o.order_id = oi.order_id
-            GROUP BY o.customer_email, o.customer_name, o.phone
-            ORDER BY last_order DESC
-        ");
-        $customers = $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
 } catch(PDOException $e) {
     $customers = [];
     $error_message = "Error al obtener clientes: " . $e->getMessage();
+    error_log($error_message);
+}
+
+// Debug: Verificar la conexión y las tablas
+try {
+    $tables = $pdo->query("SHOW TABLES")->fetchAll(PDO::FETCH_COLUMN);
+    error_log("Tablas en la base de datos: " . implode(", ", $tables));
+    
+    $orderCount = $pdo->query("SELECT COUNT(*) FROM orders")->fetchColumn();
+    error_log("Número total de órdenes: " . $orderCount);
+} catch(PDOException $e) {
+    error_log("Error al verificar la base de datos: " . $e->getMessage());
 }
 
 // Procesar envío de correo masivo
@@ -627,13 +666,303 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
             .stats-grid {
                 grid-template-columns: 1fr 1fr;
             }
+            
+            .panel-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .tabs {
+                width: 100%;
+                overflow-x: auto;
+                white-space: nowrap;
+                -webkit-overflow-scrolling: touch;
+                padding-bottom: 5px;
+            }
+            
+            .tab {
+                padding: 10px 15px;
+            }
+            
+            .table-container {
+                margin: 0 -20px;
+                width: calc(100% + 40px);
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+
+            /* Estilos específicos para la tabla de productos en móvil */
+            .product-table th,
+            .product-table td {
+                padding: 12px 8px;
+                font-size: 13px;
+            }
+
+            .product-table td:first-child {
+                position: sticky;
+                left: 0;
+                background: white;
+                z-index: 1;
+            }
+
+            .product-table .product-image {
+                width: 50px;
+                height: 50px;
+            }
+
+            .product-table .product-actions {
+                display: flex;
+                flex-direction: column;
+                gap: 5px;
+            }
+
+            .product-table .btn {
+                width: 100%;
+                padding: 6px 10px;
+                font-size: 12px;
+            }
+
+            .product-table .badge {
+                display: inline-block;
+                margin: 2px 0;
+            }
+
+            /* Mejoras para el formulario de productos */
+            .product-form {
+                padding: 15px;
+            }
+
+            .product-form .form-group {
+                margin-bottom: 15px;
+            }
+
+            .product-form .form-control {
+                font-size: 16px;
+            }
+
+            .product-form .btn-group {
+                flex-direction: column;
+                gap: 10px;
+            }
+
+            .product-form .btn {
+                width: 100%;
+                margin: 0;
+            }
+
+            /* Mejoras para la vista de detalles del producto */
+            .product-details {
+                padding: 15px;
+            }
+
+            .product-details .product-header {
+                flex-direction: column;
+                gap: 15px;
+            }
+
+            .product-details .product-image {
+                width: 100%;
+                max-width: 200px;
+                margin: 0 auto;
+            }
+
+            .product-details .product-info {
+                width: 100%;
+            }
+
+            .product-details .product-actions {
+                width: 100%;
+                justify-content: center;
+            }
+            
+            /* Mejoras para la tabla de clientes en móvil */
+            .customer-table {
+                display: block;
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .customer-table thead {
+                display: none;
+            }
+            
+            .customer-table tbody {
+                display: block;
+                width: 100%;
+            }
+            
+            .customer-table tr {
+                display: block;
+                width: 100%;
+                margin-bottom: 15px;
+                border: 1px solid #e9ecef;
+                border-radius: var(--border-radius);
+                background: white;
+                box-shadow: var(--box-shadow);
+            }
+            
+            .customer-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 15px;
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .customer-table td:last-child {
+                border-bottom: none;
+            }
+            
+            .customer-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--secondary-color);
+                margin-right: 10px;
+            }
+            
+            .customer-table .badge {
+                margin-left: auto;
+            }
+            
+            .customer-table .product-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+            
+            /* Mejoras para la tabla de suscriptores en móvil */
+            .subscriber-table {
+                display: block;
+                width: 100%;
+                min-width: auto;
+            }
+            
+            .subscriber-table thead {
+                display: none;
+            }
+            
+            .subscriber-table tbody {
+                display: block;
+                width: 100%;
+            }
+            
+            .subscriber-table tr {
+                display: block;
+                width: 100%;
+                margin-bottom: 15px;
+                border: 1px solid #e9ecef;
+                border-radius: var(--border-radius);
+                background: white;
+                box-shadow: var(--box-shadow);
+            }
+            
+            .subscriber-table td {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 10px 15px;
+                border: none;
+                border-bottom: 1px solid #f0f0f0;
+            }
+            
+            .subscriber-table td:last-child {
+                border-bottom: none;
+            }
+            
+            .subscriber-table td::before {
+                content: attr(data-label);
+                font-weight: 600;
+                color: var(--secondary-color);
+                margin-right: 10px;
+            }
+            
+            .subscriber-table .product-actions {
+                width: 100%;
+                justify-content: flex-end;
+                margin-top: 10px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .panel {
+                margin: 0 -15px;
+                border-radius: 0;
+            }
+            
+            .panel-body {
+                padding: 15px;
+            }
+            
+            .form-control {
+                font-size: 16px; /* Evita zoom en iOS */
+            }
+            
+            .alert {
+                margin: 0 -15px 15px;
+                border-radius: 0;
+            }
+
+            /* Ajustes adicionales para pantallas muy pequeñas */
+            .product-table td {
+                padding: 10px 6px;
+                font-size: 12px;
+            }
+
+            .product-table .btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
+
+            .product-form label {
+                font-size: 14px;
+            }
+
+            .product-details h2 {
+                font-size: 18px;
+            }
+
+            .product-details .price {
+                font-size: 20px;
+            }
+            
+            /* Ajustes adicionales para tablas en pantallas muy pequeñas */
+            .customer-table td,
+            .subscriber-table td {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            .customer-table td::before,
+            .subscriber-table td::before {
+                font-size: 12px;
+            }
+            
+            .customer-table .btn,
+            .subscriber-table .btn {
+                padding: 4px 8px;
+                font-size: 11px;
+            }
         }
     </style>
 </head>
 <body>
     <div class="dashboard-layout">
+        <!-- Botón de menú móvil -->
+        <button class="mobile-toggle" id="mobile-menu-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+        
         <!-- Sidebar -->
-        <aside class="sidebar">
+        <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <h2>Jersix.mx</h2>
             </div>
@@ -663,6 +992,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="giftcards.php">
+                        <i class="fas fa-gift"></i>
+                        <span>Gift Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión</span>
@@ -675,12 +1010,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
         <main class="main-content">
             <!-- Top Bar -->
             <div class="topbar">
-                <h1>Clientes y Newsletter</h1>
+                <div>
+                    <h1>Clientes / Newsletter</h1>
+                </div>
                 <div class="user-info">
-                    <span>Usuario: Admin</span>
-                    <a href="dashboard.php" class="btn btn-outline">
-                        <i class="fas fa-arrow-left"></i> Volver al Dashboard
-                    </a>
+                    <img src="../img/ICON.png" alt="User" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                    <span><?php echo $_SESSION['admin_name'] ?? 'Administrador'; ?></span>
                 </div>
             </div>
             
@@ -735,6 +1070,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                 <div class="panel-body">
                     <!-- Tab de Clientes -->
                     <div class="tab-content active" id="customers-content">
+                        <div style="margin-bottom: 20px;">
+                            <input type="text" 
+                                   id="customerSearch" 
+                                   class="form-control" 
+                                   placeholder="Buscar por nombre, correo o teléfono..." 
+                                   style="max-width: 300px;">
+                        </div>
                         <?php if (empty($customers)): ?>
                             <div class="empty-state">
                                 <div class="empty-state-icon">
@@ -747,7 +1089,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                             </div>
                         <?php else: ?>
                             <div class="table-container">
-                                <table>
+                                <table class="customer-table">
                                     <thead>
                                         <tr>
                                             <th>Cliente</th>
@@ -759,13 +1101,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="customersTableBody">
                                         <?php foreach ($customers as $customer): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($customer['customer_name']); ?></td>
-                                                <td><?php echo htmlspecialchars($customer['customer_email']); ?></td>
-                                                <td><?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?></td>
-                                                <td>
+                                            <tr class="customer-row">
+                                                <td data-label="Cliente"><?php echo htmlspecialchars($customer['customer_name']); ?></td>
+                                                <td data-label="Correo"><?php echo htmlspecialchars($customer['customer_email']); ?></td>
+                                                <td data-label="Teléfono"><?php echo htmlspecialchars($customer['phone'] ?? 'N/A'); ?></td>
+                                                <td data-label="Último Pedido">
                                                     <?php 
                                                         $last_order_date = new DateTime($customer['last_order']);
                                                         echo $last_order_date->format('d/m/Y');
@@ -780,15 +1122,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                                         <span class="badge badge-danger">Inactivo</span>
                                                     <?php endif; ?>
                                                 </td>
-                                                <td><?php echo $customer['total_orders']; ?></td>
-                                                <td>$<?php echo number_format($customer['total_spent'], 2); ?></td>
-                                                <td>
-                                                    <div style="display: flex; gap: 5px;">
+                                                <td data-label="Total Pedidos"><?php echo $customer['total_orders']; ?></td>
+                                                <td data-label="Total Gastado">$<?php echo number_format($customer['total_spent'], 2); ?></td>
+                                                <td data-label="Acciones">
+                                                    <div class="product-actions">
                                                         <a href="javascript:void(0)" onclick="emailSingleCustomer('<?php echo htmlspecialchars($customer['customer_email']); ?>')" class="btn btn-sm btn-primary">
                                                             <i class="fas fa-envelope"></i> Correo
-                                                        </a>
-                                                        <a href="orders.php?email=<?php echo urlencode($customer['customer_email']); ?>" class="btn btn-sm btn-secondary">
-                                                            <i class="fas fa-shopping-cart"></i> Ver Pedidos
                                                         </a>
                                                     </div>
                                                 </td>
@@ -802,19 +1141,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                     
                     <!-- Tab de Suscriptores -->
                     <div class="tab-content" id="subscribers-content">
-                        <?php if (isset($error_message)): ?>
-                            <div class="alert alert-danger">
-                                <?php echo htmlspecialchars($error_message); ?>
-                            </div>
-                        <?php endif; ?>
-
-                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                            <div>
-                                <h3 style="margin-bottom: 5px;">Suscriptores Newsletter</h3>
-                                <p style="color: var(--secondary-color);">
-                                    Total de suscriptores: <?php echo $total_newsletter; ?>
-                                </p>
-                            </div>
+                        <div style="margin-bottom: 20px; display: flex; justify-content: space-between; align-items: center;">
+                            <input type="text" 
+                                   id="subscriberSearch" 
+                                   class="form-control" 
+                                   placeholder="Buscar por correo..." 
+                                   style="max-width: 300px;">
                             <button class="btn btn-primary" id="add-subscriber-btn">
                                 <i class="fas fa-plus"></i> Agregar Suscriptor
                             </button>
@@ -832,7 +1164,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                             </div>
                         <?php else: ?>
                             <div class="table-container">
-                                <table>
+                                <table class="subscriber-table">
                                     <thead>
                                         <tr>
                                             <th>Correo</th>
@@ -840,18 +1172,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                             <th>Acciones</th>
                                         </tr>
                                     </thead>
-                                    <tbody>
+                                    <tbody id="subscribersTableBody">
                                         <?php foreach ($newsletter_subscribers as $subscriber): ?>
-                                            <tr>
-                                                <td><?php echo htmlspecialchars($subscriber['email']); ?></td>
-                                                <td>
+                                            <tr class="subscriber-row">
+                                                <td data-label="Correo"><?php echo htmlspecialchars($subscriber['email']); ?></td>
+                                                <td data-label="Fecha de Suscripción">
                                                     <?php 
                                                         $sub_date = new DateTime($subscriber['subscribed_at']);
                                                         echo $sub_date->format('d/m/Y H:i');
                                                     ?>
                                                 </td>
-                                                <td>
-                                                    <div style="display: flex; gap: 5px;">
+                                                <td data-label="Acciones">
+                                                    <div class="product-actions">
                                                         <a href="javascript:void(0)" onclick="emailSingleSubscriber('<?php echo htmlspecialchars($subscriber['email']); ?>')" class="btn btn-sm btn-primary">
                                                             <i class="fas fa-envelope"></i> Enviar Correo
                                                         </a>
@@ -893,20 +1225,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                                 </div>
                                 
                                 <div style="margin-top: 15px; max-height: 200px; overflow-y: auto; border: 1px solid #ced4da; border-radius: var(--border-radius); padding: 10px;">
-                                    <?php if (empty($customers) && empty($subscriber_emails)): ?>
+                                    <?php if (empty($all_emails)): ?>
                                         <p>No hay destinatarios disponibles</p>
                                     <?php else: ?>
-                                        <?php foreach ($subscriber_emails as $email): ?>
+                                        <?php foreach ($all_emails as $email_data): ?>
                                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 0;">
-                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($email); ?>" class="subscriber-checkbox recipient-checkbox">
-                                                <span><?php echo htmlspecialchars($email); ?> <span class="badge badge-primary">Suscriptor</span></span>
-                                            </label>
-                                        <?php endforeach; ?>
-                                        
-                                        <?php foreach ($customers as $customer): ?>
-                                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer; padding: 5px 0;">
-                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($customer['customer_email']); ?>" class="customer-checkbox recipient-checkbox">
-                                                <span><?php echo htmlspecialchars($customer['customer_email']); ?> (<?php echo htmlspecialchars($customer['customer_name']); ?>) <span class="badge badge-success">Cliente</span></span>
+                                                <input type="checkbox" name="recipients[]" value="<?php echo htmlspecialchars($email_data['email']); ?>" 
+                                                       class="<?php echo $email_data['type']; ?>-checkbox recipient-checkbox">
+                                                <span>
+                                                    <?php echo htmlspecialchars($email_data['email']); ?>
+                                                    <?php if ($email_data['type'] === 'customer'): ?>
+                                                        <span style="margin-left: 4px; color: #6b7280;">(<?php echo htmlspecialchars($email_data['name']); ?>)</span>
+                                                        <span class="badge badge-success">Cliente</span>
+                                                        <?php if ($email_data['total_orders'] > 0): ?>
+                                                            <span class="badge badge-primary"><?php echo $email_data['total_orders']; ?> pedido(s)</span>
+                                                        <?php endif; ?>
+                                                    <?php else: ?>
+                                                        <span class="badge badge-primary">Suscriptor</span>
+                                                    <?php endif; ?>
+                                                </span>
                                             </label>
                                         <?php endforeach; ?>
                                     <?php endif; ?>
@@ -936,99 +1273,97 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
     
     <script>
         // Función para cambiar de pestañas
-        document.querySelectorAll('.tab').forEach(tab => {
-            tab.addEventListener('click', () => {
-                // Quitar clase activa de todas las pestañas
-                document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
-                // Añadir clase activa a la pestaña actual
-                tab.classList.add('active');
-                
-                // Ocultar todos los contenidos de pestañas
-                document.querySelectorAll('.tab-content').forEach(content => {
-                    content.classList.remove('active');
+        document.addEventListener('DOMContentLoaded', function() {
+            // Código existente para las pestañas
+            document.querySelectorAll('.tab').forEach(tab => {
+                tab.addEventListener('click', () => {
+                    document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+                    tab.classList.add('active');
+                    
+                    document.querySelectorAll('.tab-content').forEach(content => {
+                        content.classList.remove('active');
+                    });
+                    
+                    const tabId = tab.getAttribute('data-tab');
+                    document.getElementById(tabId + '-content').classList.add('active');
+                });
+            });
+
+            // Agregar el evento de búsqueda para clientes
+            const searchInput = document.getElementById('customerSearch');
+            if (searchInput) {
+                searchInput.addEventListener('keyup', function() {
+                    const searchText = this.value.toLowerCase();
+                    const rows = document.querySelectorAll('.customer-row');
+                    
+                    rows.forEach(row => {
+                        const name = row.children[0].textContent.toLowerCase();
+                        const email = row.children[1].textContent.toLowerCase();
+                        const phone = row.children[2].textContent.toLowerCase();
+                        
+                        if (name.includes(searchText) || 
+                            email.includes(searchText) || 
+                            phone.includes(searchText)) {
+                            row.style.display = '';
+                        } else {
+                            row.style.display = 'none';
+                        }
+                    });
+                });
+            }
+
+            // Código existente para el formulario de suscriptor
+            const addSubscriberBtn = document.getElementById('add-subscriber-btn');
+            const addSubscriberForm = document.getElementById('add-subscriber-form');
+            const cancelAddSubscriber = document.getElementById('cancel-add-subscriber');
+            
+            if (addSubscriberBtn && addSubscriberForm && cancelAddSubscriber) {
+                addSubscriberBtn.addEventListener('click', () => {
+                    addSubscriberForm.style.display = 'block';
+                    addSubscriberBtn.style.display = 'none';
                 });
                 
-                // Mostrar el contenido de la pestaña seleccionada
-                const tabId = tab.getAttribute('data-tab');
-                document.getElementById(tabId + '-content').classList.add('active');
-            });
-        });
-        
-        // Mostrar/ocultar formulario de agregar suscriptor
-        const addSubscriberBtn = document.getElementById('add-subscriber-btn');
-        const addSubscriberForm = document.getElementById('add-subscriber-form');
-        const cancelAddSubscriber = document.getElementById('cancel-add-subscriber');
-        
-        addSubscriberBtn.addEventListener('click', () => {
-            addSubscriberForm.style.display = 'block';
-            addSubscriberBtn.style.display = 'none';
-        });
-        
-        cancelAddSubscriber.addEventListener('click', () => {
-            addSubscriberForm.style.display = 'none';
-            addSubscriberBtn.style.display = 'block';
-        });
-        
-        // Lógica para seleccionar destinatarios de correo
-        const selectAll = document.getElementById('select-all');
-        const selectSubscribers = document.getElementById('select-subscribers');
-        const selectCustomers = document.getElementById('select-customers');
-        
-        // Seleccionar todos
-        selectAll.addEventListener('change', function() {
-            document.querySelectorAll('.recipient-checkbox').forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+                cancelAddSubscriber.addEventListener('click', () => {
+                    addSubscriberForm.style.display = 'none';
+                    addSubscriberBtn.style.display = 'block';
+                });
+            }
+
+            // Código existente para selección de destinatarios
+            const selectAll = document.getElementById('select-all');
+            const selectSubscribers = document.getElementById('select-subscribers');
+            const selectCustomers = document.getElementById('select-customers');
             
-            selectSubscribers.checked = this.checked;
-            selectCustomers.checked = this.checked;
-        });
-        
-        // Seleccionar todos los suscriptores
-        selectSubscribers.addEventListener('change', function() {
-            document.querySelectorAll('.subscriber-checkbox').forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
+            if (selectAll) {
+                selectAll.addEventListener('change', function() {
+                    document.querySelectorAll('.recipient-checkbox').forEach(checkbox => {
+                        checkbox.checked = this.checked;
+                    });
+                    
+                    if (selectSubscribers) selectSubscribers.checked = this.checked;
+                    if (selectCustomers) selectCustomers.checked = this.checked;
+                });
+            }
+
+            // Manejo del menú móvil
+            const mobileMenuToggle = document.getElementById('mobile-menu-toggle');
+            const sidebar = document.getElementById('sidebar');
             
-            updateSelectAllState();
+            if (mobileMenuToggle && sidebar) {
+                mobileMenuToggle.addEventListener('click', () => {
+                    sidebar.classList.toggle('active');
+                });
+
+                // Cerrar menú al hacer clic fuera
+                document.addEventListener('click', (e) => {
+                    if (!sidebar.contains(e.target) && !mobileMenuToggle.contains(e.target)) {
+                        sidebar.classList.remove('active');
+                    }
+                });
+            }
         });
-        
-        // Seleccionar todos los clientes
-        selectCustomers.addEventListener('change', function() {
-            document.querySelectorAll('.customer-checkbox').forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-            
-            updateSelectAllState();
-        });
-        
-        // Actualizar estado de "Seleccionar todos"
-        function updateSelectAllState() {
-            const allCheckboxes = document.querySelectorAll('.recipient-checkbox');
-            const checkedCheckboxes = document.querySelectorAll('.recipient-checkbox:checked');
-            
-            selectAll.checked = allCheckboxes.length === checkedCheckboxes.length;
-        }
-        
-        // Actualizar cuando se cambia cualquier checkbox individual
-        document.querySelectorAll('.recipient-checkbox').forEach(checkbox => {
-            checkbox.addEventListener('change', () => {
-                // Comprobar si todas las casillas de suscriptores están marcadas
-                const allSubscribers = document.querySelectorAll('.subscriber-checkbox');
-                const checkedSubscribers = document.querySelectorAll('.subscriber-checkbox:checked');
-                selectSubscribers.checked = allSubscribers.length === checkedSubscribers.length;
-                
-                // Comprobar si todas las casillas de clientes están marcadas
-                const allCustomers = document.querySelectorAll('.customer-checkbox');
-                const checkedCustomers = document.querySelectorAll('.customer-checkbox:checked');
-                selectCustomers.checked = allCustomers.length === checkedCustomers.length;
-                
-                // Actualizar estado de "Seleccionar todos"
-                updateSelectAllState();
-            });
-        });
-        
-        // Funciones para enviar correo a un destinatario específico
+
+        // Mantener las funciones globales existentes
         function emailSingleCustomer(email) {
             document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
             document.querySelector('.tab[data-tab="send-email"]').classList.add('active');
@@ -1050,7 +1385,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
             // Enfocar en el asunto del correo
             document.getElementById('email_subject').focus();
         }
-        
+
         function emailSingleSubscriber(email) {
             // Cambiar a la pestaña de envío de correo
             document.querySelector('.tab[data-tab="send-email"]').click();
@@ -1063,7 +1398,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
             // Enfocar el campo de asunto
             document.getElementById('email_subject').focus();
         }
-        
+
         function deleteSubscriber(id) {
             if (confirm('¿Estás seguro de que deseas eliminar este suscriptor?')) {
                 // Aquí puedes agregar la lógica para eliminar el suscriptor

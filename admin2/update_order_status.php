@@ -40,6 +40,24 @@ try {
         $total_stmt->execute([$order_id]);
         $order_total = $total_stmt->fetch(PDO::FETCH_ASSOC)['order_total'];
         
+        // Verificar si hay descuentos aplicados por gift card
+        $payment_notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
+        $payment_notes_stmt->execute([$order_id]);
+        $payment_notes = $payment_notes_stmt->fetchColumn();
+        
+        // Si hay notas de pago, buscar información de descuento
+        if (!empty($payment_notes)) {
+            // Buscar información de descuento con gift card
+            if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+                $discount_amount = floatval($matches[1]);
+                // Restar el descuento del total
+                $order_total = max(0, $order_total - $discount_amount);
+                
+                // Registrar el ajuste para depuración
+                error_log("Ajustando total de orden #{$order_id} por descuento de Gift Card: {$discount_amount}. Total ajustado: {$order_total}");
+            }
+        }
+        
         // Actualizar las estadísticas asegurando valores no negativos
         $new_total_sales = $current_stats['total_sales'] + $order_total;
         $new_total_orders = $current_stats['total_orders'] + 1;
@@ -60,6 +78,24 @@ try {
         ");
         $total_stmt->execute([$order_id]);
         $order_total = $total_stmt->fetch(PDO::FETCH_ASSOC)['order_total'];
+        
+        // Verificar si hay descuentos aplicados por gift card
+        $payment_notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
+        $payment_notes_stmt->execute([$order_id]);
+        $payment_notes = $payment_notes_stmt->fetchColumn();
+        
+        // Si hay notas de pago, buscar información de descuento
+        if (!empty($payment_notes)) {
+            // Buscar información de descuento con gift card
+            if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+                $discount_amount = floatval($matches[1]);
+                // Restar el descuento del total
+                $order_total = max(0, $order_total - $discount_amount);
+                
+                // Registrar el ajuste para depuración
+                error_log("Ajustando total de orden #{$order_id} por descuento de Gift Card: {$discount_amount}. Total ajustado: {$order_total}");
+            }
+        }
         
         // Actualizar las estadísticas asegurando valores no negativos
         $new_total_sales = max(0, $current_stats['total_sales'] - $order_total);

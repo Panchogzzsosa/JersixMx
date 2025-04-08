@@ -29,58 +29,101 @@ document.addEventListener('DOMContentLoaded', function() {
     function createSearchResultItem(product) {
         const resultItem = document.createElement('div');
         resultItem.className = 'search-result-item';
+        
+        // Construir la URL de la imagen correctamente
+        let imageUrl = product.image_url;
+        
+        // Verificar si la imagen existe y manejar diferentes formatos de ruta
+        if (imageUrl) {
+            // Si la ruta no comienza con http o https
+            if (!imageUrl.startsWith('http')) {
+                // Si no comienza con una barra, añadir el prefijo adecuado
+                if (!imageUrl.startsWith('/') && !imageUrl.startsWith('../')) {
+                    // Si estamos en la carpeta Productos-equipos, ajustar la ruta
+                    if (location.pathname.includes('/Productos-equipos/')) {
+                        imageUrl = '../' + imageUrl;
+                    } else {
+                        imageUrl = imageUrl;
+                    }
+                }
+            }
+        } else {
+            // Usar imagen por defecto si no hay imagen
+            imageUrl = location.pathname.includes('/Productos-equipos/') ? '../img/default-product.jpg' : 'img/default-product.jpg';
+        }
+        
+        // Construir la URL del producto correctamente basado en la ubicación actual
+        let productUrl;
+        if (location.pathname.includes('/Productos-equipos/')) {
+            productUrl = 'producto.php?id=' + product.product_id;
+        } else {
+            productUrl = 'Productos-equipos/producto.php?id=' + product.product_id;
+        }
+        
         resultItem.innerHTML = `
-            <img src="${product.image}" alt="${product.name}" class="result-image">
+            <img src="${imageUrl}" alt="${product.name}" class="result-image" onerror="this.src='${location.pathname.includes('/Productos-equipos/') ? '../img/default-product.jpg' : 'img/default-product.jpg'}'">
             <div class="result-info">
                 <h4>${product.name}</h4>
-                <p>${product.team} - ${product.category}</p>
-                <span class="result-price">$${product.price}</span>
+                <p>${product.category || ''}</p>
+                <span class="result-price">$${parseFloat(product.price).toFixed(2)}</span>
             </div>
         `;
+        
         resultItem.addEventListener('click', () => {
-            window.location.href = product.url;
+            window.location.href = productUrl;
         });
+        
         return resultItem;
     }
 
     function performSearch(searchTerm) {
         searchResults.innerHTML = '';
-        if (!searchTerm) {
+        if (!searchTerm || searchTerm.length < 2) {
             searchResults.style.display = 'none';
             return;
         }
 
-        const normalizedSearchTerm = searchTerm.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+        // Mostrar indicador de carga
+        searchResults.innerHTML = '<div class="loading">Buscando...</div>';
+        searchResults.style.display = 'block';
         
-        const matchedProducts = productsData.filter(product => {
-            const normalizedName = product.name.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const normalizedTeam = product.team.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            const normalizedCategory = product.category.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-            
-            return normalizedName.includes(normalizedSearchTerm) ||
-                   normalizedTeam.includes(normalizedSearchTerm) ||
-                   normalizedCategory.includes(normalizedSearchTerm);
-        });
-
-        if (matchedProducts.length > 0) {
-            matchedProducts.forEach(product => {
-                searchResults.appendChild(createSearchResultItem(product));
+        // Realizar búsqueda mediante AJAX a la base de datos
+        // Usar ruta absoluta para asegurar que funcione desde cualquier ubicación
+        const searchUrl = location.pathname.includes('/Productos-equipos/') ? '../search_products.php' : 'search_products.php';
+        fetch(searchUrl + '?q=' + encodeURIComponent(searchTerm))
+            .then(response => response.json())
+            .then(data => {
+                searchResults.innerHTML = '';
+                
+                if (data.products && data.products.length > 0) {
+                    data.products.forEach(product => {
+                        searchResults.appendChild(createSearchResultItem(product));
+                    });
+                } else {
+                    searchResults.innerHTML = '<div class="no-results">No se encontraron productos</div>';
+                }
+                
+                searchResults.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Error en la búsqueda:', error);
+                searchResults.innerHTML = '<div class="error">Error al buscar productos</div>';
+                searchResults.style.display = 'block';
             });
-            searchResults.style.display = 'block';
-        } else {
-            searchResults.innerHTML = '<div class="no-results">No se encontraron productos</div>';
-            searchResults.style.display = 'block';
-        }
     }
 
-    // Handle search functionality
+    // Agregar un pequeño retraso para no hacer búsquedas con cada pulsación
+    let searchTimeout;
     searchInput.addEventListener('input', (e) => {
-        performSearch(e.target.value);
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            performSearch(e.target.value);
+        }, 300);
     });
 
     searchInput.addEventListener('focus', () => {
-        if (searchInput.value) {
-            searchResults.style.display = 'block';
+        if (searchInput.value && searchInput.value.length >= 2) {
+            performSearch(searchInput.value);
         }
     });
 
@@ -97,4 +140,12 @@ document.addEventListener('DOMContentLoaded', function() {
             performSearch(searchInput.value);
         }
     });
+    
+    // Función global para búsqueda desde otros lugares
+    window.performSearch = function(term) {
+        if (searchInput) {
+            searchInput.value = term;
+            performSearch(term);
+        }
+    };
 });

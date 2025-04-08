@@ -42,17 +42,48 @@ document.addEventListener('DOMContentLoaded', function() {
             return;
         }
 
-        // Get form values
+        // Función para sanitizar texto
+        function sanitizeText(text) {
+            if (!text) return '';
+            // Convertir a string primero
+            const str = String(text);
+            // Convertir HTML a entidades para evitar problemas con JSON
+            return str.replace(/&/g, "&amp;")
+                      .replace(/</g, "&lt;")
+                      .replace(/>/g, "&gt;")
+                      .replace(/"/g, "&quot;")
+                      .replace(/'/g, "&#039;")
+                      .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Eliminar caracteres de control
+                      .trim();
+        }
+
+        // Get form values and sanitize them
         const giftcardData = {
             type: 'giftcard',
             amount: selectedAmount.dataset.amount,
-            recipientName: document.getElementById('recipient-name').value,
-            recipientEmail: document.getElementById('recipient-email').value,
-            message: document.getElementById('message').value,
-            senderName: document.getElementById('sender-name').value
+            recipientName: sanitizeText(document.getElementById('recipient-name').value),
+            recipientEmail: document.getElementById('recipient-email').value.trim(),
+            message: sanitizeText(document.getElementById('message').value),
+            senderName: sanitizeText(document.getElementById('sender-name').value)
         };
 
         try {
+            // Validar campos requeridos
+            if (!giftcardData.recipientName) {
+                showNotification('Por favor, ingrese el nombre del destinatario', false);
+                return;
+            }
+
+            if (!giftcardData.recipientEmail) {
+                showNotification('Por favor, ingrese el correo electrónico del destinatario', false);
+                return;
+            }
+
+            if (!giftcardData.senderName) {
+                showNotification('Por favor, ingrese su nombre', false);
+                return;
+            }
+
             // Get current path to determine image path
             const currentPath = window.location.pathname;
             const isInProductosEquipos = currentPath.includes('/Productos-equipos/');
@@ -66,11 +97,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 quantity: 1,
                 image: imagePath,
                 isGiftCard: true,
+                size: "N/A",
                 details: giftcardData
             };
 
             // Add to cart using the ShoppingCart instance
             if (window.shoppingCart) {
+                // Validación final antes de agregar al carrito
+                if (!cartItem.details.recipientName.trim() || 
+                    !cartItem.details.recipientEmail.trim() || 
+                    !cartItem.details.senderName.trim()) {
+                    showNotification('Todos los campos marcados con * son obligatorios', false);
+                    return;
+                }
+                
                 window.shoppingCart.cart.push(cartItem);
                 window.shoppingCart.saveCart();
                 window.shoppingCart.updateCartIcon();

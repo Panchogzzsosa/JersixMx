@@ -7,9 +7,12 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    // Usar la función getConnection definida en database.php
+    $pdo = getConnection();
     
     $pdo->beginTransaction();
     

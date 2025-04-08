@@ -45,12 +45,17 @@ try {
     
     // Función para determinar la categoría del producto (para filtros)
     function getProductCategory($productCategory) {
-        if (strpos(strtolower($productCategory), 'retro') !== false) {
+        // Convertir a minúsculas para una comparación más flexible
+        $category = strtolower($productCategory);
+        
+        if (strpos($category, 'retro') !== false) {
             return 'retro';
-        } elseif (strpos(strtolower($productCategory), 'selecciones') !== false) {
+        } elseif (strpos($category, 'selecciones') !== false) {
             return 'selecciones';
+        } elseif (strpos($category, 'especial') !== false) {
+            return 'especial';
         } else {
-            return 'local';
+            return ''; // Dejar vacío si no coincide con ninguna categoría específica
         }
     }
     
@@ -87,6 +92,33 @@ try {
             'Lens', 'Strasbourg', 'Nantes', 'Montpellier', 'Brest', 'Angers',
             'Reims', 'Troyes', 'Lorient', 'Clermont', 'Metz', 'Bordeaux'
         ];
+        $mls = [
+            'LA Galaxy', 'Los Angeles FC', 'LAFC', 'Inter Miami', 'Atlanta United', 'Seattle Sounders',
+            'New York City FC', 'New York Red Bulls', 'Toronto FC', 'Portland Timbers', 'Orlando City',
+            'Chicago Fire', 'DC United', 'Houston Dynamo', 'Columbus Crew', 'FC Cincinnati', 'Nashville SC',
+            'Austin FC', 'Minnesota United', 'Colorado Rapids', 'Real Salt Lake', 'San Jose Earthquakes',
+            'Vancouver Whitecaps', 'FC Dallas', 'Sporting KC', 'New England Revolution', 'Philadelphia Union',
+            'CF Montreal', 'Charlotte FC', 'St. Louis City SC'
+        ];
+        $eredivisie = [
+            'Ajax', 'PSV', 'PSV Eindhoven', 'Feyenoord', 'AZ Alkmaar', 'Twente', 'FC Twente', 'Utrecht', 
+            'Vitesse', 'Groningen', 'Heerenveen', 'Willem II', 'Sparta Rotterdam', 'Heracles', 'Almere City', 
+            'NEC Nijmegen', 'Go Ahead Eagles', 'RKC Waalwijk', 'Fortuna Sittard', 'PEC Zwolle'
+        ];
+        $saudiLeague = [
+            'Al Hilal', 'Al Nassr', 'Al Ahli', 'Al Ittihad', 'Al Fateh', 'Al Taawoun', 'Al Shabab',
+            'Al Fayha', 'Al Riyadh', 'Al Khaleej', 'Al Wehda', 'Al Akhdoud', 'Al Tai', 'Al Ettifaq',
+            'Damac', 'Abha'
+        ];
+        
+        $selecciones = [
+            'México', 'Argentina', 'Brasil', 'Francia', 'España', 'Alemania', 'Italia', 
+            'Portugal', 'Inglaterra', 'Holanda', 'Países Bajos', 'Bélgica', 'Uruguay', 
+            'Colombia', 'Chile', 'Ecuador', 'Estados Unidos', 'USA', 'Japón', 'Corea del Sur',
+            'Croacia', 'Senegal', 'Marruecos', 'Canadá', 'Qatar', 'Gales', 'Suiza', 'Dinamarca',
+            'Polonia', 'Australia', 'Arabia Saudita', 'Túnez', 'Costa Rica', 'Serbia', 'Irán',
+            'Ghana', 'Camerún', 'Perú', 'Paraguay', 'Venezuela', 'Bolivia'
+        ];
         
         // Convertir el nombre a minúsculas para comparación insensible a mayúsculas
         $lowerName = strtolower($productName);
@@ -109,6 +141,25 @@ try {
         }
         foreach ($ligue1 as $equipo) {
             if (stripos($lowerName, strtolower($equipo)) !== false) return 'ligue1';
+        }
+        foreach ($mls as $equipo) {
+            if (stripos($lowerName, strtolower($equipo)) !== false) return 'mls';
+        }
+        foreach ($eredivisie as $equipo) {
+            if (stripos($lowerName, strtolower($equipo)) !== false) return 'eredivisie';
+        }
+        foreach ($saudiLeague as $equipo) {
+            if (stripos($lowerName, strtolower($equipo)) !== false) return 'saudi';
+        }
+        
+        foreach ($selecciones as $seleccion) {
+            if (stripos($lowerName, strtolower($seleccion)) !== false) return 'selecciones';
+        }
+        
+        // También comprobamos si la categoría del producto es 'selecciones'
+        if (strpos(strtolower($productName), 'selección') !== false || 
+            strpos(strtolower($productName), 'seleccion') !== false) {
+            return 'selecciones';
         }
         
         return '';
@@ -174,9 +225,9 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
     <link rel="stylesheet" href="Css/notificacion.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="generate_products_data.php" defer></script>
     <script src="Js/productos.js" defer></script>
     <script src="Js/search.js" defer></script>
-    <script src="Js/products-data.js" defer></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/newsletter.js" defer></script>
     <style>
@@ -189,6 +240,50 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
             border-radius: 8px;
             margin-bottom: 20px;
             text-align: center;
+        }
+        
+        /* Estilo para fijar altura de títulos de productos */
+        .product-card h3 {
+            height: 40px; /* Altura fija para 2 líneas aprox */
+            overflow: hidden;
+            display: -webkit-box;
+            -webkit-line-clamp: 2; /* Limitar a 2 líneas */
+            -webkit-box-orient: vertical;
+            margin: 0;
+            padding: 1rem 1rem 0.5rem 1rem;
+            font-size: 1rem;
+            text-align: center;
+            font-weight: 500;
+            color: #333;
+        }
+        
+        /* Ajustar espaciado para precio y botón */
+        .product-card .price {
+            margin: 0.5rem 1rem;
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #000;
+            display: block;
+            text-align: center;
+        }
+        
+        .product-card .add-to-cart {
+            margin: 0.5rem 1rem 1rem;
+            width: calc(100% - 2rem);
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: block;
+            text-align: center;
+        }
+        
+        .product-card .add-to-cart:hover {
+            background-color: #333;
         }
     </style>
 </head>
@@ -205,8 +300,9 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                 <li></li>
                 <li><a href="index">Inicio</a></li>
                 <li><a href="productos" id = "pagina_actual">Productos</a></li>
-                <li><a href="mistery-box">Mistery Box</a></li>
+                <li><a href="mistery-box">Mystery Box</a></li>
                 <li><a href="giftcard" class="active">Giftcard</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
             </ul>
             <div class="search-container">
                 <input type="text" placeholder="Buscar productos..." class="search-input">
@@ -242,8 +338,12 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                     <li><label><input type="checkbox" id="filter-premier" data-league="premier"> Premier League</label></li>
                     <li><label><input type="checkbox" id="filter-laliga" data-league="laliga"> LaLiga</label></li>
                     <li><label><input type="checkbox" id="filter-ligue1" data-league="ligue1"> Ligue 1</label></li>
-                    <li><label><input type="checkbox" id="filter-selecciones" data-league="serieA"> Serie A</label></li>
-                    <li><label><input type="checkbox" id="filter-selecciones" data-league="bundesliga"> Bundesliga</label></li>
+                    <li><label><input type="checkbox" id="filter-seriea" data-league="serieA"> Serie A</label></li>
+                    <li><label><input type="checkbox" id="filter-bundesliga" data-league="bundesliga"> Bundesliga</label></li>
+                    <li><label><input type="checkbox" id="filter-mls" data-league="mls"> MLS</label></li>
+                    <li><label><input type="checkbox" id="filter-eredivisie" data-league="eredivisie"> Eredivisie</label></li>
+                    <li><label><input type="checkbox" id="filter-saudi" data-league="saudi"> Liga Profesional Saudí</label></li>
+                    <li><label><input type="checkbox" id="filter-selecciones-liga" data-league="selecciones"> Selecciones Nacionales</label></li>
                 </ul>
             </div>
         </aside>
@@ -283,7 +383,7 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                             // Generar URL del producto
                             $productUrl = generateProductUrl($product['name'], $product['product_id']);
                 ?>
-                <div class="product-card" data-category="<?php echo $productType; ?>" data-league="<?php echo $productLeague; ?>">
+                <div class="product-card" data-category="<?php echo $productCategory; ?>" data-type="<?php echo $productType; ?>" data-league="<?php echo $productLeague; ?>">
                     <a href="Productos-equipos/<?php echo $productUrl; ?>">
                         <img src="<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" loading="lazy">
                         <h3><?php echo htmlspecialchars($product['name']); ?></h3>
@@ -303,7 +403,6 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                     if ($activeProductsCount === 0):
                 ?>
                 <div class="no-products-message">
-                    <i class="fas fa-tshirt"></i>
                     <h3>No hay productos disponibles en este momento</h3>
                     <p>Vuelve a consultar más tarde, estamos trabajando para agregar nuevos productos.</p>
                 </div>
@@ -335,7 +434,6 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                     // Si no hay productos en la base de datos, mostrar mensaje
                 ?>
                 <div class="no-products-message">
-                    <i class="fas fa-tshirt"></i>
                     <h3>No hay productos disponibles en este momento</h3>
                     <p>Vuelve a consultar más tarde, estamos trabajando para agregar nuevos productos.</p>
                 </div>
@@ -401,13 +499,13 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
             <div class="social-links">
                 <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
             <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
         </div>
     </footer>
     <div class="whatsapp-button">
-        <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
@@ -418,86 +516,14 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
         // Script mejorado para filtrar productos correctamente
         document.addEventListener('DOMContentLoaded', function() {
             // Obtener todos los checkboxes de filtros
-            const categoryFilters = document.querySelectorAll('[data-category]');
-            const leagueFilters = document.querySelectorAll('[data-league]');
-            const sizeFilters = document.querySelectorAll('[data-size]');
+            const categoryFilters = document.querySelectorAll('input[data-category]');
+            const leagueFilters = document.querySelectorAll('input[data-league]');
+            const sizeFilters = document.querySelectorAll('input[data-size]');
             
             // Obtener todos los productos
             const productCards = document.querySelectorAll('.product-card');
             
-            // Función para aplicar filtros
-            function applyFilters() {
-                // Obtener filtros activos
-                const activeCategories = Array.from(categoryFilters)
-                    .filter(filter => filter.checked)
-                    .map(filter => filter.getAttribute('data-category'));
-                    
-                const activeLeagues = Array.from(leagueFilters)
-                    .filter(filter => filter.checked)
-                    .map(filter => filter.getAttribute('data-league'));
-                    
-                const activeSizes = Array.from(sizeFilters)
-                    .filter(filter => filter.checked)
-                    .map(filter => filter.getAttribute('data-size'));
-                
-                // Si no hay filtros activos, mostrar todos los productos
-                if (activeCategories.length === 0 && activeLeagues.length === 0 && activeSizes.length === 0) {
-                    productCards.forEach(card => {
-                        card.style.display = 'block';
-                    });
-                    return;
-                }
-                
-                // Filtrar productos
-                productCards.forEach(card => {
-                    const cardCategory = card.getAttribute('data-category');
-                    const cardLeague = card.getAttribute('data-league');
-                    
-                    // Lógica para verificar si cumple con los filtros
-                    let matchesCategory = activeCategories.length === 0 || activeCategories.includes(cardCategory);
-                    let matchesLeague = activeLeagues.length === 0 || activeLeagues.includes(cardLeague);
-                    
-                    // Las tallas se manejarían con JavaScript adicional si estuvieran en la base de datos
-                    let matchesSize = activeSizes.length === 0 ? true : false;
-                    // Si hay tallas seleccionadas, verificar si el producto tiene esta información
-                    // Esto es un ejemplo, ajusta según tu implementación
-                    if (activeSizes.length > 0) {
-                        // Aquí asumimos que todas las camisetas están disponibles en todas las tallas
-                        // Esto debería ajustarse según tu implementación real
-                        matchesSize = true;
-                    }
-                    
-                    // Mostrar u ocultar producto
-                    if (matchesCategory && matchesLeague && matchesSize) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
-                
-                // Verificar si hay productos visibles, si no, mostrar mensaje
-                const visibleProducts = document.querySelectorAll('.product-card[style="display: block;"]');
-                const noResultsMessage = document.getElementById('no-results-message');
-                
-                if (visibleProducts.length === 0) {
-                    // Si no existe el mensaje, crearlo
-                    if (!noResultsMessage) {
-                        const message = document.createElement('div');
-                        message.id = 'no-results-message';
-                        message.className = 'no-results';
-                        message.textContent = 'No se encontraron productos con los filtros seleccionados.';
-                        
-                        const productsContainer = document.querySelector('.products-container');
-                        productsContainer.appendChild(message);
-                    } else {
-                        noResultsMessage.style.display = 'block';
-                    }
-                } else if (noResultsMessage) {
-                    noResultsMessage.style.display = 'none';
-                }
-            }
-            
-            // Añadir event listeners a los filtros
+            // Agregar event listeners a los filtros
             categoryFilters.forEach(filter => {
                 filter.addEventListener('change', applyFilters);
             });
@@ -510,21 +536,111 @@ if (isset($_GET['error']) && $_GET['error'] == 'producto_inactivo') {
                 filter.addEventListener('change', applyFilters);
             });
             
-            // Añadir estilos para el mensaje sin resultados
-            const style = document.createElement('style');
-            style.textContent = `
-                .no-results {
-                    width: 100%;
-                    padding: 20px;
-                    text-align: center;
-                    background-color: #f8f9fa;
-                    border-radius: 5px;
-                    margin: 20px 0;
-                    color: #6c757d;
-                    font-size: 16px;
+            function applyFilters() {
+                console.log('Aplicando filtros...');
+                
+                // Obtener categorías seleccionadas
+                const selectedCategories = Array.from(categoryFilters)
+                    .filter(filter => filter.checked)
+                    .map(filter => filter.getAttribute('data-category'));
+                
+                console.log('Categorías seleccionadas:', selectedCategories);
+                
+                // Obtener ligas seleccionadas
+                const selectedLeagues = Array.from(leagueFilters)
+                    .filter(filter => filter.checked)
+                    .map(filter => filter.getAttribute('data-league'));
+                
+                console.log('Ligas seleccionadas:', selectedLeagues);
+                
+                // Si no hay filtros seleccionados, mostrar todos los productos
+                if (selectedCategories.length === 0 && selectedLeagues.length === 0) {
+                    console.log('No hay filtros activos, mostrando todos los productos');
+                    productCards.forEach(card => {
+                        card.style.display = 'block';
+                    });
+                    
+                    // Ocultar mensaje de "no hay resultados" si existe
+                    const noResultsMsg = document.getElementById('no-results-message');
+                    if (noResultsMsg) {
+                        noResultsMsg.style.display = 'none';
+                    }
+                    
+                    return;
                 }
-            `;
-            document.head.appendChild(style);
+                
+                // Filtrar productos
+                let visibleCount = 0;
+                
+                productCards.forEach(card => {
+                    // Para depuración
+                    const cardCategory = card.getAttribute('data-category');
+                    const cardType = card.getAttribute('data-type'); 
+                    const cardLeague = card.getAttribute('data-league');
+                    
+                    console.log('Producto:', card.querySelector('h3').textContent);
+                    console.log('Categoría:', cardCategory);
+                    console.log('Tipo:', cardType);
+                    console.log('Liga:', cardLeague);
+                    
+                    // Verificar si coincide con los filtros de categoría
+                    let matchesCategory = true;
+                    if (selectedCategories.length > 0) {
+                        // Para categorías como 'local' y 'visitante', verificamos con data-type
+                        if ((selectedCategories.includes('local') && cardType === 'local') ||
+                            (selectedCategories.includes('visitante') && cardType === 'visitante')) {
+                            matchesCategory = true;
+                        }
+                        // Para otras categorías como 'retro', 'especial', verificamos con data-category
+                        else if (selectedCategories.includes(cardCategory)) {
+                            matchesCategory = true;
+                        }
+                        else {
+                            matchesCategory = false;
+                        }
+                    }
+                    
+                    console.log('¿Coincide con categoría?', matchesCategory);
+                    
+                    // Verificar si coincide con los filtros de liga
+                    let matchesLeague = selectedLeagues.length === 0 || selectedLeagues.includes(cardLeague);
+                    console.log('¿Coincide con liga?', matchesLeague);
+                    
+                    // Mostrar u ocultar el producto según los filtros
+                    if (matchesCategory && matchesLeague) {
+                        card.style.display = 'block';
+                        visibleCount++;
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+                
+                console.log('Productos visibles:', visibleCount);
+                
+                // Verificar si hay productos visibles, si no, mostrar mensaje
+                if (visibleCount === 0) {
+                    // Si no existe el mensaje, crearlo
+                    let noResultsMsg = document.getElementById('no-results-message');
+                    if (!noResultsMsg) {
+                        noResultsMsg = document.createElement('div');
+                        noResultsMsg.id = 'no-results-message';
+                        noResultsMsg.className = 'no-products-message';
+                        noResultsMsg.innerHTML = `
+                            <h3>No hay productos con estos filtros</h3>
+                            <p>Intenta con otra combinación de filtros.</p>
+                        `;
+                        document.querySelector('.products-container').appendChild(noResultsMsg);
+                    } else {
+                        noResultsMsg.style.display = 'block';
+                    }
+                } else {
+                    // Si hay productos visibles, ocultar mensaje
+                    const noResultsMsg = document.getElementById('no-results-message');
+                    if (noResultsMsg) {
+                        noResultsMsg.style.display = 'none';
+                    }
+                }
+            }
         });
     </script>
 </body>

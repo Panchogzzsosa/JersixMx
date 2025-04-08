@@ -117,8 +117,8 @@
 
         .amount-option:hover,
         .amount-option.selected {
-            border-color: #333;
-            background-color: #333;
+            border-color: #000;
+            background-color: #000;
             color: white;
         }
 
@@ -149,7 +149,7 @@
         }
 
         .submit-button {
-            background-color: #333;
+            background-color: #000;
             color: white;
             border: none;
             padding: 1rem 2rem;
@@ -161,7 +161,7 @@
         }
 
         .submit-button:hover {
-            background-color: #000;
+            background-color: #333;
         }
     </style>
 </head>
@@ -178,8 +178,9 @@
                 <li></li>
                 <li><a href="index">Inicio</a></li>
                 <li><a href="productos">Productos</a></li>
-                <li><a href="mistery-box">Mistery Box</a></li>
+                <li><a href="mistery-box">Mystery Box</a></li>
                 <li><a href="giftcard" id="pagina_actual">Giftcard</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
             </ul>
             <div class="search-container">
                 <input type="text" placeholder="Buscar productos..." class="search-input">
@@ -208,27 +209,31 @@
                     <div class="amount-option" data-amount="2000">$2000 MXN</div>
                 </div>
 
+                <div style="margin-bottom: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #cb1111;">
+                    <h5 style="color: #cb1111; margin-bottom: 10px;"><i class="fas fa-envelope"></i> Envío automático por correo</h5>
+                    <p style="margin: 0; font-size: 14px; color: #333;">
+                        La tarjeta de regalo se enviará <strong>automáticamente por correo electrónico</strong> al destinatario una vez completada la compra. Asegúrate de que el correo sea correcto.
+                    </p>
+                </div>
+
                 <form id="giftcard-form">
-                    <div style="text-align: center; padding: 20px; background-color: #f8d7da; color: #721c24; border-radius: 8px; margin-bottom: 20px;">
-                        <p style="margin: 0;">Lo sentimos, las tarjetas de regalo no están disponibles en este momento.</p>
+                    <div class="form-group">
+                        <label for="recipient-name">Nombre del Destinatario <span style="color: #CB1111;">*</span></label>
+                        <input type="text" id="recipient-name" required>
                     </div>
                     <div class="form-group">
-                        <label for="recipient-name">Nombre del Destinatario</label>
-                        <input type="text" id="recipient-name" disabled style="background-color: #f5f5f5;">
+                        <label for="recipient-email">Email del Destinatario <span style="color: #CB1111;">*</span></label>
+                        <input type="email" id="recipient-email" required>
                     </div>
                     <div class="form-group">
-                        <label for="recipient-email">Email del Destinatario</label>
-                        <input type="email" id="recipient-email" disabled style="background-color: #f5f5f5;">
+                        <label for="message">Mensaje Personal</label>
+                        <textarea id="message" maxlength="200" rows="4"></textarea>
                     </div>
                     <div class="form-group">
-                        <label for="message">Mensaje Personal (Opcional)</label>
-                        <textarea id="message" maxlength="200" rows="4" disabled style="background-color: #f5f5f5;"></textarea>
+                        <label for="sender-name">Tu Nombre <span style="color: #CB1111;">*</span></label>
+                        <input type="text" id="sender-name" required>
                     </div>
-                    <div class="form-group">
-                        <label for="sender-name">Tu Nombre</label>
-                        <input type="text" id="sender-name" disabled style="background-color: #f5f5f5;">
-                    </div>
-                    <button type="button" class="submit-button" disabled style="opacity: 0.6; cursor: not-allowed; background-color: #6c757d;">No Disponible</button>
+                    <button type="submit" class="submit-button">Agregar al Carrito</button>
                 </form>
             </div>
 
@@ -278,103 +283,17 @@
             <div class="social-links">
                 <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
             <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
         </div>
     </footer>
     <div class="whatsapp-button">
-        <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
 
     <div id="notification" class="notification"></div>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            const form = document.getElementById('giftcard-form');
-            const amountOptions = document.querySelectorAll('.amount-option');
-            const previewAmount = document.querySelector('.preview-amount');
-            const previewRecipientName = document.getElementById('preview-recipient-name');
-            const previewMessage = document.getElementById('preview-message');
-            const previewSenderName = document.getElementById('preview-sender-name');
-
-            // Handle amount selection
-            amountOptions.forEach(option => {
-                option.addEventListener('click', function() {
-                    amountOptions.forEach(opt => opt.classList.remove('selected'));
-                    this.classList.add('selected');
-                    previewAmount.textContent = `$${this.dataset.amount} MXN`;
-                });
-            });
-
-            // Handle real-time preview updates
-            document.getElementById('recipient-name').addEventListener('input', function() {
-                previewRecipientName.textContent = this.value || 'Nombre del Destinatario';
-            });
-
-            document.getElementById('message').addEventListener('input', function() {
-                previewMessage.textContent = this.value || 'Tu mensaje personal aparecerá aquí';
-            });
-
-            document.getElementById('sender-name').addEventListener('input', function() {
-                previewSenderName.textContent = this.value || 'Tu Nombre';
-            });
-
-            // Form submission
-            form.addEventListener('submit', function(e) {
-                e.preventDefault();
-                
-                // Get selected amount
-                const selectedAmount = document.querySelector('.amount-option.selected');
-                if (!selectedAmount) {
-                    alert('Por favor, seleccione un monto para la tarjeta de regalo');
-                    return;
-                }
-
-                // Get form values
-                const giftcardData = {
-                    type: 'giftcard',
-                    amount: selectedAmount.dataset.amount,
-                    recipientName: document.getElementById('recipient-name').value,
-                    recipientEmail: document.getElementById('recipient-email').value,
-                    message: document.getElementById('message').value,
-                    senderName: document.getElementById('sender-name').value
-                };
-
-                // Add to cart
-                if (typeof shoppingCart !== 'undefined' && shoppingCart.addToCart) {
-                    shoppingCart.addToCart({
-                        id: 'giftcard-' + Date.now(),
-                        title: `Tarjeta de Regalo $${giftcardData.amount} MXN`,
-                        price: parseFloat(giftcardData.amount),
-                        quantity: 1,
-                        image: 'img/LogoNav.png',
-                        isGiftCard: true,
-                        details: giftcardData
-                    });
-
-                    // Show success message
-                    alert('¡Tarjeta de regalo agregada al carrito!');
-                    
-                    // Reset form
-                    form.reset();
-                    // Reset preview
-                    previewRecipientName.textContent = 'Nombre del Destinatario';
-                    previewMessage.textContent = 'Tu mensaje personal aparecerá aquí';
-                    previewSenderName.textContent = 'Tu Nombre';
-                    // Select first amount option
-                    amountOptions[0].click();
-                } else {
-                    console.error('addToCart function not found');
-                    alert('Error al agregar al carrito. Por favor, intente nuevamente.');
-                }
-            });
-
-            // Select first amount option by default
-            amountOptions[0].click();
-        });
-    </script>
 </body>
 </html>

@@ -10,13 +10,34 @@
     <link rel="stylesheet" href="Css/cookie-consent.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
-    <script src="Js/products-data.js"></script>
     <script src="Js/index.js"></script>
     <script src="Js/search.js"></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/cookie-consent.js"></script>
     <script src="Js/newsletter.js" defer></script>
+    <style>
+        .nombre {
+            color:#606060;
+        }
 
+        .collection-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+        }
+        @media (max-width: 768px) {
+            .collection-grid {
+                display: flex;
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+            .collection-item {
+                flex: 0 0 auto;
+                width: 80%;
+                box-sizing: border-box;
+            }
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -31,12 +52,13 @@
                 <li></li>
                 <li><a href="index" id="pagina_actual">Inicio</a></li>
                 <li><a href="productos">Productos</a></li>
-                <li><a href="mistery-box">Mistery Box</a></li>
+                <li><a href="mistery-box">Mystery Box</a></li>
                 <li><a href="giftcard" class="active">Giftcard</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
             </ul>
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Buscar productos..." id="searchInput">
-                <button class="search-button" onclick="performSearch()">
+                <button class="search-button" onclick="performSearch(document.querySelector('.search-input').value)">
                     <span class="material-symbols-outlined">search</span>
                 </button>
                 <div class="search-results" id="searchResults"></div>
@@ -82,7 +104,7 @@
             // Función para obtener productos aleatorios con caché
             function getRandomProducts($limit = 4) {
                 $cacheFile = 'cache/random_products.json';
-                $cacheExpiry = 172800; // 2 días en segundos (2 * 24 * 60 * 60)
+                $cacheExpiry = 10; // 2 días en segundos (2 * 24 * 60 * 60)
                 
                 // Verificar si existe el directorio cache, si no, crearlo
                 if (!file_exists('cache')) {
@@ -123,7 +145,7 @@
             }
 
             // Obtener los productos aleatorios
-            $randomProducts = getRandomProducts(4);
+            $randomProducts = getRandomProducts(3);
             ?>
             <h2>Lo Más Vendido</h2>
             <div class="collection-grid">
@@ -179,7 +201,7 @@
                 <div class="collection-item">
                     <a href="mistery-box">
                         <img src="img/MysteryBox.webp" alt="Colección Retro Japón" loading="lazy">
-                        <h3>Mistery Box</h3>
+                        <h3>Mystery Box</h3>
                     </a>
                 </div>
             </div>
@@ -192,38 +214,50 @@
                     <thead>
                         <tr>
                             <th>Talla</th>
-                            <th>Pecho (cm)</th>
                             <th>Largo (cm)</th>
-                            <th>Manga (cm)</th>
+                            <th>Ancho (cm)</th>
+                            <th>Altura (cm)</th>
                         </tr>
                     </thead>
                     <tbody>
                         <tr>
                             <td>S</td>
-                            <td>96-101</td>
-                            <td>71</td>
-                            <td>20</td>
+                            <td>69-71</td>
+                            <td>53-55</td>
+                            <td>162-170</td>
                         </tr>
                         <tr>
                             <td>M</td>
-                            <td>101-106</td>
-                            <td>73</td>
-                            <td>21</td>
+                            <td>71-73</td>
+                            <td>55-57</td>
+                            <td>170-176</td>
                         </tr>
                         <tr>
                             <td>L</td>
-                            <td>106-111</td>
-                            <td>75</td>
-                            <td>22</td>
+                            <td>73-75</td>
+                            <td>57-58</td>
+                            <td>176-182</td>
+                        </tr>
+                        <tr>
+                            <td>XL</td>
+                            <td>75-78</td>
+                            <td>58-60</td>
+                            <td>182-190</td>
+                        </tr>
+                        <tr>
+                            <td>XXL</td>
+                            <td>78-81</td>
+                            <td>60-62</td>
+                            <td>190-195</td>
                         </tr>
                     </tbody>
                 </table>
                 <div class="size-guide-info">
                     <h3>¿Cómo medir?</h3>
                     <ul>
-                        <li><strong>Pecho:</strong> Mide alrededor de la parte más ancha del pecho</li>
-                        <li><strong>Largo:</strong> Mide desde el hombro hasta la cadera</li>
-                        <li><strong>Manga:</strong> Mide desde el hombro hasta el final de la manga</li>
+                        <li><strong>Largo:</strong> Mide desde el cuello hasta abajo de la jersey</li>
+                        <li><strong>Ancho:</strong> Mide desde axila a axila, es decir, de un lado al otro del pecho.</li>
+                        <li><strong>Altura:</strong> Altura de la persona que usaría esa talla</li>
                     </ul>
                 </div>
             </div>
@@ -265,13 +299,13 @@
             <div class="social-links">
                 <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
-            <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
+            <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados. | <a class="nombre" href="https://franciscogonzalez.netlify.app/" target="_blank">Francisco Gonzalez Sosa</a></p>
         </div>
     </footer>
     <div class="whatsapp-button">
-        <a href="https://wa.me/" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>

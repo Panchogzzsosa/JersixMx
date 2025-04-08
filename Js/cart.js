@@ -11,6 +11,15 @@ class ShoppingCart {
         this.verifyPrices();
         this.updateCartIcon();
         this.updateCartModal();
+
+        // Escuchar el evento addToCart
+        document.addEventListener('addToCart', (event) => {
+            if (event.detail.isCustomEvent) {
+                this.addToCartWithCustomization(event.detail);
+            } else {
+                this.addToCart(event);
+            }
+        });
     }
 
     async verifyPrices() {
@@ -24,19 +33,39 @@ class ShoppingCart {
                 });
 
                 if (!response.ok) {
-                    throw new Error('Network response was not ok');
+                    // Si hay un error en la petición, mantener el item en el carrito
+                    updatedCart.push(item);
+                    continue;
                 }
 
                 const data = await response.json();
                 const currentPrice = parseFloat(data.price);
 
-                if (currentPrice === item.price) {
+                // Si el precio es 0 o no es un número válido, mantener el precio original
+                if (isNaN(currentPrice) || currentPrice === 0) {
+                    updatedCart.push(item);
+                    continue;
+                }
+
+                // Comparar precios teniendo en cuenta la personalización
+                let expectedPrice = currentPrice;
+                if (item.personalization) {
+                    expectedPrice += 100; // Precio de personalización
+                    if (item.personalization.patch) {
+                        expectedPrice += 50; // Precio del parche
+                    }
+                }
+
+                // Usar una comparación con tolerancia para evitar problemas con decimales
+                const priceDifference = Math.abs(expectedPrice - item.price);
+                if (priceDifference < 0.01) {
                     updatedCart.push(item);
                 } else {
                     removedItems.push(item.title);
                 }
             } catch (error) {
                 console.error('Error verifying price:', error);
+                // Si hay un error, mantener el item en el carrito
                 updatedCart.push(item);
             }
         }
@@ -68,13 +97,6 @@ class ShoppingCart {
     }
 
     bindEvents() {
-        // Add to cart button event
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('add-to-cart-btn')) {
-                this.addToCart(e);
-            }
-        });
-
         // Cart icon click event
         const cartIcon = document.querySelector('.cart-icon');
         if (cartIcon) {
@@ -93,9 +115,18 @@ class ShoppingCart {
     }
 
     addToCart(event) {
+        // Solo procesar si no es un evento personalizado
+        if (event.detail && event.detail.isCustomEvent) {
+            return;
+        }
+
         // Check if it's a direct call with item data (for gift cards)
         if (typeof event === 'object' && !event.target) {
             const item = event;
+            // Asegurar que las gift cards tengan un valor para size
+            if (item.isGiftCard && !item.size) {
+                item.size = "N/A";
+            }
             this.cart.push(item);
             this.saveCart();
             this.updateCartIcon();
@@ -307,18 +338,55 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
     }
 
     generateCartItemHTML(item) {
+        let personalizationHtml = '';
+        if (item.personalization) {
+            personalizationHtml = `
+                <div class="personalization-info" style="margin: 10px 0; padding: 10px; background: #f8f8f8; border-radius: 5px;">
+                    <p style="margin: 0; font-size: 14px; color: #333;">
+                        <strong>Personalización:</strong><br>
+                        Nombre: ${item.personalization.name}<br>
+                        Número: ${item.personalization.number}
+                        ${item.personalization.patch ? '<br>✓ Con parche' : ''}
+                    </p>
+                </div>
+            `;
+        }
+        
+        if (item.isGiftCard && item.details) {
+            // Sanitizar textos para evitar problemas de XSS y JSON
+            const sanitizeText = (text) => {
+                if (!text) return '';
+                return String(text)
+                       .replace(/[<>]/g, '') // Eliminar < y >
+                       .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Eliminar caracteres de control
+                       .trim();
+            };
+            
+            const recipientName = sanitizeText(item.details.recipientName || '');
+            const recipientEmail = sanitizeText(item.details.recipientEmail || '');
+            const message = sanitizeText(item.details.message || '');
+            const senderName = sanitizeText(item.details.senderName || '');
+            
+            personalizationHtml = `
+                <div class="personalization-info" style="margin: 10px 0; padding: 10px; background: #f8f8f8; border-radius: 5px;">
+                    <p style="margin: 0; font-size: 14px; color: #333;">
+                        <strong>Detalles de la Gift Card:</strong><br>
+                        Para: ${recipientName}<br>
+                        Email: ${recipientEmail}<br>
+                        ${message ? `Mensaje: ${message}<br>` : ''}
+                        De: ${senderName}
+                    </p>
+                </div>
+            `;
+        }
+
         return `
             <div class="cart-item" data-id="${item.id}">
                 <img src="${item.image}" alt="${item.title}" ${item.isGiftCard ? 'class="giftcard-image"' : ''}>
                 <div class="cart-item-details">
                     <h4>${item.title}</h4>
                     ${!item.isGiftCard && item.size ? `<p class="item-size">Talla: ${item.size}</p>` : ''}
-                    ${item.personalization ? `
-                        <div class="personalization-info">
-                            <p class="personalization-name">Nombre: ${item.personalization.name}</p>
-                            <p class="personalization-number">Número: ${item.personalization.number}</p>
-                        </div>
-                    ` : ''}
+                    ${personalizationHtml}
                     <p class="item-price">Precio: $${item.price.toFixed(2)}</p>
                     <div class="quantity-controls">
                         <button class="decrease">-</button>
@@ -361,6 +429,35 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
                 setTimeout(() => notification.remove(), 300);
             }, 2000);
         }, 100);
+    }
+
+    addToCartWithCustomization(productData) {
+        if (!productData) {
+            console.error('No se proporcionaron datos del producto');
+            return;
+        }
+
+        const cartItem = {
+            id: Date.now().toString(),
+            title: productData.title,
+            price: productData.price,
+            size: productData.size,
+            quantity: productData.quantity,
+            image: productData.image,
+            personalization: productData.personalization ? {
+                name: productData.personalization.name,
+                number: productData.personalization.number,
+                patch: productData.personalization.patch
+            } : null
+        };
+
+        console.log('Agregando item al carrito con personalización:', cartItem);
+
+        this.cart.push(cartItem);
+        this.saveCart();
+        this.updateCartIcon();
+        this.updateCartModal();
+        this.showNotification('Producto agregado al carrito', 'success');
     }
 }
 

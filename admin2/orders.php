@@ -572,6 +572,101 @@ try {
             .customer-info {
                 grid-template-columns: 1fr;
             }
+            
+            /* Estilos para vista móvil de pedidos */
+            .table-container {
+                overflow-x: visible;
+                margin: 0;
+                padding: 0 15px;
+            }
+            
+            table, thead, tbody, tr, th, td {
+                display: block;
+                width: 100%;
+            }
+            
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            tr {
+                margin-bottom: 20px;
+                border: 1px solid #e9ecef;
+                border-radius: var(--border-radius);
+                background-color: white;
+                box-shadow: var(--box-shadow);
+                overflow: hidden;
+            }
+            
+            td {
+                border: none;
+                position: relative;
+                padding: 12px 15px;
+                padding-left: 50%;
+                text-align: right;
+            }
+            
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                color: var(--secondary-color);
+                content: attr(data-label);
+            }
+            
+            td:last-child {
+                border-bottom: 0;
+            }
+            
+            .action-buttons {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+            
+            .btn-sm {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            /* Ajustes para los detalles del pedido */
+            .order-details {
+                margin: 10px 0;
+                padding: 15px;
+            }
+            
+            .order-items table {
+                display: block;
+                overflow-x: auto;
+                white-space: nowrap;
+            }
+            
+            .order-items th, .order-items td {
+                display: table-cell;
+                padding: 10px;
+            }
+            
+            .order-items td:before {
+                display: none;
+            }
+            
+            /* Ajustes para los modales */
+            .modal-content {
+                width: 95%;
+                margin: 10px auto;
+            }
+            
+            .product-entry {
+                grid-template-columns: 1fr;
+                gap: 10px;
+            }
         }
         
         .product-thumbnail {
@@ -942,6 +1037,12 @@ try {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="giftcards.php">
+                        <i class="fas fa-gift"></i>
+                        <span>Gift Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión</span>
@@ -953,9 +1054,12 @@ try {
         <!-- Main Content -->
         <main class="main-content">
             <div class="topbar">
-                <h1>Gestión de Pedidos</h1>
+                <div>
+                    <h1>Gestión de Pedidos</h1>
+                </div>
                 <div class="user-info">
-                    <span>Usuario: <?php echo htmlspecialchars($_SESSION['admin_name']); ?></span>
+                    <img src="../img/ICON.png" alt="User" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                    <span><?php echo $_SESSION['admin_name'] ?? 'Administrador'; ?></span>
                 </div>
             </div>
 
@@ -1008,13 +1112,13 @@ try {
                             <tbody>
                                 <?php foreach ($orders as $order): ?>
                                     <tr data-order-id="<?php echo $order['order_id']; ?>">
-                                        <td>#<?php echo str_pad($order['order_id'], 6, '0', STR_PAD_LEFT); ?></td>
-                                        <td>
+                                        <td data-label="ID Pedido">#<?php echo str_pad($order['order_id'], 6, '0', STR_PAD_LEFT); ?></td>
+                                        <td data-label="Cliente">
                                             <div><?php echo htmlspecialchars($order['customer_name']); ?></div>
                                             <small><?php echo htmlspecialchars($order['customer_email']); ?></small>
                                         </td>
-                                        <td><?php echo $order['total_items']; ?> productos</td>
-                                        <td>
+                                        <td data-label="Items"><?php echo $order['total_items']; ?> productos</td>
+                                        <td data-label="Estado">
                                             <select class="status-select status-<?php echo $order['status']; ?>" 
                                                     data-order-id="<?php echo $order['order_id']; ?>"
                                                     data-previous-status="<?php echo $order['status']; ?>"
@@ -1025,8 +1129,8 @@ try {
                                                 <option value="cancelled" <?php echo $order['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelado</option>
                                             </select>
                                         </td>
-                                        <td><?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?></td>
-                                        <td>
+                                        <td data-label="Fecha"><?php echo date('d/m/Y H:i', strtotime($order['created_at'])); ?></td>
+                                        <td data-label="Acciones">
                                             <div class="action-buttons">
                                                 <button class="btn btn-sm btn-primary expand-button" onclick="toggleOrderDetails(<?php echo $order['order_id']; ?>)">
                                                     <i class="fas fa-chevron-down"></i> Detalles
@@ -1071,6 +1175,7 @@ try {
                                                                 <th>Cantidad</th>
                                                                 <th>Precio Unitario</th>
                                                                 <th>Total</th>
+                                                                <th>Personalización</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
@@ -1081,7 +1186,10 @@ try {
                                                                     p.name as product_name,
                                                                     p.image_url,
                                                                     p.category,
-                                                                    p.description
+                                                                    p.description,
+                                                                    oi.personalization_name,
+                                                                    oi.personalization_number,
+                                                                    oi.personalization_patch
                                                                 FROM order_items oi
                                                                 LEFT JOIN products p ON oi.product_id = p.product_id
                                                                 WHERE oi.order_id = ?
@@ -1089,7 +1197,10 @@ try {
                                                             $items_stmt->execute([$order['order_id']]);
                                                             $items = $items_stmt->fetchAll(PDO::FETCH_ASSOC);
                                                             
+                                                            $order_subtotal = 0;
                                                             foreach ($items as $item):
+                                                                $item_total = $item['quantity'] * $item['price'];
+                                                                $order_subtotal += $item_total;
                                                             ?>
                                                                 <tr>
                                                                     <td>
@@ -1117,12 +1228,129 @@ try {
                                                                     <td><strong><?php echo htmlspecialchars($item['size']); ?></strong></td>
                                                                     <td><?php echo $item['quantity']; ?></td>
                                                                     <td>$<?php echo number_format($item['price'], 2); ?></td>
-                                                                    <td>$<?php echo number_format($item['quantity'] * $item['price'], 2); ?></td>
+                                                                    <td>$<?php echo number_format($item_total, 2); ?></td>
+                                                                    <td>
+                                                                        <?php if (!empty($item['personalization_name']) || !empty($item['personalization_number']) || ($item['product_name'] === 'Mystery Box' && !empty($item['personalization_patch']))): ?>
+                                                                            <div style="font-size: 0.9em;">
+                                                                                <?php if (!empty($item['personalization_name'])): ?>
+                                                                                    <div>
+                                                                                        <span style="color: #6b7280;">Nombre:</span> 
+                                                                                        <span style="font-weight: 500;"><?php echo htmlspecialchars($item['personalization_name']); ?></span>
+                                                                                    </div>
+                                                                                <?php endif; ?>
+                                                                                <?php if (!empty($item['personalization_number'])): ?>
+                                                                                    <div style="margin-top: 2px;">
+                                                                                        <span style="color: #6b7280;">Número:</span> 
+                                                                                        <span style="font-weight: 500;"><?php echo htmlspecialchars($item['personalization_number']); ?></span>
+                                                                                    </div>
+                                                                                <?php endif; ?>
+                                                                                <?php if ($item['product_name'] === 'Mystery Box' && !empty($item['personalization_patch'])): ?>
+                                                                                    <div style="margin-top: 2px;">
+                                                                                        <span style="color: #6b7280;">Tipo:</span> 
+                                                                                        <span style="font-weight: 500;"><?php 
+                                                                                            // Verificar si usa el nuevo formato con prefijo TIPO:
+                                                                                            if (strpos($item['personalization_patch'], 'TIPO:') === 0) {
+                                                                                                // Extraer y decodificar el tipo
+                                                                                                $tipoEncoded = substr($item['personalization_patch'], 5);
+                                                                                                echo htmlspecialchars(base64_decode($tipoEncoded));
+                                                                                            } else {
+                                                                                                // Formato antiguo con números
+                                                                                                $tipos = [
+                                                                                                    '1' => 'Champions League',
+                                                                                                    '2' => 'Liga MX',
+                                                                                                    '3' => 'Liga Europea'
+                                                                                                ];
+                                                                                                echo isset($tipos[$item['personalization_patch']]) ? $tipos[$item['personalization_patch']] : 'No especificado';
+                                                                                            }
+                                                                                        ?></span>
+                                                                                    </div>
+                                                                                <?php elseif (!empty($item['personalization_patch'])): ?>
+                                                                                    <?php
+                                                                                    // No mostrar "Parche" para gift cards y tarjetas de regalo
+                                                                                    $is_giftcard = stripos($item['product_name'], 'Tarjeta de Regalo') !== false || 
+                                                                                                  stripos($item['product_name'], 'Gift Card') !== false;
+                                                                                    
+                                                                                    // Verificar si el campo personalization_patch tiene el formato de datos de gift card
+                                                                                    $is_giftcard_data = strpos($item['personalization_patch'], 'RCP:') === 0 || 
+                                                                                                      strpos($item['personalization_patch'], '|MSG:') !== false ||
+                                                                                                      strpos($item['personalization_patch'], '|SND:') !== false;
+                                                                                    
+                                                                                    if (!$is_giftcard && !$is_giftcard_data):
+                                                                                    ?>
+                                                                                    <div style="margin-top: 2px; color: #16a34a;">
+                                                                                        <i class="fas fa-check-circle" style="margin-right: 2px;"></i>Parche
+                                                                                    </div>
+                                                                                    <?php endif; ?>
+                                                                                <?php endif; ?>
+                                                                            </div>
+                                                                        <?php else: ?>
+                                                                            <span style="color: #6b7280;">-</span>
+                                                                        <?php endif; ?>
+                                                                    </td>
                                                                 </tr>
                                                             <?php endforeach; ?>
+                                                            
+                                                            <tr class="order-summary-row">
+                                                                <td colspan="6" class="text-right" style="text-align: right; font-weight: 500;">Subtotal:</td>
+                                                                <td>$<?php echo number_format($order_subtotal, 2); ?></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            
+                                                            <?php
+                                                            // Verificar si hay notas de pago que indiquen descuento de gift card
+                                                            $discount_amount = 0;
+                                                            $has_discount = false;
+                                                            
+                                                            // Obtener notas de pago de la orden
+                                                            $notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
+                                                            $notes_stmt->execute([$order['order_id']]);
+                                                            $payment_notes = $notes_stmt->fetchColumn();
+                                                            
+                                                            if (!empty($payment_notes)) {
+                                                                // Buscar información de descuento con gift card
+                                                                if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                                                    $discount_amount = floatval($matches[1]);
+                                                                    $has_discount = true;
+                                                                }
+                                                                
+                                                                // Mostrar fila de descuento si existe
+                                                                if ($has_discount):
+                                                            ?>
+                                                                <tr class="discount-row">
+                                                                    <td colspan="6" class="text-right" style="text-align: right; font-weight: 500; color: #dc3545;">
+                                                                        Descuento (Gift Card):
+                                                                    </td>
+                                                                    <td style="color: #dc3545;">-$<?php echo number_format($discount_amount, 2); ?></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                                <tr class="total-row">
+                                                                    <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL PAGADO:</td>
+                                                                    <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($order_subtotal - $discount_amount, 2); ?></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            <?php 
+                                                                endif;
+                                                            }
+                                                            
+                                                            // Si no hay descuento, mostrar solo el total
+                                                            if (!$has_discount):
+                                                            ?>
+                                                                <tr class="total-row">
+                                                                    <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL:</td>
+                                                                    <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($order_subtotal, 2); ?></td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            <?php endif; ?>
                                                         </tbody>
                                                     </table>
                                                 </div>
+                                                
+                                                <?php if (!empty($payment_notes)): ?>
+                                                <div class="payment-notes" style="margin-top: 20px; padding: 15px; background-color: #f8f9fa; border-radius: 8px; border-left: 4px solid #007bff;">
+                                                    <h4 style="margin-top: 0; color: #007bff; font-size: 1rem;">Información de pago</h4>
+                                                    <p style="margin-bottom: 0;"><?php echo nl2br(htmlspecialchars($payment_notes)); ?></p>
+                                                </div>
+                                                <?php endif; ?>
                                             </div>
                                         </td>
                                     </tr>

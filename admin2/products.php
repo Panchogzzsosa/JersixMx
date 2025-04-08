@@ -525,6 +525,86 @@ if (isset($_GET['error'])) {
                 width: 100%;
                 justify-content: space-between;
             }
+            
+            /* Estilos para vista móvil de productos */
+            .table-container {
+                overflow-x: visible;
+                margin: 0;
+                padding: 0 15px;
+            }
+            
+            table, thead, tbody, tr, th, td {
+                display: block;
+                width: 100%;
+            }
+            
+            thead tr {
+                position: absolute;
+                top: -9999px;
+                left: -9999px;
+            }
+            
+            tr {
+                margin-bottom: 20px;
+                border: 1px solid #e9ecef;
+                border-radius: var(--border-radius);
+                background-color: white;
+                box-shadow: var(--box-shadow);
+                overflow: hidden;
+            }
+            
+            td {
+                border: none;
+                position: relative;
+                padding: 12px 15px;
+                padding-left: 50%;
+                text-align: right;
+            }
+            
+            td:before {
+                position: absolute;
+                top: 12px;
+                left: 15px;
+                width: 45%;
+                padding-right: 10px;
+                white-space: nowrap;
+                font-weight: 600;
+                color: var(--secondary-color);
+                content: attr(data-label);
+            }
+            
+            td:last-child {
+                border-bottom: 0;
+            }
+            
+            .actions {
+                display: flex;
+                flex-wrap: wrap;
+                gap: 8px;
+                justify-content: flex-end;
+            }
+            
+            .btn-sm {
+                padding: 8px 12px;
+                font-size: 13px;
+            }
+            
+            /* Ajustes para la imagen del producto */
+            .product-image {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto 10px;
+            }
+            
+            /* Ajustes para el filtro de búsqueda */
+            .search-filter {
+                flex-direction: column;
+                gap: 10px;
+            }
+            
+            .filter-select {
+                width: 100%;
+            }
         }
         
         /* Estilos para el interruptor de activación/desactivación */
@@ -685,6 +765,12 @@ if (isset($_GET['error'])) {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="giftcards.php">
+                        <i class="fas fa-gift"></i>
+                        <span>Gift Cards</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="logout.php">
                         <i class="fas fa-sign-out-alt"></i>
                         <span>Cerrar Sesión</span>
@@ -697,10 +783,12 @@ if (isset($_GET['error'])) {
         <main class="main-content">
             <!-- Top Bar -->
             <div class="topbar">
-                <h1>Gestión de Productos</h1>
+                <div>
+                    <h1>Gestión de Productos</h1>
+                </div>
                 <div class="user-info">
-                    <span>Usuario: <?php echo htmlspecialchars($_SESSION['admin_name']); ?></span>
-                    <a href="add_product.php" class="btn btn-primary">Agregar Producto</a>
+                    <img src="../img/ICON.png" alt="User" style="width: 30px; height: 30px; border-radius: 50%; margin-right: 10px;">
+                    <span><?php echo $_SESSION['admin_name'] ?? 'Administrador'; ?></span>
                 </div>
             </div>
             
@@ -725,6 +813,9 @@ if (isset($_GET['error'])) {
                         <a href="add_product.php" class="btn btn-sm btn-primary">
                             <i class="fas fa-plus"></i> Agregar
                         </a>
+                        <button id="toggleAllVisibilityBtn" class="btn btn-sm btn-warning">
+                            <i class="fas fa-eye"></i> Cambiar Visibilidad
+                        </button>
                     </div>
                 </div>
                 
@@ -783,27 +874,27 @@ if (isset($_GET['error'])) {
                             <tbody id="productsTableBody">
                                 <?php foreach ($products as $product): ?>
                                     <tr>
-                                        <td>
+                                        <td data-label="Imagen">
                                             <?php if (!empty($product['image_url'])): ?>
                                                 <img src="../<?php echo htmlspecialchars($product['image_url']); ?>" alt="<?php echo htmlspecialchars($product['name']); ?>" class="product-image">
                                             <?php else: ?>
                                                 <div class="product-image">Sin imagen</div>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td data-label="Producto">
                                             <div class="product-name"><?php echo htmlspecialchars($product['name']); ?></div>
                                             <?php if (!empty($product['description'])): ?>
                                                 <small><?php echo htmlspecialchars(substr($product['description'], 0, 50)) . (strlen($product['description']) > 50 ? '...' : ''); ?></small>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td data-label="Categoría">
                                             <?php if (!empty($product['category'])): ?>
                                                 <span class="product-category"><?php echo htmlspecialchars($product['category']); ?></span>
                                             <?php else: ?>
                                                 <span class="product-category">Sin categoría</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td data-label="Precio">
                                             <span class="editable-field product-price" 
                                                   data-product-id="<?php echo $product['product_id']; ?>" 
                                                   data-field="price"
@@ -812,7 +903,7 @@ if (isset($_GET['error'])) {
                                                 $<?php echo number_format($product['price'], 2); ?>
                                             </span>
                                         </td>
-                                        <td>
+                                        <td data-label="Stock">
                                             <span class="editable-field product-stock" 
                                                   data-product-id="<?php echo $product['product_id']; ?>" 
                                                   data-field="stock"
@@ -821,7 +912,7 @@ if (isset($_GET['error'])) {
                                                 <?php echo htmlspecialchars($product['stock']); ?>
                                             </span>
                                         </td>
-                                        <td>
+                                        <td data-label="Estado Stock">
                                             <?php
                                             $stock = intval($product['stock']);
                                             if ($stock <= 0): ?>
@@ -832,7 +923,7 @@ if (isset($_GET['error'])) {
                                                 <span class="status-badge status-in-stock">En stock</span>
                                             <?php endif; ?>
                                         </td>
-                                        <td>
+                                        <td data-label="Visible">
                                             <div class="toggle-container">
                                                 <label class="toggle-switch">
                                                     <input type="checkbox" class="status-toggle" 
@@ -845,7 +936,7 @@ if (isset($_GET['error'])) {
                                                 </span>
                                             </div>
                                         </td>
-                                        <td class="actions">
+                                        <td data-label="Acciones" class="actions">
                                             <a href="edit_product.php?id=<?php echo $product['product_id']; ?>" class="btn btn-sm btn-warning">
                                                 <i class="fas fa-edit"></i> Editar
                                             </a>
@@ -923,6 +1014,66 @@ if (isset($_GET['error'])) {
                 
                 searchInput.addEventListener('input', filterProducts);
                 categoryFilter.addEventListener('change', filterProducts);
+            }
+            
+            // Botón para cambiar la visibilidad de todos los productos
+            const toggleAllVisibilityBtn = document.getElementById('toggleAllVisibilityBtn');
+            if (toggleAllVisibilityBtn) {
+                toggleAllVisibilityBtn.addEventListener('click', function() {
+                    // Verificar si todos los productos están visibles o no
+                    const statusToggles = document.querySelectorAll('.status-toggle');
+                    const allVisible = Array.from(statusToggles).every(toggle => toggle.checked);
+                    const newStatus = allVisible ? 0 : 1; // Cambiar a 0 si todos son visibles, a 1 si no
+                    
+                    // Confirmar la acción
+                    if (confirm(`¿Estás seguro de que deseas ${allVisible ? 'ocultar' : 'mostrar'} todos los productos?`)) {
+                        // Mostrar indicador de carga
+                        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Actualizando...';
+                        this.disabled = true;
+                        
+                        // Enviar solicitud AJAX para actualizar todos los productos
+                        fetch('update_all_products_status.php', {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'application/x-www-form-urlencoded',
+                            },
+                            body: `status=${newStatus}`
+                        })
+                        .then(response => response.json())
+                        .then(data => {
+                            if (data.success) {
+                                // Actualizar todos los toggles y etiquetas
+                                statusToggles.forEach(toggle => {
+                                    toggle.checked = !allVisible;
+                                    const productId = toggle.getAttribute('data-product-id');
+                                    const statusLabel = document.getElementById(`status-label-${productId}`);
+                                    if (statusLabel) {
+                                        statusLabel.textContent = !allVisible ? 'Visible' : 'Oculto';
+                                    }
+                                });
+                                
+                                // Actualizar el texto del botón
+                                this.innerHTML = allVisible ? 
+                                    '<i class="fas fa-eye"></i> Mostrar Todos' : 
+                                    '<i class="fas fa-eye-slash"></i> Ocultar Todos';
+                                
+                                // Mostrar mensaje de éxito
+                                showNotification('success', data.message);
+                            } else {
+                                // Mostrar mensaje de error
+                                showNotification('error', data.message || 'Error al actualizar los productos');
+                            }
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                            showNotification('error', 'Error de conexión al actualizar los productos');
+                        })
+                        .finally(() => {
+                            // Restaurar el botón
+                            this.disabled = false;
+                        });
+                    }
+                });
             }
         });
         

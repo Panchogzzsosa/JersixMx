@@ -88,6 +88,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 // Inicio de sesión exitoso
                 $_SESSION['admin_id'] = $admin['admin_id'] ?? 1;
                 $_SESSION['admin_name'] = $admin['admin_name'] ?? $admin['username'] ?? 'Administrador';
+                $_SESSION['admin_logged_in'] = true;
                 
                 // Redirigir al dashboard
                 header('Location: dashboard.php');
@@ -332,4 +333,4 @@ try {
         }
     </script>
 </body>
-</html> 
+</html>

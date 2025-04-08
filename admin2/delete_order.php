@@ -23,7 +23,7 @@ try {
     
     // Verificar si la orden estaba completada y obtener el total
     $order_stmt = $pdo->prepare("
-        SELECT status,
+        SELECT status, payment_notes,
         (SELECT SUM(quantity * price) FROM order_items WHERE order_id = orders.order_id) as total_amount
         FROM orders 
         WHERE order_id = ?
@@ -37,8 +37,23 @@ try {
         $stats_stmt = $pdo->query("SELECT total_sales, total_orders FROM sales_stats LIMIT 1");
         $current_stats = $stats_stmt->fetch(PDO::FETCH_ASSOC);
         
+        // Verificar si hay descuentos aplicados por gift card
+        $total_amount = $order['total_amount'];
+        
+        if (!empty($order['payment_notes'])) {
+            // Buscar información de descuento con gift card
+            if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $order['payment_notes'], $matches)) {
+                $discount_amount = floatval($matches[1]);
+                // Restar el descuento del total
+                $total_amount = max(0, $total_amount - $discount_amount);
+                
+                // Registrar el ajuste para depuración
+                error_log("Ajustando total de orden #{$order_id} por descuento de Gift Card al eliminar: {$discount_amount}. Total ajustado: {$total_amount}");
+            }
+        }
+        
         // Calcular nuevos valores asegurando que no sean negativos
-        $new_total_sales = max(0, $current_stats['total_sales'] - $order['total_amount']);
+        $new_total_sales = max(0, $current_stats['total_sales'] - $total_amount);
         $new_total_orders = max(0, $current_stats['total_orders'] - 1);
         
         $pdo->exec("

@@ -17,6 +17,26 @@
     <script src="Js/mistery-box.js"></script>
     <script src="Js/cart2.js" defer></script>
     <script src="Js/newsletter.js" defer></script>
+    <style>
+        /* Estilos para botones seleccionados */
+        .tipo-option.selected,
+        .size-option.selected {
+            background-color: #000 !important;
+            color: white !important;
+            border-color: #000 !important;
+        }
+        
+        /* Estilo para el botón de agregar al carrito */
+        .add-to-cart-btn {
+            background-color: #000 !important;
+            color: white !important;
+            border: none !important;
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #333 !important;
+        }
+    </style>
 </head>
 <body>
     <header>
@@ -33,6 +53,7 @@
                 <li><a href="productos">Productos</a></li>
                 <li><a href="mistery-box" id = "pagina_actual" >Mystery Box</a></li>
                 <li><a href="giftcard" class="active">Giftcard</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
             </ul>
             <div class="search-container">
                 <input type="text" placeholder="Buscar productos..." class="search-input">
@@ -53,7 +74,7 @@
             </div>
 
             <div class="product-info">
-                <h1 class="product-title">Mystery Box - Proximamente</h1>
+                <h1 class="product-title">Mystery Box</h1>
                 <p class="product-description">Tu próximo JERSIX está a un paso. ¿Cuál te tocará?</p>
                 <div class="product-price">$ 799.00 MXN</div>
 
@@ -63,12 +84,12 @@
                     <div class="tipo-options">
                         <button class="size-option tipo-option" data-tipo="champions">Champions</button>
                         <button class="size-option tipo-option" data-tipo="ligamx">LigaMX</button>
-                        <button class="size-option tipo-option" data-tipo="Europa">Liga Europea</button>
+                        <button class="size-option tipo-option" data-tipo="Europa">Liga Europeas</button>
                     </div>
                 </div>
 
                 <div class="size-selector">
-                    <h3>Talla <button class="size-guide-btn">Guía de tallas</button></h3>
+                    <h3>Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'" style="background: none; border: none; color: #0066cc; text-decoration: underline; cursor: pointer; padding: 0; font-size: 16px; margin-left: 15px;">Guía de tallas</button></h3>
                     <div class="size-options">
                         <button class="size-option" data-size="XS">XS</button>
                         <button class="size-option" data-size="S">S</button>
@@ -127,49 +148,61 @@
             <div class="social-links">
                 <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
                 <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
-                <a href="https://wa.me/+528123584236" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
             </div>
             <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
         </div>
     </footer>
 
     <div class="whatsapp-button">
-        <a href="https://wa.me/+528123584236" target="_blank" rel="noopener noreferrer">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
             <i class="fab fa-whatsapp"></i>
         </a>
     </div>
 
     <div id="sizeGuideModal" class="modal">
         <div class="modal-content">
-            <span class="close">&times;</span>
-            <h2>Guía de Tallas</h2>
-            <table class="size-chart">
+            <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
+            <h2 style="margin-bottom: 20px; text-align: center; font-size: 28px; color: #333;">Guía de Tallas</h2>
+            <table class="size-chart" style="width: 100%; border-collapse: collapse; margin-top: 20px; border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px #eee;">
                 <thead>
                     <tr>
-                        <th style="background-color: #F5F5F5; color: #333333;">Talla</th>
-                        <th style="background-color: #F5F5F5; color: #333333;">Pecho (cm)</th>
-                        <th style="background-color: #F5F5F5; color: #333333;">Largo (cm)</th>
-                        <th style="background-color: #F5F5F5; color: #333333;">Hombros (cm)</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Talla</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Largo (cm)</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Ancho (cm)</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Altura (cm)</th>
                     </tr>
                 </thead>
                 <tbody>
                     <tr>
-                        <td>S</td>
-                        <td>96-101</td>
-                        <td>71-73</td>
-                        <td>44-46</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">S</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">69-71</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">53-55</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">162-170</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">M</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">71-73</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">55-57</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">170-176</td>
                     </tr>
                     <tr>
-                        <td>M</td>
-                        <td>101-106</td>
-                        <td>73-75</td>
-                        <td>46-48</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">L</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">73-75</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">57-58</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">176-182</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">XL</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">75-78</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">58-60</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">182-190</td>
                     </tr>
                     <tr>
-                        <td>L</td>
-                        <td>106-111</td>
-                        <td>75-77</td>
-                        <td>48-50</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">XXL</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">78-81</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">60-62</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">190-195</td>
                     </tr>
                 </tbody>
             </table>
@@ -177,5 +210,115 @@
     </div>
 
     <div id="notification" class="notification"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Selecciona el botón "Agregar al carrito"
+        const addToCartButton = document.querySelector('.add-to-cart-btn');
+        const quantityInput = document.querySelector('.quantity-input');
+        const minusBtn = document.querySelector('.quantity-btn.minus');
+        const plusBtn = document.querySelector('.quantity-btn.plus');
+
+        // Añadir event listeners a los botones de cantidad
+        minusBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+
+        plusBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            quantityInput.value = value + 1;
+        });
+
+        // Función para verificar si se han seleccionado tipo y talla
+        function validateSelections() {
+            const selectedType = document.querySelector('.tipo-option.selected');
+            const selectedSize = document.querySelector('.size-options .size-option.selected');
+            
+            if (!selectedType || !selectedSize) {
+                showNotification('Por favor, selecciona tanto el tipo como la talla', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Función para mostrar notificaciones
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Agrega un evento de clic al botón
+        addToCartButton.addEventListener('click', () => {
+            if (!validateSelections()) {
+                return;
+            }
+
+            // Obtén la información del producto
+            const productTitle = document.querySelector('.product-title').innerText;
+            const productPrice = parseFloat(document.querySelector('.product-price').innerText.replace('$', '').replace(',', '').trim());
+            const quantity = parseInt(quantityInput.value);
+            const selectedSize = document.querySelector('.size-options .size-option.selected').textContent;
+            const selectedType = document.querySelector('.tipo-option.selected').dataset.tipo;
+
+            // Crea un objeto del producto
+            const product = {
+                id: Date.now().toString(),
+                title: productTitle,
+                price: productPrice,
+                quantity: quantity,
+                size: selectedSize,
+                tipo: selectedType,
+                image: document.getElementById('main-image').src
+            };
+
+            // Disparar evento personalizado para el carrito
+            const event = new CustomEvent('addToCart', {
+                detail: product
+            });
+            document.dispatchEvent(event);
+        });
+
+        // Manejo de selección de tipo
+        const tipoOptions = document.querySelectorAll('.tipo-option');
+        tipoOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                tipoOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Manejo de selección de talla
+        const sizeOptions = document.querySelectorAll('.size-options .size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Validar que la cantidad sea al menos 1
+        quantityInput.addEventListener('change', () => {
+            if (quantityInput.value < 1) {
+                quantityInput.value = 1;
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera de ella
+        window.addEventListener('click', (event) => {
+            const sizeGuideModal = document.getElementById('sizeGuideModal');
+            if (event.target === sizeGuideModal) {
+                sizeGuideModal.style.display = 'none';
+            }
+        });
+    });
+    </script>
 </body>
 </html>

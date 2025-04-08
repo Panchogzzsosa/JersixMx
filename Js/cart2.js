@@ -29,11 +29,9 @@ class ShoppingCart {
     }
 
     bindEvents() {
-        // Add to cart button event
-        document.addEventListener('click', (e) => {
-            if (e.target.classList.contains('add-to-cart-btn')) {
-                this.addToCart(e);
-            }
+        // Custom addToCart event for personalized products and mystery box
+        document.addEventListener('addToCart', (e) => {
+            this.addToCartWithCustomization(e.detail);
         });
 
         // Cart icon click event
@@ -73,13 +71,28 @@ class ShoppingCart {
 
         // Validate size selection if size options exist
         if (productContainer.querySelector('.size-options') && !size) {
-            this.showNotification('Lo sentimos, la Mystery Box estará disponible próximamente', 'error');
+            this.showNotification('Por favor, selecciona una talla', 'error');
             return;
         }
 
         // Get personalization info if available
-        // Mystery Box doesn't support personalization
-        const personalization = null;
+        let personalization = null;
+        const jerseyName = productContainer.querySelector('#jerseyName');
+        const jerseyNumber = productContainer.querySelector('#jerseyNumber');
+        const patchOption = productContainer.querySelector('#patchOption');
+        
+        if (jerseyName && jerseyNumber) {
+            personalization = {
+                name: jerseyName.value.trim(),
+                number: jerseyNumber.value.trim(),
+                patch: patchOption ? patchOption.checked : false
+            };
+            
+            // Only set personalization if at least one field has a value
+            if (!personalization.name && !personalization.number && !personalization.patch) {
+                personalization = null;
+            }
+        }
 
         const cartItem = {
             id: Date.now().toString(),
@@ -92,6 +105,74 @@ class ShoppingCart {
             tipo
         };
 
+        this.cart.push(cartItem);
+        this.saveCart();
+        this.updateCartIcon();
+        this.updateCartModal();
+        this.showNotification('Producto agregado al carrito', 'success');
+    }
+    
+    addToCartWithCustomization(detail) {
+        if (!detail) {
+            console.error('Missing product details');
+            return;
+        }
+        
+        // Si el producto ya tiene toda la información necesaria (caso Mystery Box)
+        if (detail.id && detail.title && detail.price && detail.size) {
+            this.cart.push(detail);
+            this.saveCart();
+            this.updateCartIcon();
+            this.updateCartModal();
+            this.showNotification('Producto agregado al carrito', 'success');
+            return;
+        }
+
+        // Caso para productos personalizados (jerseys)
+        if (!detail.customization) {
+            console.error('Missing customization details');
+            return;
+        }
+        
+        const customization = detail.customization;
+        const titleElement = document.querySelector('h1.product-title') || document.querySelector('h3.product-title') || document.querySelector('.product-title');
+        const title = titleElement ? titleElement.textContent.trim() : null;
+        const currentPath = window.location.pathname;
+        const isInProductosEquipos = currentPath.includes('/Productos-equipos/');
+        const mainImage = document.querySelector('#mainImage');
+        const image = mainImage ? mainImage.src : null;
+        
+        if (!title || !customization.price || !image) {
+            console.error('Missing required product information');
+            return;
+        }
+        
+        // Create personalization object if name or number exists
+        const personalization = {
+            name: customization.name || '',
+            number: customization.number || '',
+            patch: customization.patch || false
+        };
+        
+        // Check if personalization fields have values (indicating personalization is being used)
+        const isPersonalized = personalization.name !== '' || personalization.number !== '';
+        
+        // Check if personalization is being used but name or number is empty
+        if (isPersonalized && (!personalization.name || !personalization.number)) {
+            this.showNotification('Para personalizar tu jersey, debes ingresar tanto el nombre como el número', 'error');
+            return;
+        }
+        
+        const cartItem = {
+            id: Date.now().toString(),
+            title,
+            price: customization.price,
+            size: customization.size,
+            quantity: customization.quantity,
+            image,
+            personalization: (personalization.name || personalization.number || personalization.patch) ? personalization : null
+        };
+        
         this.cart.push(cartItem);
         this.saveCart();
         this.updateCartIcon();
@@ -260,13 +341,13 @@ class ShoppingCart {
                 <div class="cart-item-details">
                     <h4>${item.title}</h4>
                     ${item.size ? `<p>Talla: ${item.size}</p>` : ''}
+                    ${item.tipo ? `<p>Tipo: ${item.tipo === 'champions' ? 'Champions' : item.tipo === 'ligamx' ? 'LigaMX' : 'Liga Europea'}</p>` : ''}
                     ${item.personalization ? `
                         <div class="personalization-info">
                             <p>Nombre: ${item.personalization.name}</p>
                             <p>Número: ${item.personalization.number}</p>
                         </div>
                     ` : ''}
-                    ${item.tipo ? `<p>Tipo: ${item.tipo === 'champions' ? 'Champions' : 'LigaMX'}</p>` : ''}
                     <p>Precio: $${item.price.toFixed(2)}</p>
                     <div class="quantity-controls">
                         <button class="decrease">-</button>

@@ -34,10 +34,12 @@ function writeLog($message) {
     file_put_contents($logFile, $logMessage, FILE_APPEND);
 }
 
+// Incluir archivo de configuración de la base de datos
+require_once __DIR__ . '/config/database.php';
+
 // Conectar a la base de datos
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
     
     // Limpiar el código de espacios y caracteres no deseados
     $code = trim($data['code']);
@@ -53,7 +55,7 @@ try {
         JOIN products p ON oi.product_id = p.product_id
         WHERE 
             oi.personalization_number = ? 
-            AND (p.name LIKE '%Tarjeta de Regalo%' OR p.product_id = 65)
+            AND (p.name LIKE '%Tarjeta de Regalo%' OR p.product_id = 66 OR p.name LIKE '%Gift Card%')
     ");
     
     $stmt->execute([$code]);

@@ -23,10 +23,12 @@ if (!isset($_POST['product_id']) || !isset($_POST['status'])) {
 $product_id = (int)$_POST['product_id'];
 $status = (int)$_POST['status']; // 1 = activo/visible, 0 = inactivo/oculto
 
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 // Conexión a la base de datos
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
 } catch(PDOException $e) {
     header('Content-Type: application/json');
     echo json_encode(['success' => false, 'message' => 'Error de conexión a la base de datos']);

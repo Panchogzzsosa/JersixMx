@@ -27,6 +27,12 @@ class ShoppingCart {
         const removedItems = [];
 
         for (const item of this.cart) {
+            // No verificar precios para tarjetas de regalo
+            if (item.isGiftCard || (item.title && item.title.includes('Tarjeta de Regalo'))) {
+                updatedCart.push(item);
+                continue;
+            }
+            
             try {
                 const response = await fetch(`get_product_price.php?id=${encodeURIComponent(item.title)}`, {
                     method: 'GET'
@@ -210,6 +216,22 @@ class ShoppingCart {
     }
 
     openCart() {
+        // Verificar si hay gift cards en el carrito
+        const hasGiftCards = this.cart.some(item => 
+            item.isGiftCard || 
+            (item.title && (item.title.includes('Tarjeta de Regalo') || item.title.includes('Gift Card')))
+        );
+        
+        // Si hay gift cards, abrir el carrito sin verificar precios
+        if (hasGiftCards) {
+            this.modal.classList.add('open');
+            this.overlay.classList.add('show');
+            this.updateCartModal();
+            document.body.style.overflow = 'hidden';
+            return;
+        }
+        
+        // Si no hay gift cards, proceder normalmente
         this.verifyPrices().then(() => {
             this.modal.classList.add('open');
             this.overlay.classList.add('show');

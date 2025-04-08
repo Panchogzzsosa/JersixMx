@@ -36,10 +36,12 @@ function writeLog($message) {
     file_put_contents($logFile, $logMessage, FILE_APPEND);
 }
 
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/config/database.php';
+
 // Conectar a la base de datos
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
     $pdo->beginTransaction();
     
     // Limpiar y obtener valores

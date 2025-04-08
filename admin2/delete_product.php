@@ -22,10 +22,12 @@ if (!isset($_GET['id']) || empty($_GET['id'])) {
 
 $product_id = $_GET['id'];
 
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 // Conexión a la base de datos
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
 } catch(PDOException $e) {
     die('Error de conexión a la base de datos: ' . $e->getMessage());
 }

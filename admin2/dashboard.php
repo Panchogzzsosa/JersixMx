@@ -12,10 +12,12 @@ if (!isset($_SESSION['admin_id'])) {
     exit();
 }
 
-// Conexión a la base de datos (ajusta los parámetros según tu configuración)
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
+// Conexión a la base de datos usando la función definida en database.php
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
 
     // Contar productos
     $productCount = $pdo->query("SELECT COUNT(*) FROM products")->fetchColumn();
@@ -757,7 +759,7 @@ try {
                             <p class="action-description">Gestiona los pedidos de clientes</p>
                         </a>
                         
-                        <a href="#" class="action-card">
+                        <a href="statistics.php" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-chart-bar"></i>
                             </div>

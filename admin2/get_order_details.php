@@ -8,8 +8,13 @@ if (!isset($_GET['order_id'])) {
     exit('ID de orden no proporcionado');
 }
 
+
+
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
+    $pdo = getConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
     // Obtener detalles de la orden

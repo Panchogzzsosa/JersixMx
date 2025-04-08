@@ -37,7 +37,17 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
     // Configuración de Gmail
     $gmailEmail = 'jersixmx@gmail.com';
     $gmailName = 'JersixMx';
-    $gmailPassword = 'onsi aafq qtdg lkyb'; // Contraseña de aplicación proporcionada
+    
+    // Cargar contraseña desde un archivo seguro si existe
+    // (más seguro que tenerla directamente en el código)
+    $passwordFile = __DIR__ . '/smtp_credentials.php';
+    if (file_exists($passwordFile)) {
+        include $passwordFile; // Este archivo debe definir $gmailPassword
+    } else {
+        // Fallback a la contraseña hardcodeada (menos seguro)
+        $gmailPassword = 'onsi aafq qtdg lkyb'; // Contraseña de aplicación proporcionada
+    }
+    
     $domainName = 'jersix.mx'; // Dominio principal para Message-ID
     
     // Crear instancia de PHPMailer
@@ -53,6 +63,11 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
         
+        // Probar con SSL si TLS falla en el hosting 
+        // (descomenta estas líneas y comenta las anteriores si es necesario)
+        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
+        // $mail->Port = 465;
+        
         // Opciones adicionales de SMTP para mejorar la entrega
         $mail->SMTPKeepAlive = true; // Mantener la conexión para múltiples envíos
         $mail->Timeout = 60; // Aumentar el tiempo de espera
@@ -63,6 +78,14 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
                 'allow_self_signed' => true
             ]
         ];
+        
+        // Para debugging - habilitar esto al diagnosticar problemas en el hosting
+        // $mail->SMTPDebug = 2; // Nivel de detalle: 1=errores, 2=errores y mensajes
+        // $mail->Debugoutput = function($str, $level) {
+        //     $logDir = __DIR__ . '/logs';
+        //     if (!file_exists($logDir)) mkdir($logDir, 0777, true);
+        //     file_put_contents($logDir . '/smtp_debug.log', date('Y-m-d H:i:s') . " [$level] $str\n", FILE_APPEND);
+        // };
         
         // Configuración de charset para evitar problemas con acentos
         $mail->CharSet = 'UTF-8';
@@ -109,11 +132,16 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
         if ($result) {
             // Registrar el éxito en un archivo de log
             error_log("Correo enviado exitosamente a $to - Asunto: $subject", 0);
+            // Registrar en el log detallado
+            logEmailAttempt($to, $subject, true);
         }
         
         return $result;
     } catch (Exception $e) {
-        error_log("Error al enviar correo a $to: " . $mail->ErrorInfo);
+        $errorMessage = $mail->ErrorInfo;
+        error_log("Error al enviar correo a $to: " . $errorMessage);
+        // Registrar en el log detallado
+        logEmailAttempt($to, $subject, false, $errorMessage);
         return false;
     }
 }
@@ -138,7 +166,33 @@ function testGmailSend() {
 }
 
 // Ejecutar la prueba
-testGmailSend();
+// testGmailSend();
+
+// Comentado para evitar envíos de prueba automáticos en producción
+// Para probar manualmente, crea un archivo test_email.php con:
+// <?php
+// require_once 'configure_gmail_smtp.php';
+// testGmailSend();
+// ?>
+
+// Función para registrar logs detallados de envío de correo
+function logEmailAttempt($to, $subject, $success, $errorInfo = '') {
+    $logDir = __DIR__ . '/logs';
+    if (!file_exists($logDir)) {
+        mkdir($logDir, 0777, true);
+    }
+    
+    $logFile = $logDir . '/email_log.txt';
+    $timestamp = date('Y-m-d H:i:s');
+    $status = $success ? 'ÉXITO' : 'ERROR';
+    $message = "[$timestamp] $status - Para: $to - Asunto: $subject";
+    
+    if (!$success && !empty($errorInfo)) {
+        $message .= " - Error: $errorInfo";
+    }
+    
+    file_put_contents($logFile, $message . PHP_EOL, FILE_APPEND);
+}
 
 echo "=============================================================\n";
 echo "INSTRUCCIONES PARA USAR GMAIL COMO SERVIDOR SMTP:\n\n";

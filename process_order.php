@@ -82,10 +82,12 @@ try {
     // Registrar inicio detallado del proceso
     writeLog("Iniciando procesamiento de orden con " . count($_POST) . " campos POST.");
     
+    // Incluir archivo de configuración de la base de datos
+    require_once __DIR__ . '/config/database.php';
+    
     // Conectar a la base de datos
     try {
-        $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        $pdo = getConnection();
         writeLog("Conexión a base de datos establecida correctamente");
         
         // Verificar existencia de tablas necesarias
@@ -229,7 +231,7 @@ try {
         writeLog("Tabla temporal creada correctamente");
         
         // Insertar un producto de diagnóstico en la tabla temporal
-        $tempInsert = $pdo->prepare("INSERT INTO temp_diagnostic SELECT * FROM products WHERE product_id = 16");
+        $tempInsert = $pdo->prepare("INSERT INTO temp_diagnostic SELECT * FROM products WHERE product_id = 66");
         $tempInsert->execute();
         writeLog("Datos copiados a tabla temporal");
         
@@ -342,42 +344,52 @@ try {
         
         // Verificar si es una gift card
         if (isset($item['isGiftCard']) && $item['isGiftCard']) {
-            writeLog("Usando directamente el producto ID 16 para la gift card");
-            $productId = 16;
+            writeLog("Usando directamente el producto ID 66 para la gift card");
+            $productId = 66;
+        } else if (isset($item['title']) && (
+            stripos($item['title'], 'Tarjeta de Regalo') !== false || 
+            stripos($item['title'], 'Gift Card') !== false
+        )) {
+            writeLog("DETECTADA: Gift card por título: " . $item['title']);
+            $productId = 66; // ID del producto de gift card
+            
+            // Importante: para gift cards, no verificamos el precio ya que el monto es variable
+            writeLog("No se verifica el precio para gift card, usando el valor proporcionado: " . $item['price']);
         } else {
-            // NUEVO: Verificar adicionalmente el título antes de buscar
-            if (isset($item['title']) && (
-                stripos($item['title'], 'Tarjeta de Regalo') !== false || 
-                stripos($item['title'], 'Gift Card') !== false
-            )) {
-                writeLog("DETECTADA: Gift card por título: " . $item['title']);
-                $productId = 16; // ID del producto de gift card
-            } else {
-                // Para productos normales, buscamos por nombre exacto primero
-                $productStmt = $pdo->prepare("SELECT product_id FROM products WHERE name = ?");
-                $productStmt->execute([$item['title']]);
+            // Para productos normales, buscamos por nombre exacto primero
+            $productStmt = $pdo->prepare("SELECT product_id, price FROM products WHERE name = ?");
+            $productStmt->execute([$item['title']]);
+            $product = $productStmt->fetch(PDO::FETCH_ASSOC);
+            
+            // Si no encuentra, busca con LIKE (más flexible)
+            if (!$product) {
+                writeLog("Producto no encontrado con nombre exacto: " . $item['title'] . ". Intentando búsqueda con LIKE.");
+                $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE name LIKE ?");
+                $productStmt->execute(['%' . $item['title'] . '%']);
                 $product = $productStmt->fetch(PDO::FETCH_ASSOC);
                 
-                // Si no encuentra, busca con LIKE (más flexible)
-                if (!$product) {
-                    writeLog("Producto no encontrado con nombre exacto: " . $item['title'] . ". Intentando búsqueda con LIKE.");
-                    $productStmt = $pdo->prepare("SELECT product_id, name FROM products WHERE name LIKE ?");
-                    $productStmt->execute(['%' . $item['title'] . '%']);
-                    $product = $productStmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    if ($product) {
-                        writeLog("Producto encontrado con LIKE: " . $product['name']);
-                    }
+                if ($product) {
+                    writeLog("Producto encontrado con LIKE: " . $product['name']);
                 }
-                
-                if (!$product) {
-                    writeLog("Producto no encontrado después de múltiples intentos: " . $item['title']);
-                    throw new Exception('Producto no encontrado: ' . $item['title']);
-                }
-                
-                $productId = $product['product_id'];
-                writeLog("Usando producto ID " . $productId . " para " . $item['title']);
             }
+            
+            if (!$product) {
+                writeLog("Producto no encontrado después de múltiples intentos: " . $item['title']);
+                throw new Exception('Producto no encontrado: ' . $item['title']);
+            }
+            
+            // Verificar que el precio coincida con el de la base de datos para productos normales
+            $productId = $product['product_id'];
+            
+            // Verificar si el precio ha cambiado significativamente (tolerancia de 0.01)
+            $priceDifference = abs($product['price'] - $item['price']);
+            if ($priceDifference > 0.01) {
+                writeLog("Advertencia: El precio del producto ha cambiado. Base de datos: " . $product['price'] . ", Carrito: " . $item['price']);
+                // Usar el precio de la base de datos para asegurar precisión
+                $item['price'] = $product['price'];
+            }
+            
+            writeLog("Usando producto ID " . $productId . " para " . $item['title']);
         }
 
         // Procesar información de personalización
@@ -489,7 +501,7 @@ try {
         SELECT oi.*, p.name as product_name
         FROM order_items oi
         JOIN products p ON oi.product_id = p.product_id
-        WHERE oi.order_id = ? AND (p.product_id = 16 OR p.name LIKE '%Tarjeta de Regalo%')
+        WHERE oi.order_id = ? AND (p.product_id = 66 OR p.name LIKE '%Tarjeta de Regalo%' OR p.name LIKE '%Gift Card%')
     ");
     $giftcardStmt->execute([$orderId]);
     $giftcards = $giftcardStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -572,7 +584,7 @@ try {
                 JOIN products p ON oi.product_id = p.product_id
                 WHERE 
                     oi.personalization_number = ? 
-                    AND (p.name LIKE '%Tarjeta de Regalo%' OR p.product_id = 65)
+                    AND (p.name LIKE '%Tarjeta de Regalo%' OR p.product_id = 66 OR p.name LIKE '%Gift Card%')
             ");
             
             $stmt->execute([$giftcardCode]);

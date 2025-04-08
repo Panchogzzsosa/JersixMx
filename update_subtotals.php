@@ -1,16 +1,12 @@
 <?php
 // Script para actualizar el campo subtotal en todas las filas de order_items
 
-// Configuración de la conexión
-$host = 'localhost';
-$dbname = 'checkout';
-$username = 'root';
-$password = '';
+// Incluir archivo de configuración de la base de datos
+require_once __DIR__ . '/config/database.php';
 
 try {
     // Conexión a la base de datos
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
     
     echo "Conectado a la base de datos. Iniciando actualización de subtotales...\n";
     

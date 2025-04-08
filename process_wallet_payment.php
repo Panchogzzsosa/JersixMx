@@ -1,8 +1,10 @@
 <?php
+// Incluir archivo de configuración de la base de datos
+require_once __DIR__ . '/config/database.php';
+
 // Database connection
 try {
-    $pdo = new PDO('mysql:host=localhost:3307;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
 } catch(PDOException $e) {
     http_response_code(500);
     echo json_encode(['error' => 'Database connection failed', 'message' => $e->getMessage()]);

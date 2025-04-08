@@ -10,7 +10,7 @@ $EMAIL_CONFIG = [
     'smtp_secure' => 'ssl',
     'smtp_port' => 465,
     'sender_email' => 'JersixMx@gmail.com',
-    'sender_name' => 'JerSix'
+    'sender_name' => 'JersixMx'
 ];
 
 /**

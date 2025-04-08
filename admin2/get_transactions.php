@@ -17,9 +17,14 @@ if (!isset($_GET['code']) || empty($_GET['code'])) {
 
 $code = trim($_GET['code']);
 
+
+
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 try {
     // Conectar a la base de datos
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
+    $pdo = getConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
     
     // Verificar si existe la tabla de transacciones

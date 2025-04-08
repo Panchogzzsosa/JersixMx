@@ -17,10 +17,12 @@ if (!isset($_POST['status'])) {
 
 $status = intval($_POST['status']);
 
+// Incluir el archivo de configuración de la base de datos
+require_once __DIR__ . '/../config/database.php';
+
 // Conexión a la base de datos
 try {
-    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
     
     // Actualizar todos los productos
     $stmt = $pdo->prepare("UPDATE products SET status = ?");

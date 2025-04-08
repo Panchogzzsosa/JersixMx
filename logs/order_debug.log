@@ -22147,3 +22147,288 @@ De: Pancho
 
 [2025-04-08 22:00:39] Método Gmail SMTP: Correo enviado exitosamente a franciscogzz03@gmail.com
 [2025-04-08 22:00:39] Correo de confirmación enviado para el pedido #10
+[2025-04-08 23:26:06] === NUEVA ORDEN ===
+[2025-04-08 23:26:06] POST: Array
+(
+    [fullname] => Francisco Gonzalez
+    [email] => franciscogzz03@gmail.com
+    [phone] => 8123584236
+    [street] => Felicitos Guajardo #1008
+    [colonia] => El yerbaniz
+    [city] => Monterrey
+    [state] => Nuevo Leon
+    [postal] => 67302
+    [payment_id] => 6BW39775W9829091W
+    [cart_items] => [{"id":"1744147537322","title":"AC Milan Local 24/25","price":949,"size":"L","quantity":1,"image":"http://localhost/JersixMx/uploads/products/67ec683135f57.png","personalization":{"name":"Pancho","number":"10","patch":true}}]
+)
+
+[2025-04-08 23:26:06] Iniciando procesamiento de orden con 10 campos POST.
+[2025-04-08 23:26:06] Conexión a base de datos establecida correctamente
+[2025-04-08 23:26:06] Verificación de tablas completada. Todas las tablas requeridas existen.
+[2025-04-08 23:26:06] Transacción iniciada
+[2025-04-08 23:26:06] Decodificando items del carrito...
+[2025-04-08 23:26:06] Carrito decodificado correctamente con 1 items
+[2025-04-08 23:26:06] Items del carrito después de sanitización: Array
+(
+    [0] => Array
+        (
+            [id] => 1744147537322
+            [title] => AC Milan Local 24/25
+            [price] => 949
+            [size] => L
+            [quantity] => 1
+            [image] => http://localhost/JersixMx/uploads/products/67ec683135f57.png
+            [personalization] => Array
+                (
+                    [name] => Pancho
+                    [number] => 10
+                    [patch] => 1
+                )
+
+        )
+
+)
+
+[2025-04-08 23:26:06] Estructura de la tabla order_items: Array
+(
+    [0] => Array
+        (
+            [Field] => order_item_id
+            [Type] => int(11)
+            [Null] => NO
+            [Key] => PRI
+            [Default] => 
+            [Extra] => auto_increment
+        )
+
+    [1] => Array
+        (
+            [Field] => order_id
+            [Type] => int(11)
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [2] => Array
+        (
+            [Field] => product_id
+            [Type] => int(11)
+            [Null] => NO
+            [Key] => MUL
+            [Default] => 
+            [Extra] => 
+        )
+
+    [3] => Array
+        (
+            [Field] => quantity
+            [Type] => int(11)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [4] => Array
+        (
+            [Field] => price
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [5] => Array
+        (
+            [Field] => subtotal
+            [Type] => decimal(10,2)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [6] => Array
+        (
+            [Field] => size
+            [Type] => varchar(10)
+            [Null] => NO
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [7] => Array
+        (
+            [Field] => personalization_name
+            [Type] => varchar(100)
+            [Null] => YES
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [8] => Array
+        (
+            [Field] => personalization_number
+            [Type] => varchar(10)
+            [Null] => YES
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [9] => Array
+        (
+            [Field] => personalization_patch
+            [Type] => text
+            [Null] => YES
+            [Key] => 
+            [Default] => 
+            [Extra] => 
+        )
+
+    [10] => Array
+        (
+            [Field] => giftcard_sent
+            [Type] => tinyint(1)
+            [Null] => YES
+            [Key] => 
+            [Default] => 0
+            [Extra] => 
+        )
+
+    [11] => Array
+        (
+            [Field] => giftcard_status
+            [Type] => varchar(20)
+            [Null] => YES
+            [Key] => 
+            [Default] => pendiente
+            [Extra] => 
+        )
+
+)
+
+[2025-04-08 23:26:06] TEST: Inserción en tabla temporal exitosa
+[2025-04-08 23:26:06] Tabla products accesible. Total productos: 57
+[2025-04-08 23:26:06] Creando tabla temporal para diagnóstico...
+[2025-04-08 23:26:06] Tabla temporal creada correctamente
+[2025-04-08 23:26:06] Datos copiados a tabla temporal
+[2025-04-08 23:26:06] Productos en tabla temporal: Array
+(
+    [0] => Array
+        (
+            [product_id] => 66
+            [name] => Mystery Box
+            [description] => Mystery Box
+            [price] => 799.00
+            [stock] => 0
+            [image_url] => img/products/1744142212_1.jpg
+            [category] => Equipos
+            [created_at] => 2025-04-08 19:56:52
+            [updated_at] => 2025-04-08 20:42:01
+            [image_path] => 
+            [status] => 1
+        )
+
+)
+
+[2025-04-08 23:26:06] Insertando orden con datos: Array
+(
+    [:name] => Francisco Gonzalez
+    [:email] => franciscogzz03@gmail.com
+    [:phone] => 8123584236
+    [:street] => Felicitos Guajardo #1008
+    [:colony] => El yerbaniz
+    [:city] => Monterrey
+    [:state] => Nuevo Leon
+    [:zip] => 67302
+    [:payment_method] => paypal
+    [:payment_id] => 6BW39775W9829091W
+    [:payment_status] => paid
+)
+
+[2025-04-08 23:26:06] Orden creada con ID: 1
+[2025-04-08 23:26:06] Insertando items de la orden...
+[2025-04-08 23:26:06] Procesando item: Array
+(
+    [id] => 1744147537322
+    [title] => AC Milan Local 24/25
+    [price] => 949
+    [size] => L
+    [quantity] => 1
+    [image] => http://localhost/JersixMx/uploads/products/67ec683135f57.png
+    [personalization] => Array
+        (
+            [name] => Pancho
+            [number] => 10
+            [patch] => 1
+        )
+
+)
+
+[2025-04-08 23:26:06] Usando producto ID 10 para AC Milan Local 24/25
+[2025-04-08 23:26:06] Insertando item con personalización: Array
+(
+    [:order_id] => 1
+    [:product_id] => 10
+    [:quantity] => 1
+    [:size] => L
+    [:price] => 949
+    [:subtotal] => 949
+    [:personalization_name] => Pancho
+    [:personalization_number] => 10
+    [:personalization_patch] => 1
+)
+
+[2025-04-08 23:26:06] Transacción completada exitosamente
+[2025-04-08 23:26:06] Iniciando envío de correo de confirmación para el pedido #1
+[2025-04-08 23:26:06] Datos de la orden: Array
+(
+    [order_id] => 1
+    [customer_name] => Francisco Gonzalez
+    [customer_email] => franciscogzz03@gmail.com
+    [phone] => 8123584236
+    [street] => Felicitos Guajardo #1008
+    [colony] => El yerbaniz
+    [city] => Monterrey
+    [state] => Nuevo Leon
+    [zip_code] => 67302
+    [status] => pending
+    [payment_status] => paid
+    [created_at] => 2025-04-08 21:26:06
+    [payment_method] => paypal
+    [payment_id] => 6BW39775W9829091W
+    [payment_notes] => 
+)
+
+[2025-04-08 23:26:06] Items del pedido (1): Array
+(
+    [0] => Array
+        (
+            [order_item_id] => 1
+            [order_id] => 1
+            [product_id] => 10
+            [quantity] => 1
+            [price] => 949.00
+            [subtotal] => 949.00
+            [size] => L
+            [personalization_name] => Pancho
+            [personalization_number] => 10
+            [personalization_patch] => 1
+            [giftcard_sent] => 0
+            [giftcard_status] => pendiente
+            [product_name] => AC Milan Local 24/25
+            [product_image] => uploads/products/67ec683135f57.png
+            [title] => AC Milan Local 24/25
+            [image] => https://jersix.mx/uploads/products/67ec683135f57.png
+        )
+
+)
+
+[2025-04-08 23:26:11] Método Gmail SMTP: Correo enviado exitosamente a franciscogzz03@gmail.com
+[2025-04-08 23:26:11] Correo de confirmación enviado para el pedido #1

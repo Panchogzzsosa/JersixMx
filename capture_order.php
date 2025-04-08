@@ -1,15 +1,10 @@
 <?php
 require_once 'vendor/autoload.php';
+require_once 'config/database.php';
 
 // Database connection
-$host = 'localhost:3307';
-$dbname = 'checkout';
-$username = 'root';
-$password = '';
-
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+    $pdo = getConnection();
 } catch(PDOException $e) {
     error_log('Database connection failed: ' . $e->getMessage());
     http_response_code(500);

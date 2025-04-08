@@ -1,4 +1,7 @@
 <?php
+// Incluir la configuración de correo optimizado para hosting
+require_once __DIR__ . '/configure_hosting_mail.php';
+
 // Configuración de logger
 $logDir = __DIR__ . '/logs';
 if (!file_exists($logDir)) {
@@ -248,9 +251,7 @@ function sendOrderConfirmationEmail($orderData, $orderItems) {
                         </tr>
                         <tr>
                             <td><strong>Estado:</strong></td>
-                            <td class="text-right">
-                                <span class="status">' . htmlspecialchars($orderStatus) . '</span>
-                            </td>
+                            <td class="text-right"><span class="status">' . htmlspecialchars($orderStatus) . '</span></td>
                         </tr>
                     </table>
                 </div>
@@ -258,129 +259,93 @@ function sendOrderConfirmationEmail($orderData, $orderItems) {
                 <!-- Dirección de Envío -->
                 <div class="section">
                     <h2>Dirección de Envío</h2>
-                    <p style="margin: 0; line-height: 1.8;">
+                    
+                    <p>
                         ' . htmlspecialchars($address['street']) . '<br>
                         ' . htmlspecialchars($address['colonia']) . '<br>
-                        ' . htmlspecialchars($address['city']) . ', ' . htmlspecialchars($address['state']) . ' ' . htmlspecialchars($address['postal']) . '<br>
+                        ' . htmlspecialchars($address['city']) . ', ' . htmlspecialchars($address['state']) . ' C.P. ' . htmlspecialchars($address['postal']) . '<br>
                         ' . htmlspecialchars($address['country']) . '
                     </p>
                 </div>
                 
-                <!-- Resumen del Pedido -->
-                <h2>Resumen del Pedido</h2>
-                
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Producto</th>
-                            <th class="text-center">Cantidad</th>
-                            <th class="text-right">Precio</th>
-                            <th class="text-right">Total</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        ' . $itemsHtml . '
-                    </tbody>
-                </table>
-                
-                <!-- Totales -->
-                <table style="margin-top: 20px;">
-                    <tr>
-                        <td class="text-right" style="width: 80%;">Subtotal:</td>
-                        <td class="text-right">$' . number_format($subtotal, 2) . ' MXN</td>
-                    </tr>';
+                <!-- Productos -->
+                <div class="section">
+                    <h2>Productos</h2>
                     
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Producto</th>
+                                <th class="text-center">Cantidad</th>
+                                <th class="text-right">Precio</th>
+                                <th class="text-right">Total</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ' . $itemsHtml . '
+                        </tbody>
+                        <tfoot>
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Subtotal:</strong></td>
+                                <td class="text-right">$' . number_format($subtotal, 2) . ' MXN</td>
+                            </tr>';
+    
     if ($shipping > 0) {
         $htmlMessage .= '
-                    <tr>
-                        <td class="text-right">Envío:</td>
-                        <td class="text-right">$' . number_format($shipping, 2) . ' MXN</td>
-                    </tr>';
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Envío:</strong></td>
+                                <td class="text-right">$' . number_format($shipping, 2) . ' MXN</td>
+                            </tr>';
     }
     
     if ($discount > 0) {
         $htmlMessage .= '
-                    <tr>
-                        <td class="text-right">Descuento:</td>
-                        <td class="text-right">-$' . number_format($discount, 2) . ' MXN</td>
-                    </tr>';
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Descuento:</strong></td>
+                                <td class="text-right">- $' . number_format($discount, 2) . ' MXN</td>
+                            </tr>';
     }
     
     $htmlMessage .= '
-                    <tr>
-                        <td class="text-right" style="font-weight: bold; border-top: 2px solid #eee;">Total:</td>
-                        <td class="text-right" style="font-weight: bold; border-top: 2px solid #eee;">$' . number_format($total, 2) . ' MXN</td>
-                    </tr>
-                </table>
+                            <tr>
+                                <td colspan="3" class="text-right"><strong>Total:</strong></td>
+                                <td class="text-right"><strong>$' . number_format($total, 2) . ' MXN</strong></td>
+                            </tr>
+                        </tfoot>
+                    </table>
+                </div>
                 
-                <!-- Mensaje final -->
-                <p>Si tienes alguna pregunta o inquietud sobre tu pedido, no dudes en contactarnos respondiendo a este correo o a través de WhatsApp al <a href="https://wa.me/+528129157795" style="color: #0085CA; text-decoration: none;">+52 8129157795</a>.</p>
+                <p>Recibirás notificaciones sobre el estado de tu pedido a través de correo electrónico. Si tienes alguna pregunta, no dudes en contactarnos.</p>
                 
-                <p>¡Gracias por elegir JerSix!</p>
+                <p style="text-align: center; margin-top: 30px;">
+                    <a href="https://jersix.mx" style="display: inline-block; background-color: #000; color: #fff; padding: 12px 25px; border-radius: 4px; text-decoration: none; text-transform: uppercase; font-weight: bold; font-size: 14px;">
+                        Visitar Tienda
+                    </a>
+                </p>
             </div>
             
             <!-- Footer -->
             <div class="footer">
-                <p>
-                    <a href="https://www.tiktok.com/@jersix.mx" style="display: inline-block; margin: 0 10px; color: #333; text-decoration: none;" target="_blank">TikTok</a>
-                    <a href="https://www.instagram.com/jersix.mx/" style="display: inline-block; margin: 0 10px; color: #333; text-decoration: none;" target="_blank">Instagram</a>
-                    <a href="https://wa.me/+528129157795" style="display: inline-block; margin: 0 10px; color: #333; text-decoration: none;" target="_blank">WhatsApp</a>
-                </p>
                 <p>&copy; ' . date('Y') . ' JerSix. Todos los derechos reservados.</p>
+                <p>
+                    <a href="https://jersix.mx">jersix.mx</a> |
+                    <a href="mailto:info@jersix.mx">info@jersix.mx</a>
+                </p>
             </div>
         </div>
     </body>
-    </html>
-    ';
+    </html>';
     
-    // Configuración para el envío del correo
-    $headers = array(
-        'MIME-Version: 1.0',
-        'Content-type: text/html; charset=UTF-8',
-        'From: JerSix <jersixmx@gmail.com>',
-        'Reply-To: jersixmx@gmail.com',
-        'X-Mailer: PHP/' . phpversion()
-    );
+    // Usar la nueva función de envío optimizada para hosting
+    writeLogEmail("Enviando correo usando la función optimizada sendHostingEmail()");
+    $result = sendHostingEmail($customerEmail, $subject, $htmlMessage);
     
-    try {
-        // Intentar enviar usando PHPMailer con Gmail SMTP
-        require_once __DIR__ . '/configure_gmail_smtp.php';
-        
-        // Usar la función de Gmail SMTP para enviar
-        $mailResult = sendGmailEmail($customerEmail, $subject, $htmlMessage);
-        
-        if ($mailResult) {
-            writeLogEmail("Método Gmail SMTP: Correo enviado exitosamente a " . $customerEmail);
-            return true;
-        } else {
-            writeLogEmail("ERROR: Método Gmail SMTP falló para " . $customerEmail);
-            
-            // Plan B: Usar método de cola de correos
-            $mailFolder = __DIR__ . '/mail_queue';
-            if (!file_exists($mailFolder)) {
-                mkdir($mailFolder, 0777, true);
-            }
-            
-            $mailData = [
-                'to' => $customerEmail,
-                'subject' => $subject,
-                'body' => $htmlMessage,
-                'headers' => $headers,
-                'timestamp' => time(),
-                'order_id' => $orderId
-            ];
-            
-            $mailFile = $mailFolder . '/order_' . $orderId . '_' . time() . '.json';
-            if (file_put_contents($mailFile, json_encode($mailData))) {
-                writeLogEmail("Plan B: Correo guardado para procesamiento posterior en " . $mailFile);
-                return true;
-            } else {
-                writeLogEmail("ERROR: No se pudo guardar el correo en cola: " . $mailFile);
-                return false;
-            }
-        }
-    } catch (Exception $e) {
-        writeLogEmail("ERROR al enviar correo: " . $e->getMessage());
-        return false;
+    // Registrar resultado
+    if ($result) {
+        writeLogEmail("Correo enviado exitosamente a " . $customerEmail);
+    } else {
+        writeLogEmail("ERROR: No se pudo enviar el correo a " . $customerEmail);
     }
+    
+    return $result;
 } 

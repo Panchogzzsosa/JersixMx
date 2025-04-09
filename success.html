@@ -37,7 +37,15 @@
             color: #666;
             margin-bottom: 1rem;
         }
-
+        .order-id {
+            font-weight: bold;
+            color: #333;
+            margin: 1rem 0;
+            background-color: #f8f8f8;
+            padding: 10px;
+            border-radius: 4px;
+            display: inline-block;
+        }
         .back-button {
             background-color: #4CAF50;
             color: white;
@@ -47,6 +55,7 @@
             cursor: pointer;
             text-decoration: none;
             display: inline-block;
+            margin-top: 1rem;
         }
         .back-button:hover {
             background-color: #45a049;
@@ -58,11 +67,35 @@
         <div class="success-icon">✓</div>
         <h1 class="success-title">¡Pago Exitoso!</h1>
         <p class="success-message">Tu pago ha sido procesado correctamente. Gracias por tu compra.</p>
+        
+        <div id="order-details">
+            <p>Tu pedido ha sido recibido y está siendo procesado.</p>
+            <div id="order-id" class="order-id">Cargando número de orden...</div>
+        </div>
 
         <a href="index.php" class="back-button">Volver al inicio</a>
     </div>
 
-    <!-- Cargar el script externo -->
-    <script src="Js/success.js"></script>
+    <script>
+        // Script para obtener el ID de la orden desde la URL y limpiar el carrito
+        document.addEventListener('DOMContentLoaded', function() {
+            // Obtener el ID de la orden desde la URL
+            const urlParams = new URLSearchParams(window.location.search);
+            const orderId = urlParams.get('order_id');
+            
+            // Mostrar el ID de la orden si está disponible
+            if (orderId) {
+                document.getElementById('order-id').textContent = 'Pedido #' + orderId;
+            } else {
+                document.getElementById('order-id').textContent = 'Pedido Procesado';
+            }
+            
+            // Limpiar el carrito
+            if (localStorage.getItem('cart')) {
+                localStorage.removeItem('cart');
+                console.log('Carrito limpiado exitosamente');
+            }
+        });
+    </script>
 </body>
 </html>

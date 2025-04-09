@@ -37,18 +37,12 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
     // Configuración de Gmail
     $gmailEmail = 'jersixmx@gmail.com';
     $gmailName = 'JersixMx';
-    
-    // Cargar contraseña desde un archivo seguro si existe
-    // (más seguro que tenerla directamente en el código)
-    $passwordFile = __DIR__ . '/smtp_credentials.php';
-    if (file_exists($passwordFile)) {
-        include $passwordFile; // Este archivo debe definir $gmailPassword
-    } else {
-        // Fallback a la contraseña hardcodeada (menos seguro)
-        $gmailPassword = 'onsi aafq qtdg lkyb'; // Contraseña de aplicación proporcionada
-    }
-    
+    $gmailPassword = 'onsi aafq qtdg lkyb'; // Contraseña de aplicación proporcionada
     $domainName = 'jersix.mx'; // Dominio principal para Message-ID
+    
+    // Configuración del remitente
+    $senderEmail = 'no-reply@jersix.mx'; // Dirección desde la que aparecerá enviado
+    $senderName = 'JersixMx';
     
     // Crear instancia de PHPMailer
     $mail = new PHPMailer(true);
@@ -58,15 +52,10 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
         $mail->isSMTP();
         $mail->Host = 'smtp.gmail.com';
         $mail->SMTPAuth = true;
-        $mail->Username = $gmailEmail;
+        $mail->Username = $gmailEmail; // Usamos Gmail para autenticación
         $mail->Password = $gmailPassword;
         $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
         $mail->Port = 587;
-        
-        // Probar con SSL si TLS falla en el hosting 
-        // (descomenta estas líneas y comenta las anteriores si es necesario)
-        // $mail->SMTPSecure = PHPMailer::ENCRYPTION_SMTPS;
-        // $mail->Port = 465;
         
         // Opciones adicionales de SMTP para mejorar la entrega
         $mail->SMTPKeepAlive = true; // Mantener la conexión para múltiples envíos
@@ -78,14 +67,6 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
                 'allow_self_signed' => true
             ]
         ];
-        
-        // Para debugging - habilitar esto al diagnosticar problemas en el hosting
-        // $mail->SMTPDebug = 2; // Nivel de detalle: 1=errores, 2=errores y mensajes
-        // $mail->Debugoutput = function($str, $level) {
-        //     $logDir = __DIR__ . '/logs';
-        //     if (!file_exists($logDir)) mkdir($logDir, 0777, true);
-        //     file_put_contents($logDir . '/smtp_debug.log', date('Y-m-d H:i:s') . " [$level] $str\n", FILE_APPEND);
-        // };
         
         // Configuración de charset para evitar problemas con acentos
         $mail->CharSet = 'UTF-8';
@@ -102,9 +83,10 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
         $mail->addCustomHeader('Feedback-ID', 'ORDEN:JerSix');
         $mail->addCustomHeader('X-Mailer-RecptId', md5($to));
         
-        // Remitentes y destinatarios
-        $mail->setFrom($gmailEmail, $gmailName);
-        $mail->addReplyTo($gmailEmail, $gmailName);
+        // Configuración de remitente personalizado
+        $mail->setFrom($senderEmail, $senderName);
+        $mail->addReplyTo($senderEmail, $senderName);
+        $mail->Sender = $gmailEmail; // La dirección de Gmail se usa como envelope sender (para autenticación)
         $mail->addAddress($to);
         
         // Contenido
@@ -132,16 +114,11 @@ function sendGmailEmail($to, $subject, $body, $attachments = []) {
         if ($result) {
             // Registrar el éxito en un archivo de log
             error_log("Correo enviado exitosamente a $to - Asunto: $subject", 0);
-            // Registrar en el log detallado
-            logEmailAttempt($to, $subject, true);
         }
         
         return $result;
     } catch (Exception $e) {
-        $errorMessage = $mail->ErrorInfo;
-        error_log("Error al enviar correo a $to: " . $errorMessage);
-        // Registrar en el log detallado
-        logEmailAttempt($to, $subject, false, $errorMessage);
+        error_log("Error al enviar correo a $to: " . $mail->ErrorInfo);
         return false;
     }
 }
@@ -154,6 +131,7 @@ function testGmailSend() {
         <h1>Prueba de correo</h1>
         <p>Este es un correo de prueba enviado desde JerSix usando Gmail SMTP.</p>
         <p>Si puedes ver este correo, la configuración SMTP está funcionando correctamente.</p>
+        <p>Enviado desde: no-reply@jersix.mx</p>
     ';
     
     $result = sendGmailEmail($to, $subject, $body);
@@ -166,33 +144,7 @@ function testGmailSend() {
 }
 
 // Ejecutar la prueba
-// testGmailSend();
-
-// Comentado para evitar envíos de prueba automáticos en producción
-// Para probar manualmente, crea un archivo test_email.php con:
-// <?php
-// require_once 'configure_gmail_smtp.php';
-// testGmailSend();
-// ?>
-
-// Función para registrar logs detallados de envío de correo
-function logEmailAttempt($to, $subject, $success, $errorInfo = '') {
-    $logDir = __DIR__ . '/logs';
-    if (!file_exists($logDir)) {
-        mkdir($logDir, 0777, true);
-    }
-    
-    $logFile = $logDir . '/email_log.txt';
-    $timestamp = date('Y-m-d H:i:s');
-    $status = $success ? 'ÉXITO' : 'ERROR';
-    $message = "[$timestamp] $status - Para: $to - Asunto: $subject";
-    
-    if (!$success && !empty($errorInfo)) {
-        $message .= " - Error: $errorInfo";
-    }
-    
-    file_put_contents($logFile, $message . PHP_EOL, FILE_APPEND);
-}
+testGmailSend();
 
 echo "=============================================================\n";
 echo "INSTRUCCIONES PARA USAR GMAIL COMO SERVIDOR SMTP:\n\n";

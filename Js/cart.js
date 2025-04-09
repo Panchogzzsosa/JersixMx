@@ -1,3 +1,46 @@
+//
+// Fix de emergencia para Gift Cards - Versión para hosting
+// Añadir este código al inicio del archivo
+//
+(function() {
+    // Guardar la implementación original de JSON.parse
+    const originalJSONParse = JSON.parse;
+    
+    // Reemplazar JSON.parse con nuestra versión personalizada
+    JSON.parse = function(text, reviver) {
+        // Primero llamar a la versión original
+        let result;
+        try {
+            result = originalJSONParse(text, reviver);
+        } catch (e) {
+            console.error('Error al analizar JSON:', e);
+            return [];
+        }
+        
+        // Si es un array (probablemente el carrito), proteger las gift cards
+        if (Array.isArray(result)) {
+            // Filtrar para conservar las gift cards
+            return result.filter(item => {
+                // Gift cards siempre deben mantenerse
+                if (item && (
+                    item.isGiftCard === true || 
+                    (item.title && (
+                        item.title.toLowerCase().includes('tarjeta') || 
+                        item.title.toLowerCase().includes('gift')
+                    )) ||
+                    (item.product_id === 66)
+                )) {
+                    console.log('Manteniendo gift card en carrito:', item.title);
+                    return true;
+                }
+                return true; // Mantener todos los demás elementos también
+            });
+        }
+        
+        return result;
+    };
+})();
+
 // Cart state management
 class ShoppingCart {
     constructor() {
@@ -27,12 +70,6 @@ class ShoppingCart {
         const removedItems = [];
 
         for (const item of this.cart) {
-            // No verificar precios para tarjetas de regalo
-            if (item.isGiftCard || (item.title && item.title.includes('Tarjeta de Regalo'))) {
-                updatedCart.push(item);
-                continue;
-            }
-            
             try {
                 const response = await fetch(`get_product_price.php?id=${encodeURIComponent(item.title)}`, {
                     method: 'GET'
@@ -216,22 +253,6 @@ class ShoppingCart {
     }
 
     openCart() {
-        // Verificar si hay gift cards en el carrito
-        const hasGiftCards = this.cart.some(item => 
-            item.isGiftCard || 
-            (item.title && (item.title.includes('Tarjeta de Regalo') || item.title.includes('Gift Card')))
-        );
-        
-        // Si hay gift cards, abrir el carrito sin verificar precios
-        if (hasGiftCards) {
-            this.modal.classList.add('open');
-            this.overlay.classList.add('show');
-            this.updateCartModal();
-            document.body.style.overflow = 'hidden';
-            return;
-        }
-        
-        // Si no hay gift cards, proceder normalmente
         this.verifyPrices().then(() => {
             this.modal.classList.add('open');
             this.overlay.classList.add('show');
@@ -259,7 +280,25 @@ class ShoppingCart {
                 </div>
             `;
         } else {
-            const total = this.cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            // Calcular el total considerando los precios reales de las gift cards
+            const total = this.cart.reduce((sum, item) => {
+                let itemPrice = item.price;
+                
+                // Si es una gift card, usar el precio real
+                if (item.isGiftCard) {
+                    if (item.realPrice && item.realPrice > 0) {
+                        itemPrice = item.realPrice;
+                    } else if (item.price === 0 && item.title) {
+                        // Intentar extraer el precio del título
+                        const priceMatch = item.title.match(/\$(\d+)/);
+                        if (priceMatch && priceMatch[1]) {
+                            itemPrice = parseFloat(priceMatch[1]);
+                        }
+                    }
+                }
+                
+                return sum + (itemPrice * item.quantity);
+            }, 0);
             
             cartContent.innerHTML = `
                 <div class="cart-items">
@@ -401,6 +440,22 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
                 </div>
             `;
         }
+        
+        // Determinar el precio a mostrar
+        let displayPrice = item.price;
+        
+        // Si es una gift card, usar realPrice si está disponible
+        if (item.isGiftCard) {
+            if (item.realPrice && item.realPrice > 0) {
+                displayPrice = item.realPrice;
+            } else if (item.price === 0 && item.title) {
+                // Intentar extraer el precio del título (ej: "Tarjeta de Regalo JerSix $1000 MXN")
+                const priceMatch = item.title.match(/\$(\d+)/);
+                if (priceMatch && priceMatch[1]) {
+                    displayPrice = parseFloat(priceMatch[1]);
+                }
+            }
+        }
 
         return `
             <div class="cart-item" data-id="${item.id}">
@@ -409,7 +464,7 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
                     <h4>${item.title}</h4>
                     ${!item.isGiftCard && item.size ? `<p class="item-size">Talla: ${item.size}</p>` : ''}
                     ${personalizationHtml}
-                    <p class="item-price">Precio: $${item.price.toFixed(2)}</p>
+                    <p class="item-price">Precio: $${displayPrice.toFixed(2)}</p>
                     <div class="quantity-controls">
                         <button class="decrease">-</button>
                         <span>${item.quantity}</span>

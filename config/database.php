@@ -1,10 +1,22 @@
 <?php
+// Detectar entorno (localhost vs producción)
+$isLocalhost = ($_SERVER['SERVER_NAME'] === 'localhost' || strpos($_SERVER['SERVER_NAME'], '127.0.0.1') !== false);
+
 // Database configuration
 $host = 'localhost';
 $dbname = 'checkout';
 $username = 'root';
 $password = '';
-$port = 3307;
+$port = 3307; // Puerto por defecto para XAMPP
+
+// Si estamos en producción (cPanel), usar estas credenciales
+if (!$isLocalhost) {
+    $host = '216.245.211.58'; // Host proporcionado
+    $port = 3306; // Puerto estándar MySQL en cPanel
+    $username = 'jersixmx_usuario_total'; // Usuario proporcionado
+    $password = '?O*6o6&Hs&~Q'; // Contraseña proporcionada
+    $dbname = 'jersixmx_checkout'; // Base de datos proporcionada
+}
 
 function getConnection() {
     global $host, $dbname, $username, $password, $port;

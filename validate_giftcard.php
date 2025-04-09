@@ -32,6 +32,9 @@ function writeLog($message) {
     $timestamp = date('Y-m-d H:i:s');
     $logMessage = "[$timestamp] $message\n";
     file_put_contents($logFile, $logMessage, FILE_APPEND);
+    
+    // También escribir al error_log para mejor depuración
+    error_log($message);
 }
 
 // Incluir archivo de configuración de la base de datos
@@ -100,6 +103,7 @@ try {
     // Si ya existe un registro en la tabla de redenciones, obtener el saldo actual
     if (isset($giftcard['balance'])) {
         $balance = $giftcard['balance'];
+        writeLog("Gift card encontrada con registro en giftcard_redemptions: Saldo = $" . $balance);
     } else {
         // Si no existe registro, crearlo
         $insertStmt = $pdo->prepare("
@@ -108,13 +112,36 @@ try {
             ON DUPLICATE KEY UPDATE balance = VALUES(balance)
         ");
         $insertStmt->execute([$code, $amount, $balance]);
+        writeLog("Nuevo registro creado en giftcard_redemptions para: " . $code . " con saldo = $" . $balance);
     }
     
     // Verificar si todavía tiene saldo
     if ($balance <= 0) {
-        writeLog("Gift Card ya utilizada completamente: " . $code);
+        writeLog("Gift Card ya utilizada completamente: " . $code . " (Saldo = $" . $balance . ")");
         echo json_encode(['success' => false, 'message' => 'Esta tarjeta de regalo ya ha sido utilizada completamente']);
         exit;
+    }
+    
+    // Verificar transacciones anteriores
+    try {
+        $transStmt = $pdo->prepare("
+            SELECT SUM(amount) as total_used, COUNT(*) as num_transactions
+            FROM giftcard_transactions
+            WHERE code = ?
+        ");
+        $transStmt->execute([$code]);
+        $transData = $transStmt->fetch(PDO::FETCH_ASSOC);
+        
+        if ($transData && $transData['num_transactions'] > 0) {
+            $totalUsed = $transData['total_used'] ?: 0;
+            writeLog("Gift Card " . $code . " - Transacciones anteriores: " . $transData['num_transactions'] . 
+                    ", Total usado: $" . $totalUsed . ", Saldo actual: $" . $balance);
+        } else {
+            writeLog("Gift Card " . $code . " - Sin transacciones anteriores registradas");
+        }
+    } catch (PDOException $e) {
+        // Silenciar errores, es solo informativo
+        writeLog("Error al verificar transacciones: " . $e->getMessage());
     }
     
     // Devolver información de la Gift Card

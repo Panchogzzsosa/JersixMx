@@ -4,8 +4,8 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
-// Importar archivo de envío de correos
-require_once __DIR__ . '/order_confirmation_email.php';
+// Incluir la clase Mailer
+require_once __DIR__ . '/includes/Mailer.php';
 
 // Control de buffer estricto para evitar cualquier salida antes del JSON
 ob_start();
@@ -187,8 +187,8 @@ try {
 
     // TEST: Verificar la estructura de la tabla order_items antes de continuar
     try {
-        $testPdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
-        $testPdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        // Usar las mismas credenciales que ya están configuradas en lugar de valores fijos
+        $testPdo = getConnection();
         $testStmt = $testPdo->prepare('DESCRIBE order_items');
         $testStmt->execute();
         $tableStructure = $testStmt->fetchAll(PDO::FETCH_ASSOC);
@@ -346,6 +346,19 @@ try {
         if (isset($item['isGiftCard']) && $item['isGiftCard']) {
             writeLog("Usando directamente el producto ID 66 para la gift card");
             $productId = 66;
+            
+            // Para gift cards, usar el precio real guardado en realPrice si está disponible
+            if (isset($item['realPrice']) && $item['realPrice'] > 0) {
+                writeLog("Usando precio real de gift card: " . $item['realPrice']);
+                $item['price'] = $item['realPrice'];
+            } else if ($item['price'] == 0 && preg_match('/\$(\d+)/', $item['title'], $matches)) {
+                // Si el precio es 0, intentar extraerlo del título (formato: "Tarjeta de Regalo JerSix $XXX MXN")
+                $extractedPrice = intval($matches[1]);
+                if ($extractedPrice > 0) {
+                    writeLog("Extrayendo precio de gift card del título: " . $extractedPrice);
+                    $item['price'] = $extractedPrice;
+                }
+            }
         } else if (isset($item['title']) && (
             stripos($item['title'], 'Tarjeta de Regalo') !== false || 
             stripos($item['title'], 'Gift Card') !== false
@@ -355,6 +368,15 @@ try {
             
             // Importante: para gift cards, no verificamos el precio ya que el monto es variable
             writeLog("No se verifica el precio para gift card, usando el valor proporcionado: " . $item['price']);
+            
+            // Si el precio es 0, intentar extraerlo del título
+            if ($item['price'] == 0 && preg_match('/\$(\d+)/', $item['title'], $matches)) {
+                $extractedPrice = intval($matches[1]);
+                if ($extractedPrice > 0) {
+                    writeLog("Extrayendo precio de gift card del título: " . $extractedPrice);
+                    $item['price'] = $extractedPrice;
+                }
+            }
         } else {
             // Para productos normales, buscamos por nombre exacto primero
             $productStmt = $pdo->prepare("SELECT product_id, price FROM products WHERE name = ?");
@@ -454,6 +476,42 @@ try {
         // Calcular subtotal
         $subtotal = $item['price'] * $item['quantity'];
         
+        // NUEVO: Calcular precio ajustado para jerseys con personalización
+        if (!isset($item['isGiftCard']) && 
+            $productId !== 66 && 
+            $item['title'] !== 'Mystery Box' &&
+            (stripos($item['title'], 'jersey') !== false || stripos($item['title'], 'camiseta') !== false)) {
+            
+            // Verificar si tiene personalización (nombre o número)
+            $tienePersonalizacion = !empty($personalizationName) || !empty($personalizationNumber);
+            
+            // Verificar si tiene parche
+            $tieneParche = !empty($personalizationPatch) && $personalizationPatch !== "0";
+            
+            // Calcular precio adicional
+            $precioAdicional = 0;
+            if ($tienePersonalizacion) {
+                $precioAdicional += 100; // +$100 por personalización
+                writeLog("Añadiendo $100 al precio por personalización: " . $item['title']);
+            }
+            
+            if ($tieneParche) {
+                $precioAdicional += 50; // +$50 por parche
+                writeLog("Añadiendo $50 al precio por parche: " . $item['title']);
+            }
+            
+            // Si hay un precio adicional, actualizar el precio y subtotal
+            if ($precioAdicional > 0) {
+                $precioOriginal = $item['price'];
+                $item['price'] += $precioAdicional;
+                $subtotal = $item['price'] * $item['quantity'];
+                
+                writeLog("Precio ajustado por personalizaciones: $precioOriginal → " . $item['price'] . 
+                         " (Personalización: " . ($tienePersonalizacion ? "Sí" : "No") . 
+                         ", Parche: " . ($tieneParche ? "Sí" : "No") . ")");
+            }
+        }
+        
         $itemData = [
             ':order_id' => $orderId,
             ':product_id' => $productId,
@@ -475,8 +533,77 @@ try {
         return $sum + ($item['price'] * $item['quantity']);
     }, 0);
 
-    // Si se aplicó un descuento con gift card, restar del total para las estadísticas
-    if ($giftcardCode && $giftcardAmount > 0) {
+    // Verificar si hay descuento de giftcard
+    $paymentNotes = '';
+    if ($giftcardCode) {
+        $paymentNotes = "Gift Card aplicada: $giftcardCode - Monto: $" . number_format($giftcardAmount, 2);
+        
+        // Actualizar las notas de pago en la tabla de órdenes
+        $updateNotesStmt = $pdo->prepare("UPDATE orders SET payment_notes = ? WHERE order_id = ?");
+        $updateNotesStmt->execute([$paymentNotes, $orderId]);
+        writeLog("Notas de pago actualizadas con información de Gift Card: $paymentNotes");
+        
+        // ACTUALIZAR EL SALDO DE LA GIFT CARD AL REALIZAR LA COMPRA
+        try {
+            // Verificar si existe la tabla giftcard_redemptions
+            $gcTableExists = $pdo->query("SHOW TABLES LIKE 'giftcard_redemptions'")->rowCount() > 0;
+            
+            if ($gcTableExists) {
+                // Obtener información actual de la gift card
+                $gcStmt = $pdo->prepare("
+                    SELECT balance, redeemed FROM giftcard_redemptions 
+                    WHERE code = ?
+                ");
+                $gcStmt->execute([$giftcardCode]);
+                $giftcardInfo = $gcStmt->fetch(PDO::FETCH_ASSOC);
+                
+                if ($giftcardInfo) {
+                    // Calcular nuevo saldo
+                    $newBalance = max(0, $giftcardInfo['balance'] - $giftcardAmount);
+                    $redeemed = ($newBalance <= 0) ? 1 : 0;
+                    
+                    // Actualizar el saldo
+                    $updateGcStmt = $pdo->prepare("
+                        UPDATE giftcard_redemptions
+                        SET balance = ?, redeemed = ?, updated_at = NOW()
+                        WHERE code = ?
+                    ");
+                    $updateResult = $updateGcStmt->execute([$newBalance, $redeemed, $giftcardCode]);
+                    
+                    if ($updateResult) {
+                        writeLog("Saldo de Gift Card $giftcardCode actualizado: $" . $giftcardInfo['balance'] . " -> $" . $newBalance);
+                        
+                        // Registrar la transacción
+                        $transTableExists = $pdo->query("SHOW TABLES LIKE 'giftcard_transactions'")->rowCount() > 0;
+                        
+                        if ($transTableExists) {
+                            $transStmt = $pdo->prepare("
+                                INSERT INTO giftcard_transactions (code, order_id, amount, transaction_date)
+                                VALUES (?, ?, ?, NOW())
+                            ");
+                            $transResult = $transStmt->execute([$giftcardCode, $orderId, $giftcardAmount]);
+                            
+                            if ($transResult) {
+                                writeLog("Transacción de Gift Card registrada: ID " . $pdo->lastInsertId());
+                            } else {
+                                writeLog("ADVERTENCIA: No se pudo registrar la transacción de Gift Card");
+                            }
+                        }
+                    } else {
+                        writeLog("ERROR: No se pudo actualizar el saldo de la Gift Card $giftcardCode");
+                    }
+                } else {
+                    writeLog("ADVERTENCIA: La Gift Card $giftcardCode no se encontró en la tabla giftcard_redemptions");
+                }
+            } else {
+                writeLog("ADVERTENCIA: La tabla giftcard_redemptions no existe");
+            }
+        } catch (Exception $e) {
+            writeLog("ERROR al actualizar saldo de Gift Card: " . $e->getMessage());
+            // No interrumpir el proceso de orden si falla la actualización de la gift card
+        }
+        
+        // Si se aplicó un descuento con gift card, restar del total para las estadísticas
         $total = max(0, $total - $giftcardAmount);
         writeLog("Ajustando total para estadísticas por descuento de Gift Card: {$giftcardAmount}. Total ajustado: {$total}");
     }
@@ -492,171 +619,6 @@ try {
 
     $pdo->commit();
     writeLog("Transacción completada exitosamente");
-
-    // Cargar funciones de gift card pero NO enviar automáticamente
-    require_once 'send_giftcard_email.php';
-    
-    // Buscar gift cards en la orden actual
-    $giftcardStmt = $pdo->prepare("
-        SELECT oi.*, p.name as product_name
-        FROM order_items oi
-        JOIN products p ON oi.product_id = p.product_id
-        WHERE oi.order_id = ? AND (p.product_id = 66 OR p.name LIKE '%Tarjeta de Regalo%' OR p.name LIKE '%Gift Card%')
-    ");
-    $giftcardStmt->execute([$orderId]);
-    $giftcards = $giftcardStmt->fetchAll(PDO::FETCH_ASSOC);
-    
-    // Registrar la presencia de gift cards, pero NO enviarlas automáticamente
-    if ($giftcards) {
-        writeLog("Se encontraron " . count($giftcards) . " gift cards en la orden #" . $orderId . ". Pendientes de envío manual desde el panel de administración.");
-        
-        // Asegurarse de que la columna giftcard_sent existe en la tabla order_items
-        try {
-            $columnExists = $pdo->query("SHOW COLUMNS FROM order_items LIKE 'giftcard_sent'")->rowCount() > 0;
-            
-            if (!$columnExists) {
-                $pdo->exec("ALTER TABLE order_items ADD COLUMN giftcard_sent TINYINT(1) DEFAULT 0");
-                writeLog("Columna giftcard_sent añadida a la tabla order_items");
-            }
-            
-            // Marcar las gift cards como NO enviadas (0) para que aparezcan en el panel
-            foreach ($giftcards as $giftcard) {
-                $markStmt = $pdo->prepare("
-                    UPDATE order_items 
-                    SET giftcard_sent = 0 
-                    WHERE order_item_id = ?
-                ");
-                $markStmt->execute([$giftcard['order_item_id']]);
-                writeLog("Gift card marcada como pendiente de envío: " . $giftcard['personalization_name']);
-            }
-        } catch (Exception $e) {
-            writeLog("ERROR al preparar la tabla para gift cards: " . $e->getMessage());
-        }
-    }
-
-    // Procesar redención de Gift Card si se aplicó alguna
-    if ($giftcardCode && $giftcardAmount > 0) {
-        writeLog("Procesando redención de Gift Card: " . $giftcardCode . " por $" . $giftcardAmount);
-        
-        try {
-            // Verificar que exista la tabla de redenciones
-            $tableExists = $pdo->query("SHOW TABLES LIKE 'giftcard_redemptions'")->rowCount() > 0;
-            
-            if (!$tableExists) {
-                // Crear la tabla si no existe
-                $pdo->exec("
-                    CREATE TABLE giftcard_redemptions (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        code VARCHAR(50) NOT NULL UNIQUE,
-                        original_amount DECIMAL(10,2) NOT NULL,
-                        balance DECIMAL(10,2) NOT NULL,
-                        redeemed TINYINT(1) DEFAULT 0,
-                        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-                        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-                    )
-                ");
-                writeLog("Tabla giftcard_redemptions creada");
-            }
-            
-            // Verificar que exista la tabla de transacciones
-            $transTableExists = $pdo->query("SHOW TABLES LIKE 'giftcard_transactions'")->rowCount() > 0;
-            
-            if (!$transTableExists) {
-                // Crear la tabla si no existe
-                $pdo->exec("
-                    CREATE TABLE giftcard_transactions (
-                        id INT AUTO_INCREMENT PRIMARY KEY,
-                        code VARCHAR(50) NOT NULL,
-                        order_id VARCHAR(50) NOT NULL,
-                        amount DECIMAL(10,2) NOT NULL,
-                        transaction_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-                    )
-                ");
-                writeLog("Tabla giftcard_transactions creada");
-            }
-            
-            // Obtener información de la Gift Card
-            $stmt = $pdo->prepare("
-                SELECT oi.*, o.status, gc.redeemed, gc.balance, gc.original_amount
-                FROM order_items oi
-                JOIN orders o ON oi.order_id = o.order_id
-                LEFT JOIN giftcard_redemptions gc ON oi.personalization_number = gc.code
-                JOIN products p ON oi.product_id = p.product_id
-                WHERE 
-                    oi.personalization_number = ? 
-                    AND (p.name LIKE '%Tarjeta de Regalo%' OR p.product_id = 66 OR p.name LIKE '%Gift Card%')
-            ");
-            
-            $stmt->execute([$giftcardCode]);
-            $giftcard = $stmt->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$giftcard) {
-                writeLog("ERROR: Gift Card no encontrada: " . $giftcardCode);
-                throw new Exception("La tarjeta de regalo no es válida");
-            }
-            
-            // Verificar si ya existe en la tabla de redenciones
-            $redemptionExists = $pdo->prepare("SELECT * FROM giftcard_redemptions WHERE code = ?");
-            $redemptionExists->execute([$giftcardCode]);
-            $redemption = $redemptionExists->fetch(PDO::FETCH_ASSOC);
-            
-            if (!$redemption) {
-                // Crear registro de redención
-                $originalAmount = $giftcard['price'];
-                $newBalance = $originalAmount - $giftcardAmount;
-                $redeemed = ($newBalance <= 0 || $isFullDiscount) ? 1 : 0;
-                
-                $insertStmt = $pdo->prepare("
-                    INSERT INTO giftcard_redemptions (code, original_amount, balance, redeemed)
-                    VALUES (?, ?, ?, ?)
-                ");
-                $insertStmt->execute([$giftcardCode, $originalAmount, $newBalance, $redeemed]);
-                
-                writeLog("Nuevo registro de Gift Card creado: " . $giftcardCode . " - Saldo: $" . $newBalance);
-            } else {
-                // Actualizar saldo
-                $newBalance = $redemption['balance'] - $giftcardAmount;
-                $redeemed = ($newBalance <= 0 || $isFullDiscount) ? 1 : 0;
-                
-                $updateStmt = $pdo->prepare("
-                    UPDATE giftcard_redemptions
-                    SET balance = ?, redeemed = ?
-                    WHERE code = ?
-                ");
-                $updateStmt->execute([$newBalance, $redeemed, $giftcardCode]);
-                
-                writeLog("Saldo de Gift Card actualizado: " . $giftcardCode . " - Nuevo saldo: $" . $newBalance);
-            }
-            
-            // Registrar la transacción
-            $transStmt = $pdo->prepare("
-                INSERT INTO giftcard_transactions (code, order_id, amount)
-                VALUES (?, ?, ?)
-            ");
-            $transStmt->execute([$giftcardCode, $orderId, $giftcardAmount]);
-            
-            writeLog("Transacción de Gift Card registrada: " . $giftcardCode . " - Monto: $" . $giftcardAmount);
-            
-            // Actualizar notas del pedido
-            $paymentNotes = "Gift Card aplicada: " . $giftcardCode . " - Monto: $" . $giftcardAmount;
-            if ($isFullDiscount) {
-                $paymentNotes .= " (Pago completo con Gift Card)";
-            }
-            
-            $notesStmt = $pdo->prepare("
-                UPDATE orders
-                SET payment_notes = CONCAT(IFNULL(payment_notes, ''), ?)
-                WHERE order_id = ?
-            ");
-            $notesStmt->execute([$paymentNotes, $orderId]);
-            
-            writeLog("Notas de pago actualizadas para el pedido #" . $orderId);
-            
-        } catch (Exception $e) {
-            writeLog("ERROR al procesar Gift Card: " . $e->getMessage());
-            // Continuamos con el proceso de pedido aunque haya error en la Gift Card
-        }
-    }
 
     // Obtener los items de la orden para incluirlos en el correo
     $itemsStmt = $pdo->prepare("
@@ -700,15 +662,102 @@ try {
     $orderDataStmt->execute([$orderId]);
     $completeOrderData = $orderDataStmt->fetch(PDO::FETCH_ASSOC);
     
-    // Añadir el email a los datos de la orden (si no está)
-    if (!isset($completeOrderData['customer_email'])) {
+    // Asegurar que el email esté presente y sea válido
+    if (empty($completeOrderData['customer_email']) && !empty($data['email'])) {
         $completeOrderData['customer_email'] = $data['email'];
+        
+        // Actualizar en la base de datos si no estaba guardado
+        $updateEmailStmt = $pdo->prepare("
+            UPDATE orders 
+            SET customer_email = ? 
+            WHERE order_id = ? AND (customer_email IS NULL OR customer_email = '')
+        ");
+        $updateEmailStmt->execute([$data['email'], $orderId]);
+        writeLog("Email del cliente actualizado en la orden: " . $data['email']);
     }
     
-    // Enviar correo de confirmación
-    $emailSent = sendOrderConfirmationEmail($completeOrderData, $orderItems);
-    writeLog("Correo de confirmación " . ($emailSent ? "enviado" : "FALLIDO") . " para el pedido #" . $orderId);
+    // Verificar que tengamos un email válido
+    if (empty($completeOrderData['customer_email'])) {
+        writeLog("ADVERTENCIA: No se encontró email del cliente para el pedido #" . $orderId);
+    } elseif (!filter_var($completeOrderData['customer_email'], FILTER_VALIDATE_EMAIL)) {
+        writeLog("ADVERTENCIA: El email del cliente no es válido: " . $completeOrderData['customer_email']);
+    } else {
+        writeLog("Email del cliente validado correctamente: " . $completeOrderData['customer_email']);
+    }
     
+    // Después de procesar la orden exitosamente, enviar el correo de confirmación
+    if (!empty($completeOrderData['customer_email']) && filter_var($completeOrderData['customer_email'], FILTER_VALIDATE_EMAIL)) {
+        try {
+            $mailer = new Mailer();
+            $emailSent = $mailer->sendOrderConfirmation($completeOrderData, $orderItems);
+            writeLog("Correo de confirmación " . ($emailSent ? "enviado" : "FALLIDO") . " para el pedido #" . $orderId);
+            
+            // Enviar notificación al administrador sobre la nueva compra
+            $notificationSent = $mailer->sendAdminNotification($completeOrderData, $orderItems);
+            writeLog("Notificación al administrador " . ($notificationSent ? "enviada" : "FALLIDA") . " para el pedido #" . $orderId);
+        } catch (Exception $e) {
+            writeLog("ERROR en envío de correo: " . $e->getMessage());
+        }
+    } else {
+        writeLog("ERROR: No se pudo enviar el correo de confirmación porque el email no es válido o está vacío");
+    }
+    
+    // NUEVO: Procesar el envío de gift cards si existen en el pedido
+    try {
+        $giftCardItems = [];
+        
+        // Identificar los items que son gift cards
+        foreach ($orderItems as $item) {
+            if (isset($item['isGiftCard']) && $item['isGiftCard'] && !empty($item['personalization_name'])) {
+                $giftCardItems[] = $item;
+                writeLog("Gift card detectada para envío: " . $item['personalization_name']);
+            }
+        }
+        
+        // Si hay gift cards, incluir el archivo necesario y enviarlas
+        if (!empty($giftCardItems)) {
+            writeLog("Se encontraron " . count($giftCardItems) . " gift cards para enviar");
+            
+            // Verificar que exista el archivo para enviar gift cards
+            if (file_exists(__DIR__ . '/send_giftcard_email.php')) {
+                require_once __DIR__ . '/send_giftcard_email.php';
+                
+                // Enviar cada gift card
+                foreach ($giftCardItems as $giftCard) {
+                    $result = sendGiftCardEmail($completeOrderData, $giftCard);
+                    writeLog("Envío de gift card a " . $giftCard['personalization_name'] . ": " . ($result ? "EXITOSO" : "FALLIDO"));
+                    
+                    // Si el envío fue exitoso, marcarla como enviada en la base de datos
+                    if ($result) {
+                        try {
+                            $updateStmt = $pdo->prepare("
+                                UPDATE order_items 
+                                SET giftcard_sent = 1 
+                                WHERE order_id = ? AND item_id = ?
+                            ");
+                            $updateStmt->execute([$orderId, $giftCard['item_id']]);
+                            writeLog("Gift card marcada como enviada en la base de datos");
+                        } catch (PDOException $ex) {
+                            writeLog("Error al actualizar estado de gift card: " . $ex->getMessage());
+                        }
+                    }
+                }
+            } else {
+                writeLog("ERROR: No se encontró el archivo send_giftcard_email.php para enviar gift cards");
+            }
+        } else {
+            writeLog("No se encontraron gift cards para enviar en esta orden");
+        }
+    } catch (Exception $e) {
+        writeLog("ERROR al procesar el envío de gift cards: " . $e->getMessage());
+    }
+
+    // Actualizar el total_amount de la orden en la base de datos
+    $updateTotalStmt = $pdo->prepare("UPDATE orders SET total_amount = ? WHERE order_id = ?");
+    $updateTotalStmt->execute([$total, $orderId]);
+    writeLog("Total de la orden actualizado: {$total}");
+
+    // Enviar respuesta de éxito siempre que se haya creado la orden correctamente
     sendJsonResponse(true, 'Orden procesada correctamente', ['order_id' => $orderId]);
     
 } catch (Exception $e) {

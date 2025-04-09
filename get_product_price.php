@@ -5,22 +5,6 @@ require_once __DIR__ . '/config/database.php';
 header('Content-Type: application/json');
 
 try {
-    // Verificar si es una gift card primero
-    if (isset($_GET['id']) && (
-        strtolower($_GET['id']) === 'tarjeta de regalo jersix' || 
-        stripos($_GET['id'], 'gift card') !== false ||
-        stripos($_GET['id'], 'tarjeta de regalo') !== false
-    )) {
-        // Si es una gift card, devolver un precio válido (puede ser cualquiera, se utilizará el especificado en el carrito)
-        echo json_encode([
-            'success' => true,
-            'price' => 100.00, // Un valor predeterminado
-            'product_id' => 66, // ID de la tarjeta de regalo
-            'is_giftcard' => true
-        ]);
-        exit;
-    }
-    
     $pdo = getConnection();
     
     // Check if we have an ID or a product name parameter

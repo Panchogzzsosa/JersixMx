@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.2
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Apr 08, 2025 at 04:01 PM
--- Server version: 10.11.11-MariaDB
--- PHP Version: 8.3.19
+-- Servidor: localhost
+-- Tiempo de generación: 09-04-2025 a las 22:50:26
+-- Versión del servidor: 10.4.28-MariaDB
+-- Versión de PHP: 8.2.4
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -18,13 +18,13 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `jersixmx_checkout`
+-- Base de datos: `checkout`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `admins`
+-- Estructura de tabla para la tabla `admins`
 --
 
 CREATE TABLE `admins` (
@@ -36,7 +36,7 @@ CREATE TABLE `admins` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `admins`
+-- Volcado de datos para la tabla `admins`
 --
 
 INSERT INTO `admins` (`id`, `username`, `password`, `admin_name`, `created_at`) VALUES
@@ -45,7 +45,7 @@ INSERT INTO `admins` (`id`, `username`, `password`, `admin_name`, `created_at`) 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `giftcard_redemptions`
+-- Estructura de tabla para la tabla `giftcard_redemptions`
 --
 
 CREATE TABLE `giftcard_redemptions` (
@@ -58,10 +58,18 @@ CREATE TABLE `giftcard_redemptions` (
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `giftcard_redemptions`
+--
+
+INSERT INTO `giftcard_redemptions` (`id`, `code`, `original_amount`, `balance`, `redeemed`, `created_at`, `updated_at`) VALUES
+(1, 'GC-b5cd078', 1000.00, 0.00, 1, '2025-04-09 19:58:50', '2025-04-09 20:14:24'),
+(2, 'GC-e918812', 799.00, 0.00, 1, '2025-04-09 20:17:30', '2025-04-09 20:17:45');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `giftcard_transactions`
+-- Estructura de tabla para la tabla `giftcard_transactions`
 --
 
 CREATE TABLE `giftcard_transactions` (
@@ -72,10 +80,19 @@ CREATE TABLE `giftcard_transactions` (
   `transaction_date` timestamp NOT NULL DEFAULT current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
+--
+-- Volcado de datos para la tabla `giftcard_transactions`
+--
+
+INSERT INTO `giftcard_transactions` (`id`, `code`, `order_id`, `amount`, `transaction_date`) VALUES
+(1, 'GC-b5cd078', '2', 798.99, '2025-04-09 19:58:57'),
+(2, 'GC-b5cd078', '3', 201.01, '2025-04-09 20:14:24'),
+(3, 'GC-e918812', '5', 799.00, '2025-04-09 20:17:45');
+
 -- --------------------------------------------------------
 
 --
--- Table structure for table `newsletter`
+-- Estructura de tabla para la tabla `newsletter`
 --
 
 CREATE TABLE `newsletter` (
@@ -87,7 +104,7 @@ CREATE TABLE `newsletter` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `orders`
+-- Estructura de tabla para la tabla `orders`
 --
 
 CREATE TABLE `orders` (
@@ -105,23 +122,21 @@ CREATE TABLE `orders` (
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `payment_method` varchar(50) DEFAULT NULL,
   `payment_id` varchar(255) DEFAULT NULL,
-  `payment_notes` text DEFAULT NULL
+  `payment_notes` text DEFAULT NULL,
+  `total_amount` decimal(10,2) NOT NULL DEFAULT 0.00
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `orders`
+-- Volcado de datos para la tabla `orders`
 --
 
-INSERT INTO `orders` (`order_id`, `customer_name`, `customer_email`, `phone`, `street`, `colony`, `city`, `state`, `zip_code`, `status`, `payment_status`, `created_at`, `payment_method`, `payment_id`, `payment_notes`) VALUES
-(1, 'Francisco Gonzalez', 'franciscogzz03@gmail.com', '8123584236', 'Felicitos Guajardo #1008', 'El yerbaniz', 'Monterrey', 'Nuevo Leon', '67302', 'pending', 'paid', '2025-04-08 21:21:32', 'paypal', '4M5456589X444151P', NULL),
-(2, 'Francisco Gonzalez', 'franciscogzz03@gmail.com', '8123584236', 'Felicitos Guajardo #1008', 'El yerbaniz', 'Monterrey', 'Nuevo Leon', '67302', 'pending', 'paid', '2025-04-08 21:23:00', 'paypal', '4214352432753534T', NULL),
-(3, 'Francisco Gonzalez', 'franciscogzz03@gmail.com', '8123584236', 'Felicitos Guajardo #1008', 'El yerbaniz', 'Monterrey', 'Nuevo Leon', '67302', 'pending', 'paid', '2025-04-08 21:56:35', 'paypal', '21Y75557HU174720H', NULL),
-(4, 'Francisco Gonzalez', 'franciscogzz03@gmail.com', '8123584236', 'Felicitos Guajardo #1008', 'El yerbaniz', 'Monterrey', 'Nuevo Leon', '67302', 'pending', 'paid', '2025-04-08 21:57:18', 'paypal', '1DP47594DS2478824', NULL);
+INSERT INTO `orders` (`order_id`, `customer_name`, `customer_email`, `phone`, `street`, `colony`, `city`, `state`, `zip_code`, `status`, `payment_status`, `created_at`, `payment_method`, `payment_id`, `payment_notes`, `total_amount`) VALUES
+(1, 'Francisco Gonzalez', 'franciscogzz03@gmail.com', '8123584236', 'Felicitos Guajardo #1008', 'El yerbaniz', 'Monterrey', 'Nuevo Leon', '67302', 'pending', 'paid', '2025-04-09 20:48:49', 'paypal', '8LK31692TA111523V', NULL, 0.00);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `order_items`
+-- Estructura de tabla para la tabla `order_items`
 --
 
 CREATE TABLE `order_items` (
@@ -140,19 +155,16 @@ CREATE TABLE `order_items` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `order_items`
+-- Volcado de datos para la tabla `order_items`
 --
 
 INSERT INTO `order_items` (`order_item_id`, `order_id`, `product_id`, `quantity`, `price`, `subtotal`, `size`, `personalization_name`, `personalization_number`, `personalization_patch`, `giftcard_sent`, `giftcard_status`) VALUES
-(1, 1, 34, 1, 949.00, 949.00, 'L', NULL, NULL, NULL, 0, 'pendiente'),
-(2, 2, 34, 1, 949.00, 949.00, 'L', NULL, NULL, NULL, 0, 'pendiente'),
-(3, 3, 10, 1, 799.00, 799.00, 'M', NULL, NULL, NULL, 0, 'pendiente'),
-(4, 4, 34, 1, 799.00, 799.00, 'L', NULL, NULL, NULL, 0, 'pendiente');
+(1, 1, 1, 1, 799.00, 799.00, 'L', 'Pancho', '10', '1', 0, 'pendiente');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `products`
+-- Estructura de tabla para la tabla `products`
 --
 
 CREATE TABLE `products` (
@@ -170,72 +182,16 @@ CREATE TABLE `products` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `products`
+-- Volcado de datos para la tabla `products`
 --
 
 INSERT INTO `products` (`product_id`, `name`, `description`, `price`, `stock`, `image_url`, `category`, `created_at`, `updated_at`, `image_path`, `status`) VALUES
-(2, 'Seleccion Mexicana 24/25', 'Jersey Seleccion Mexicana 24/25', 799.00, 0, 'uploads/products/67ed9ec010a81.jpg', 'Selecciones', '2025-03-31 18:46:01', '2025-04-02 20:40:58', NULL, 0),
-(3, 'Barcelona Local 24/25', 'Jersey oficial Local de Barcelona para la temporada 2023-2024.', 799.00, 4, 'uploads/products/67ec7477ab499.jpg', 'Equipos', '2025-03-31 18:53:13', '2025-04-02 20:26:09', NULL, 1),
-(4, 'Real Madrid Local 24/25', 'Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poliï¿½ster, ajuste regular.', 799.00, 4, 'uploads/products/67ec76fb94cc3.jpg', 'Equipos', '2025-03-31 19:01:36', '2025-04-02 20:26:26', NULL, 1),
-(7, 'Manchester City Local 24/25', 'Jersey de Rayados Local temporada 24/25	', 799.00, 3, 'img/products/1743533045_67a795c9030e8.png', 'Equipos', '2025-04-01 18:44:05', '2025-04-02 20:25:24', NULL, 1),
-(8, 'Rayados Local 24/25', 'Jersey de Rayados Local temporada 24/25', 799.00, 6, 'img/products/1743537813_67a54ccd76ae6.jpg', 'Equipos', '2025-04-01 20:03:33', '2025-04-02 20:23:50', NULL, 1),
-(9, 'Bayern Munich Local 24/25', 'Jersey del Bayern MÃºnich Local 24/25 ', 799.00, 4, 'img/products/1743546271_BayerMunchenLocal.jpg', 'Equipos', '2025-04-01 22:24:31', '2025-04-04 02:03:11', NULL, 1),
-(10, 'AC Milan Local 24/25', 'Jersey AC Milan Local 24/25 ', 799.00, 2, 'uploads/products/67ec683135f57.png', 'Equipos', '2025-04-01 22:26:31', '2025-04-02 20:24:45', NULL, 1),
-(11, 'Tigres Local 24/25', 'Jersey Tigres local 24/25', 799.00, 5, 'img/products/1743547962_TigresLocal.jpg', 'Equipos', '2025-04-01 22:52:42', '2025-04-02 20:24:23', NULL, 1),
-(13, 'America Local 24/25', 'Jersey America Local 24/25', 799.00, 7, 'img/products/1743549317_AmericaLocal.jpg', 'Equipos', '2025-04-01 23:15:17', '2025-04-02 20:24:37', NULL, 1),
-(14, 'Cruz Azul Local 24/25', 'Jersey Cruz Azul Local 24/25', 799.00, 5, 'img/products/1743550458_CruzAzulLocal.jpg', 'Equipos', '2025-04-01 23:34:18', '2025-04-02 20:25:02', NULL, 1),
-(15, 'PSG Local 24/25', 'Jersey PSG Local 24/25', 799.00, 4, 'img/products/1743611276_PSGLocal.jpg', 'Equipos', '2025-04-02 16:27:56', '2025-04-02 20:25:34', NULL, 1),
-(16, 'Chivas Local 24/25', 'Jersey Chivas Local 24/25', 799.00, 3, 'uploads/products/67f00bc716e3f.jpg', 'Equipos', '2025-04-02 16:30:29', '2025-04-04 16:41:43', NULL, 1),
-(17, 'Barcelona Visitante 24/25', 'Jersey Barcelona Visitante 24/25', 799.00, 0, 'img/products/1743624740_JerseyBarcelonaV.jpg', 'Equipos', '2025-04-02 20:12:20', '2025-04-04 02:03:12', NULL, 0),
-(18, 'Atletico de Madrid Local 24/25', 'Jersey Atletico de Madrid 24/25', 799.00, 0, 'img/products/1743625389_AtleticoM.jpeg', 'Equipos', '2025-04-02 20:23:09', '2025-04-03 02:52:27', NULL, 1),
-(19, 'Real Madrid Visitante 24/25', 'Jersey Real Madrid Visitante 24/25', 799.00, 0, 'img/products/1743626203_RealMV-Photoroom.png', 'Equipos', '2025-04-02 20:36:46', '2025-04-02 20:40:57', NULL, 0),
-(23, 'Atletico de Madrid Visitante 24/25', 'Jersey Atletico de Madrid Visitante 24/25', 799.00, 0, 'img/products/1743626724_AtleticoMV.jpg', 'Equipos', '2025-04-02 20:45:24', '2025-04-03 02:50:59', NULL, 0),
-(24, 'Athletic Bilbao Local 24/25', 'Jersey Athletic Bilbao Local 24/25\r\n', 799.00, 0, 'img/products/1743626959_athetic1.jpg', 'Equipos', '2025-04-02 20:49:19', '2025-04-03 02:50:55', NULL, 0),
-(25, 'Athletic Bilbao Visitante 24/25', 'Jersey Athletic Bilbao Visitante 24/25\r\n', 799.00, 0, 'img/products/1743627060_1.jpg', 'Equipos', '2025-04-02 20:51:00', '2025-04-03 02:50:56', NULL, 0),
-(26, 'PSG Tercera 24/25', 'Jersey PSG Tercera 24/25', 799.00, 0, 'img/products/1743627364_paris1.png', 'Equipos', '2025-04-02 20:56:04', '2025-04-02 20:56:32', NULL, 0),
-(27, 'Tottenham Local 24/25', 'Jersey tottenham local 24/25', 799.00, 0, 'img/products/1743627491_1.jpg', 'Equipos', '2025-04-02 20:58:11', '2025-04-03 02:56:14', NULL, 0),
-(28, 'Chivas Alternativa 24/25', 'Jersey Chivas Alternativa 24/25', 799.00, 0, 'img/products/1743627735_1.jpg', 'Equipos', '2025-04-02 21:02:16', '2025-04-03 02:51:12', NULL, 0),
-(29, 'Borussia Dortmund Visitante 24/25', 'Jersey borussia dortmund visita 24/25', 799.00, 0, 'img/products/1743628037_1.jpg', 'Equipos', '2025-04-02 21:07:17', '2025-04-03 02:51:08', NULL, 0),
-(30, 'Borussia Dortmund Tercera 24/25', 'Jersey Borussia Dortmund Tercera 24/25\r\n', 799.00, 0, 'img/products/1743628208_1.jpg', 'Equipos', '2025-04-02 21:10:08', '2025-04-03 02:51:05', NULL, 0),
-(31, 'AC Milan Visitante 24/25', 'Jersey AC Milan Visitante 24/25', 799.00, 0, 'uploads/products/67eda89a4ac80.jpeg', 'Equipos', '2025-04-02 21:12:57', '2025-04-05 15:31:14', NULL, 0),
-(32, 'Bayern Munich Wiesn 24/25', 'Jersey Bayern Múnich Wiesn 24/25', 799.00, 0, 'img/products/1743628691_1.jpg', 'Equipos', '2025-04-02 21:18:11', '2025-04-08 00:17:20', NULL, 0),
-(33, 'Argentina Aniversario', 'Jersey Argentina Aniversario', 799.00, 0, 'uploads/products/67edaaf7a88cb.png', 'Selecciones', '2025-04-02 21:23:02', '2025-04-03 02:50:53', NULL, 0),
-(34, 'Barcelona Tercera 24/25', 'Jersey Barcelona Tercera 24/25', 799.00, 0, 'img/products/1743629218_1.jpg', 'Equipos', '2025-04-02 21:26:58', '2025-04-03 02:51:41', NULL, 1),
-(35, 'Bayern Munich Tercera 24/25', 'Jersey Bayer Munich Tercera 24/25', 799.00, 0, 'img/products/1743629792_1.jpg', 'Equipos', '2025-04-02 21:36:32', '2025-04-05 01:52:15', NULL, 1),
-(36, 'Inter de Milan Local 24/25', 'Jersey Inter de Milan Local 24/25', 799.00, 0, 'img/products/1743631095_1.jpg', 'Equipos', '2025-04-02 21:58:16', '2025-04-03 02:51:15', NULL, 0),
-(37, 'Juventus Local 24/25', 'Jersey Juventus Local 24/25', 799.00, 0, 'img/products/1743631458_1.png', 'Equipos', '2025-04-02 22:04:18', '2025-04-03 02:51:16', NULL, 0),
-(38, 'Chelsea Visitante 24/25', 'Jersey Chelsea Visitante 24/25', 799.00, 0, 'img/products/1743631710_1.jpg', 'Equipos', '2025-04-02 22:08:30', '2025-04-03 02:51:10', NULL, 0),
-(39, 'Chelsea Local 24/25', 'Jersey Chelsea Local 24/25', 799.00, 0, 'img/products/1743631990_1.jpg', 'Equipos', '2025-04-02 22:13:11', '2025-04-03 02:51:09', NULL, 0),
-(40, 'Seleccion BrasileÃ±a 24/25', 'Jersey Seleccion BrasileÃ±a 24/25', 799.00, 0, 'img/products/1743632160_1.jpg', 'Selecciones', '2025-04-02 22:16:00', '2025-04-02 22:16:28', NULL, 0),
-(41, 'Necaxa Local 24/25', 'Jersey Necaxa Local 24/25', 799.00, 0, 'img/products/1743632290_1.jpg', 'Equipos', '2025-04-02 22:18:10', '2025-04-03 02:51:19', NULL, 0),
-(42, 'Ajax Visitante 24/25', 'Jersey Ajax Visitante 24/25', 799.00, 0, 'img/products/1743632492_1.png', 'Equipos', '2025-04-02 22:21:33', '2025-04-03 02:50:52', NULL, 0),
-(43, 'Manchester United Local 24/25', 'Jersey Manchester United Local 24/25', 799.00, 0, 'img/products/1743632702_1.png', 'Equipos', '2025-04-02 22:25:03', '2025-04-03 02:51:18', NULL, 0),
-(44, 'Arsenal Local 24/25', 'Jersey Arsenal Local 24/25', 799.00, 0, 'img/products/1743632791_1.jpg', 'Equipos', '2025-04-02 22:26:31', '2025-04-03 02:50:54', NULL, 0),
-(45, 'Seleccion EspaÃ±ola 24/25', 'Jersey Seleccion Española 24/25', 799.00, 0, 'img/products/1743647655_1.jpg', 'Selecciones', '2025-04-03 02:34:15', '2025-04-08 00:17:56', NULL, 0),
-(46, 'Seleccion Alemania 24/25', 'Jersey Seleccion Alemania 24/25', 799.00, 0, 'img/products/1743647823_1-Photoroom.png', 'Selecciones', '2025-04-03 02:37:05', '2025-04-03 02:37:47', NULL, 0),
-(47, 'Seleccion Francia 24/25', 'Jersey Seleccion Francia 24/25', 799.00, 0, 'img/products/1743647961_1.jpg', 'Selecciones', '2025-04-03 02:39:21', '2025-04-03 02:39:52', NULL, 0),
-(48, 'Seleccion Francia Visitante 24/25', 'Jersey Seleccion Francia Visitante 24/25', 799.00, 0, 'img/products/1743648068_1.jpg', 'Selecciones', '2025-04-03 02:41:08', '2025-04-03 02:41:24', NULL, 0),
-(49, 'Seleccion Portugal 24/25', 'Jersey Seleccion Portugal 24/25', 799.00, 0, 'img/products/1743648433_1.jpg', 'Selecciones', '2025-04-03 02:47:13', '2025-04-03 02:56:27', NULL, 0),
-(51, 'Seleccion Argentina 24/25', 'Jersey Seleccion Argentina 24/25', 799.00, 0, 'uploads/products/67eec6cc97e34.jpg', 'Selecciones', '2025-04-03 17:32:21', '2025-04-03 17:35:30', NULL, 0),
-(52, 'Seleccion Italiana 24/25', 'Jersey Seleccion Italiana 24/25', 799.00, 0, 'img/products/1743701819_1.jpg', 'Selecciones', '2025-04-03 17:36:59', '2025-04-03 17:37:16', NULL, 0),
-(53, 'Seleccion Italiana Visitante 24/25', 'Jersey Seleccion Italiana Visitante 24/25', 799.00, 0, 'img/products/1743701996_1.jpg', 'Selecciones', '2025-04-03 17:39:56', '2025-04-03 17:40:12', NULL, 0),
-(54, 'Seleccion Inglaterra 24/25', 'Jersey Seleccion Inglaterra 24/25', 799.00, 0, 'img/products/1743702111_1.jpg', 'Selecciones', '2025-04-03 17:41:51', '2025-04-03 17:42:12', NULL, 0),
-(55, 'Liverpool Local 24/25', 'Jersey Liverpool Local 24/25', 799.00, 0, 'img/products/1743702883_1.jpg', 'Equipos', '2025-04-03 17:54:43', '2025-04-03 17:55:09', NULL, 0),
-(56, 'Liverpool Tercer 24/25', 'Jersey Liverpool Tercer 24/25', 799.00, 0, 'img/products/1743702952_4.jpg', 'Equipos', '2025-04-03 17:55:53', '2025-04-03 17:56:19', NULL, 0),
-(57, 'Liverpool Local 06/07', 'Jersey Liverpool Local 2006', 899.00, 0, 'img/products/1743703198_1-Photoroom.png', 'Retro', '2025-04-03 18:00:00', '2025-04-04 02:04:06', NULL, 0),
-(58, 'Chelsea Local 06/07', 'Jersey Chelsea Local 06/07', 899.00, 0, 'img/products/1743703467_1-Photoroom.png', 'Retro', '2025-04-03 18:04:29', '2025-04-04 02:04:05', NULL, 0),
-(59, 'Seleccion EspaÃ±ola 08', 'Jersey Seleccion EspaÃ±ola 08', 899.00, 0, 'img/products/1743703816_1-Photoroom.png', 'Retro', '2025-04-03 18:10:18', '2025-04-04 02:04:07', NULL, 0),
-(61, 'Bayern MÃºnich Local 01/02', 'Jersey Bayern MÃºnich Local 01/02', 899.00, 0, 'img/products/1743704490_1-Photoroom.png', 'Retro', '2025-04-03 18:21:33', '2025-04-08 00:19:29', NULL, 0),
-(62, 'Manchester United Local 13/14', 'Jersey Manchester United Visitante 13/14', 899.00, 0, 'img/products/1743704768_1-Photoroom.png', 'Retro', '2025-04-03 18:26:11', '2025-04-04 02:04:06', NULL, 0),
-(63, 'Milan Local 10/11', 'Jersey Milan Locan 2010', 899.00, 0, 'uploads/products/67f154bb63c06.png', 'Retro', '2025-04-05 15:30:39', '2025-04-05 16:06:24', NULL, 0),
-(64, 'Tigres Visitante 24/25', 'Jersey Tigres Visitante 24/25', 799.00, 0, 'img/products/1743869290_1.jpg', 'Equipos', '2025-04-05 16:08:10', '2025-04-05 16:08:10', NULL, 1),
-(65, 'Mystery Box', 'Mystery Box', 799.00, 0, 'img/products/1744146869_1.jpg', 'nueva', '2025-04-08 21:14:29', '2025-04-08 21:14:49', NULL, 0),
-(66, 'Tarjeta de Regalo JerSix', '	\r\nTarjeta de Regalo JerSix', 0.00, 999, 'img/products/1744146924_LOGO ORIGINAL.jpg', 'Gift Card', '2025-04-08 21:15:24', '2025-04-08 21:20:29', NULL, 0);
+(1, 'Manchester City Local 24/25', 'Jersey Manchester City Local 24/25', 799.00, 0, 'img/products/1744231566_67a54cae7727c.png', 'nueva', '2025-04-09 20:46:06', '2025-04-09 20:46:06', NULL, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `product_images`
+-- Estructura de tabla para la tabla `product_images`
 --
 
 CREATE TABLE `product_images` (
@@ -247,7 +203,7 @@ CREATE TABLE `product_images` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1 COLLATE=latin1_swedish_ci;
 
 --
--- Dumping data for table `product_images`
+-- Volcado de datos para la tabla `product_images`
 --
 
 INSERT INTO `product_images` (`image_id`, `product_id`, `image_url`, `sort_order`, `created_at`) VALUES
@@ -359,12 +315,13 @@ INSERT INTO `product_images` (`image_id`, `product_id`, `image_url`, `sort_order
 (137, 63, 'uploads/products/67f154c067f25_0.png', 1, '2025-04-05 16:05:28'),
 (138, 63, 'uploads/products/67f154c584b4f_1.png', 2, '2025-04-05 16:05:28'),
 (139, 64, 'img/products/additional/1743869290_0_2.jpg', 0, '2025-04-05 16:08:10'),
-(141, 64, 'uploads/products/67f15b1b3bbd0_0.jpg', 2, '2025-04-05 16:32:27');
+(141, 64, 'uploads/products/67f15b1b3bbd0_0.jpg', 2, '2025-04-05 16:32:27'),
+(142, 1, 'img/products/additional/1744231566_0_ManchsterC2.png', 0, '2025-04-09 20:46:06');
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `resenas`
+-- Estructura de tabla para la tabla `resenas`
 --
 
 CREATE TABLE `resenas` (
@@ -382,7 +339,7 @@ CREATE TABLE `resenas` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sales_stats`
+-- Estructura de tabla para la tabla `sales_stats`
 --
 
 CREATE TABLE `sales_stats` (
@@ -392,19 +349,25 @@ CREATE TABLE `sales_stats` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `sales_stats`
+-- Volcado de datos para la tabla `sales_stats`
 --
 
 INSERT INTO `sales_stats` (`id`, `total_sales`, `total_orders`) VALUES
 (1, 0.00, 0),
-(2, 949.00, 1),
-(3, 799.00, 1),
-(4, 799.00, 1);
+(2, 0.00, 0),
+(3, 0.00, 0),
+(4, 0.00, 0),
+(5, 0.00, 0),
+(6, 0.00, 0),
+(7, 0.00, 0),
+(8, 0.00, 0),
+(9, 0.00, 0),
+(10, 799.00, 1);
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `subscribers`
+-- Estructura de tabla para la tabla `subscribers`
 --
 
 CREATE TABLE `subscribers` (
@@ -415,31 +378,31 @@ CREATE TABLE `subscribers` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Indexes for dumped tables
+-- Índices para tablas volcadas
 --
 
 --
--- Indexes for table `admins`
+-- Indices de la tabla `admins`
 --
 ALTER TABLE `admins`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `username` (`username`);
 
 --
--- Indexes for table `giftcard_redemptions`
+-- Indices de la tabla `giftcard_redemptions`
 --
 ALTER TABLE `giftcard_redemptions`
   ADD PRIMARY KEY (`id`),
   ADD UNIQUE KEY `code` (`code`);
 
 --
--- Indexes for table `giftcard_transactions`
+-- Indices de la tabla `giftcard_transactions`
 --
 ALTER TABLE `giftcard_transactions`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `newsletter`
+-- Indices de la tabla `newsletter`
 --
 ALTER TABLE `newsletter`
   ADD PRIMARY KEY (`id`),
@@ -447,13 +410,13 @@ ALTER TABLE `newsletter`
   ADD KEY `idx_newsletter_email` (`email`);
 
 --
--- Indexes for table `orders`
+-- Indices de la tabla `orders`
 --
 ALTER TABLE `orders`
   ADD PRIMARY KEY (`order_id`);
 
 --
--- Indexes for table `order_items`
+-- Indices de la tabla `order_items`
 --
 ALTER TABLE `order_items`
   ADD PRIMARY KEY (`order_item_id`),
@@ -461,118 +424,108 @@ ALTER TABLE `order_items`
   ADD KEY `idx_order_items_giftcard` (`order_id`,`personalization_name`,`giftcard_sent`);
 
 --
--- Indexes for table `products`
+-- Indices de la tabla `products`
 --
 ALTER TABLE `products`
   ADD PRIMARY KEY (`product_id`),
   ADD KEY `idx_product_category` (`category`);
 
 --
--- Indexes for table `product_images`
+-- Indices de la tabla `product_images`
 --
 ALTER TABLE `product_images`
   ADD PRIMARY KEY (`image_id`),
   ADD KEY `product_id` (`product_id`);
 
 --
--- Indexes for table `resenas`
+-- Indices de la tabla `resenas`
 --
 ALTER TABLE `resenas`
   ADD PRIMARY KEY (`id`),
   ADD KEY `producto_id` (`producto_id`);
 
 --
--- Indexes for table `sales_stats`
+-- Indices de la tabla `sales_stats`
 --
 ALTER TABLE `sales_stats`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indexes for table `subscribers`
+-- Indices de la tabla `subscribers`
 --
 ALTER TABLE `subscribers`
   ADD PRIMARY KEY (`subscriber_id`),
   ADD UNIQUE KEY `email` (`email`);
 
 --
--- AUTO_INCREMENT for dumped tables
+-- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT for table `admins`
+-- AUTO_INCREMENT de la tabla `admins`
 --
 ALTER TABLE `admins`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `giftcard_redemptions`
+-- AUTO_INCREMENT de la tabla `giftcard_redemptions`
 --
 ALTER TABLE `giftcard_redemptions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
--- AUTO_INCREMENT for table `giftcard_transactions`
+-- AUTO_INCREMENT de la tabla `giftcard_transactions`
 --
 ALTER TABLE `giftcard_transactions`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 
 --
--- AUTO_INCREMENT for table `newsletter`
+-- AUTO_INCREMENT de la tabla `newsletter`
 --
 ALTER TABLE `newsletter`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `orders`
+-- AUTO_INCREMENT de la tabla `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `order_items`
+-- AUTO_INCREMENT de la tabla `order_items`
 --
 ALTER TABLE `order_items`
-  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `order_item_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `products`
+-- AUTO_INCREMENT de la tabla `products`
 --
 ALTER TABLE `products`
-  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=67;
+  MODIFY `product_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `product_images`
+-- AUTO_INCREMENT de la tabla `product_images`
 --
 ALTER TABLE `product_images`
-  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=142;
+  MODIFY `image_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
 
 --
--- AUTO_INCREMENT for table `resenas`
+-- AUTO_INCREMENT de la tabla `resenas`
 --
 ALTER TABLE `resenas`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
 
 --
--- AUTO_INCREMENT for table `sales_stats`
+-- AUTO_INCREMENT de la tabla `sales_stats`
 --
 ALTER TABLE `sales_stats`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
 
 --
--- AUTO_INCREMENT for table `subscribers`
+-- AUTO_INCREMENT de la tabla `subscribers`
 --
 ALTER TABLE `subscribers`
   MODIFY `subscriber_id` int(11) NOT NULL AUTO_INCREMENT;
-
---
--- Constraints for dumped tables
---
-
---
--- Constraints for table `product_images`
---
-ALTER TABLE `product_images`
-  ADD CONSTRAINT `product_images_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `products` (`product_id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

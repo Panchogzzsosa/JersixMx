@@ -21,7 +21,7 @@ function writeLog($message) {
 }
 
 // Información de remitente
-$fromEmail = 'jersixmx@gmail.com';
+$fromEmail = 'no-reply@jersix.mx';
 $fromName = 'JerSix';
 
 // Dirección del servidor SMTP y puerto

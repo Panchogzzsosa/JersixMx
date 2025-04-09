@@ -51,12 +51,31 @@ date_default_timezone_set('America/Mexico_City');
 
 // Load email configuration
 $emailConfig = [
-    'host' => 'smtp.gmail.com',
-    'username' => 'franciscogzz03@gmail.com',
-    'password' => 'hnhg eczh wwyu vvgk',
-    'port' => 587,
-    'from_name' => 'Jersix',
-    'secure' => PHPMailer::ENCRYPTION_STARTTLS
+    // Opción 1: Gmail (puede no funcionar en el servidor)
+    'gmail' => [
+        'host' => 'smtp.gmail.com',
+        'username' => 'franciscogzz03@gmail.com',
+        'password' => 'hnhg eczh wwyu vvgk',
+        'port' => 465,
+        'from_name' => 'Jersix',
+        'secure' => PHPMailer::ENCRYPTION_SMTPS
+    ],
+    // Opción 2: SendGrid (registrarse en sendgrid.com y obtener API key)
+    'sendgrid' => [
+        'host' => 'smtp.sendgrid.net',
+        'username' => 'apikey', // Siempre es 'apikey'
+        'password' => 'SG.TU_API_KEY_AQUI', // Reemplazar con tu API key de SendGrid
+        'port' => 587,
+        'from_name' => 'Jersix',
+        'secure' => PHPMailer::ENCRYPTION_STARTTLS
+    ],
+    // Opción 3: Función mail() nativa de PHP
+    'php_mail' => [
+        'from_email' => 'no-reply@jersix.mx',
+        'from_name' => 'Jersix'
+    ],
+    // Cuál configuración usar: 'gmail', 'sendgrid', o 'php_mail'
+    'use' => 'gmail'
 ];
 
 function generateVerificationCode() {
@@ -65,9 +84,41 @@ function generateVerificationCode() {
 
 function sendVerificationEmail($email, $code) {
     global $emailConfig;
+    
+    // Si estamos usando PHP mail() nativo, no necesitamos PHPMailer
+    if ($emailConfig['use'] === 'php_mail') {
+        try {
+            $from = $emailConfig['php_mail']['from_email'];
+            $name = $emailConfig['php_mail']['from_name'];
+            
+            $subject = 'Código de Verificación - Jerseys Shop';
+            $message = "Tu código de verificación es: <b>$code</b>";
+            
+            // Para enviar un correo HTML, debe establecerse el encabezado Content-type
+            $headers = "MIME-Version: 1.0\r\n";
+            $headers .= "Content-type: text/html; charset=UTF-8\r\n";
+            $headers .= "From: $name <$from>\r\n";
+            
+            if (mail($email, $subject, $message, $headers)) {
+                error_log("Email enviado exitosamente a: $email usando PHP mail()");
+                return true;
+            } else {
+                error_log("Error al enviar email usando PHP mail() a: $email");
+                return false;
+            }
+        } catch (Exception $e) {
+            error_log("Error en PHP mail(): " . $e->getMessage());
+            return false;
+        }
+    }
+    
+    // Si llegamos aquí, usamos PHPMailer
     $mail = new PHPMailer(true);
 
     try {
+        // Elegir la configuración a usar
+        $config = $emailConfig[$emailConfig['use']];
+        
         // Server settings with enhanced debugging and error handling
         $mail->SMTPDebug = 3;
         $mail->Debugoutput = function($str, $level) {
@@ -76,12 +127,12 @@ function sendVerificationEmail($email, $code) {
         
         // Basic SMTP configuration
         $mail->isSMTP();
-        $mail->Host = $emailConfig['host'];
+        $mail->Host = $config['host'];
         $mail->SMTPAuth = true;
-        $mail->Username = $emailConfig['username'];
-        $mail->Password = $emailConfig['password'];
-        $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
-        $mail->Port = $emailConfig['port'];
+        $mail->Username = $config['username'];
+        $mail->Password = $config['password'];
+        $mail->SMTPSecure = $config['secure'];
+        $mail->Port = $config['port'];
         
         // Extended timeout and keep-alive
         $mail->Timeout = 60;
@@ -92,7 +143,7 @@ function sendVerificationEmail($email, $code) {
         $mail->Encoding = 'base64';
 
         // Sender and recipient
-        $mail->setFrom($emailConfig['username'], $emailConfig['from_name']);
+        $mail->setFrom($config['username'], $config['from_name']);
         $mail->addAddress($email);
 
         // Email content

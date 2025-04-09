@@ -960,7 +960,7 @@ try {
                                 SELECT 
                                     r.*,
                                     COUNT(t.id) as transactions_count,
-                                    SUM(t.amount) as total_redeemed
+                                    IFNULL(SUM(t.amount), 0) as total_redeemed
                                 FROM giftcard_redemptions r
                                 LEFT JOIN giftcard_transactions t ON r.code = t.code
                                 GROUP BY r.id
@@ -997,9 +997,11 @@ try {
                                                 </td>
                                                 <td>
                                                     <?php 
-                                                    $used = $redemption['original_amount'] - $redemption['balance'];
-                                                    echo "$" . number_format($used, 2) . " (" . 
-                                                         round(($used / $redemption['original_amount']) * 100, 0) . "%)"; 
+                                                    // Usar el valor de total_redeemed de la consulta SQL
+                                                    $used = $redemption['total_redeemed'];
+                                                    $percent = ($redemption['original_amount'] > 0) ? 
+                                                        round(($used / $redemption['original_amount']) * 100, 0) : 0;
+                                                    echo "$" . number_format($used, 2) . " (" . $percent . "%)"; 
                                                     ?>
                                                 </td>
                                                 <td><?php echo date('d/m/Y H:i', strtotime($redemption['updated_at'])); ?></td>

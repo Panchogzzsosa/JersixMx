@@ -104,7 +104,7 @@
             // Función para obtener productos aleatorios con caché
             function getRandomProducts($limit = 4) {
                 $cacheFile = 'cache/random_products.json';
-                $cacheExpiry = 10; // 2 días en segundos (2 * 24 * 60 * 60)
+                $cacheExpiry = 1000; // 2 días en segundos (2 * 24 * 60 * 60)
                 
                 // Verificar si existe el directorio cache, si no, crearlo
                 if (!file_exists('cache')) {
@@ -118,7 +118,7 @@
                 
                 try {
                     // Conexión a la base de datos
-                    $pdo = new PDO('mysql:host=localhost;dbname=checkout', 'root', '');
+                    $pdo = new PDO('mysql:host=216.245.211.58;dbname=jersixmx_checkout', 'jersixmx_usuario_total', '?O*6o6&Hs&~Q');
                     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
                     
                     // Seleccionar productos aleatorios que estén activos y con stock

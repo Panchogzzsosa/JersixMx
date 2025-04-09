@@ -32,7 +32,17 @@ try {
         SELECT 
             o.*,
             COUNT(DISTINCT oi.order_item_id) as total_items,
-            SUM(oi.quantity * oi.price) as order_total,
+            SUM(oi.quantity * oi.price) as order_total_before_discount,
+            CASE 
+                WHEN o.payment_notes REGEXP 'Gift Card aplicada:.+\\- Monto: \\$([0-9.]+)' THEN
+                    SUM(oi.quantity * oi.price) - (
+                        SELECT CAST(REGEXP_REPLACE(
+                            REGEXP_SUBSTR(o.payment_notes, 'Gift Card aplicada:.+\\- Monto: \\$([0-9.]+)'),
+                            'Gift Card aplicada:.+\\- Monto: \\$', ''
+                        ) AS DECIMAL(10,2))
+                    )
+                ELSE SUM(oi.quantity * oi.price)
+            END as order_total,
             GROUP_CONCAT(DISTINCT CONCAT(p.name, ' (', oi.quantity, ')') SEPARATOR ', ') as products_summary
         FROM orders o
         LEFT JOIN order_items oi ON o.order_id = oi.order_id
@@ -49,13 +59,93 @@ try {
             o.city,
             o.state,
             o.zip_code,
-            o.payment_status
+            o.payment_status,
+            o.payment_notes
         ORDER BY o.created_at DESC
     ");
     $orders = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch(PDOException $e) {
     $error_message = "Error al obtener pedidos: " . $e->getMessage();
     $orders = [];
+}
+
+// Función para calcular el precio real de un producto
+function calcularPrecioReal($item) {
+    // Precio base del producto
+    $precioBase = floatval($item['price']);
+    $precioFinal = $precioBase;
+    
+    // Verificar si tiene personalización (nombre o número)
+    $tienePersonalizacion = !empty($item['personalization_name']) || !empty($item['personalization_number']);
+    
+    // Verificar si tiene parche
+    $tieneParche = false;
+    if (!empty($item['personalization_patch'])) {
+        // Considerar varios casos especiales
+        if ($item['personalization_patch'] === '1') {
+            // Para jerseys, "1" significa que tiene parche
+            $tieneParche = true;
+        } else if ($item['personalization_patch'] !== '0' && 
+                  $item['personalization_patch'] !== '2' && 
+                  $item['personalization_patch'] !== '3' &&
+                  strpos($item['personalization_patch'], 'TIPO:') !== 0 &&
+                  strpos($item['personalization_patch'], 'RCP:') !== 0) {
+            $tieneParche = true;
+        }
+    }
+    
+    // Verificar si es una jersey o camiseta
+    $nombreProducto = strtolower($item['product_name'] ?? '');
+    $esJersey = (
+        strpos($nombreProducto, 'jersey') !== false || 
+        strpos($nombreProducto, 'camiseta') !== false ||
+        strpos($nombreProducto, 'milan') !== false ||
+        strpos($nombreProducto, 'manchester') !== false ||
+        strpos($nombreProducto, 'barcelona') !== false ||
+        strpos($nombreProducto, 'real madrid') !== false ||
+        strpos($nombreProducto, 'rayados') !== false ||
+        strpos($nombreProducto, 'tigres') !== false ||
+        strpos($nombreProducto, 'chivas') !== false ||
+        strpos($nombreProducto, 'america') !== false ||
+        strpos($nombreProducto, 'arsenal') !== false ||
+        strpos($nombreProducto, 'chelsea') !== false ||
+        strpos($nombreProducto, 'liverpool') !== false ||
+        strpos($nombreProducto, 'atletico') !== false ||
+        strpos($nombreProducto, 'ajax') !== false ||
+        strpos($nombreProducto, 'juventus') !== false ||
+        strpos($nombreProducto, 'tottenham') !== false ||
+        strpos($nombreProducto, 'bayern') !== false ||
+        strpos($nombreProducto, 'borussia') !== false ||
+        strpos($nombreProducto, 'napoli') !== false ||
+        strpos($nombreProducto, 'inter') !== false
+    ) && strpos($nombreProducto, 'gift card') === false;
+    
+    // Si es jersey y tiene personalización, añadir costo
+    if ($esJersey) {
+        if ($tienePersonalizacion) {
+            $precioFinal += 100; // Personalización: +$100
+            // Registro para depuración
+            error_log("Producto {$item['product_id']} ({$nombreProducto}) tiene personalización (+$100): Nombre: " . ($item['personalization_name'] ?? 'N/A') . ", Número: " . ($item['personalization_number'] ?? 'N/A'));
+        }
+        
+        if ($tieneParche) {
+            $precioFinal += 50; // Parche: +$50
+            // Registro para depuración
+            error_log("Producto {$item['product_id']} ({$nombreProducto}) tiene parche (+$50): " . ($item['personalization_patch'] ?? 'N/A'));
+        }
+    }
+    
+    // Calcular subtotal (precio final * cantidad)
+    $subtotal = $item['quantity'] * $precioFinal;
+    
+    return [
+        'precio_base' => $precioBase,
+        'precio_final' => $precioFinal,
+        'subtotal' => $subtotal,
+        'tiene_personalizacion' => $tienePersonalizacion,
+        'tiene_parche' => $tieneParche,
+        'es_jersey' => $esJersey
+    ];
 }
 ?>
 
@@ -1086,9 +1176,11 @@ try {
             <div class="panel">
                 <div class="panel-header">
                     <h3 class="panel-title">Lista de Pedidos</h3>
-                    <button class="btn btn-primary" onclick="openAddOrderModal()">
-                        <i class="fas fa-plus"></i> Agregar Orden
-                    </button>
+                    <div style="display: flex; gap: 10px;">
+                        <button class="btn btn-primary" onclick="openAddOrderModal()">
+                            <i class="fas fa-plus"></i> Agregar Orden
+                        </button>
+                    </div>
                 </div>
 
                 <?php if (empty($orders)): ?>
@@ -1107,6 +1199,7 @@ try {
                                     <th>ID Pedido</th>
                                     <th>Cliente</th>
                                     <th>Items</th>
+                                    <th>Total</th>
                                     <th>Estado</th>
                                     <th>Fecha</th>
                                     <th>Acciones</th>
@@ -1114,17 +1207,74 @@ try {
                             </thead>
                             <tbody>
                                 <?php foreach ($orders as $order): ?>
-                                    <tr data-order-id="<?php echo $order['order_id']; ?>">
+                                    <?php 
+                                    $isGiftcardPayment = ($order['payment_method'] === 'giftcard' || $order['payment_method'] === 'giftcard+paypal' || strpos($order['payment_notes'] ?? '', 'Gift Card aplicada') !== false);
+                                    ?>
+                                    <tr data-order-id="<?php echo $order['order_id']; ?>" <?php echo $isGiftcardPayment ? 'data-payment="giftcard"' : ''; ?>>
                                         <td data-label="ID Pedido">#<?php echo str_pad($order['order_id'], 6, '0', STR_PAD_LEFT); ?></td>
                                         <td data-label="Cliente">
                                             <div><?php echo htmlspecialchars($order['customer_name']); ?></div>
                                             <small><?php echo htmlspecialchars($order['customer_email']); ?></small>
+                                            <?php if ($order['payment_method'] === 'giftcard' || $order['payment_method'] === 'giftcard+paypal' || strpos($order['payment_notes'] ?? '', 'Gift Card aplicada') !== false): ?>
+                                                <div class="gift-card-badge">
+                                                    <i class="fas fa-gift"></i> Gift Card
+                                                </div>
+                                            <?php endif; ?>
                                         </td>
                                         <td data-label="Items"><?php echo $order['total_items']; ?> productos</td>
+                                        <td data-label="Total">
+                                            <?php 
+                                            // Obtener items para calcular el precio real incluyendo personalizaciones
+                                            $real_total_stmt = $pdo->prepare("
+                                                SELECT 
+                                                    oi.*,
+                                                    p.name as product_name
+                                                FROM order_items oi
+                                                LEFT JOIN products p ON oi.product_id = p.product_id
+                                                WHERE oi.order_id = ?
+                                            ");
+                                            $real_total_stmt->execute([$order['order_id']]);
+                                            $items = $real_total_stmt->fetchAll(PDO::FETCH_ASSOC);
+                                            
+                                            // Calcular el total real
+                                            $real_total = 0;
+                                            foreach ($items as $item) {
+                                                $priceData = calcularPrecioReal($item);
+                                                $real_total += $priceData['subtotal'];
+                                            }
+                                            
+                                            // Verificar si hay descuento de giftcard
+                                            $discount_amount = 0;
+                                            $isGiftcardPayment = ($order['payment_method'] === 'giftcard' || $order['payment_method'] === 'giftcard+paypal' || strpos($order['payment_notes'] ?? '', 'Gift Card aplicada') !== false);
+                                            
+                                            if ($isGiftcardPayment) {
+                                                // Obtener notas de pago para buscar descuento
+                                                $notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
+                                                $notes_stmt->execute([$order['order_id']]);
+                                                $payment_notes = $notes_stmt->fetchColumn();
+                                                
+                                                if (!empty($payment_notes) && preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                                    $discount_amount = floatval($matches[1]);
+                                                }
+                                            }
+                                            
+                                            // Si es pago completo con giftcard o hay descuento, mostrar ambos precios
+                                            if ($order['payment_method'] === 'giftcard') {
+                                                echo '<div style="font-weight: 500; color: #28a745;">$0 <small style="color: #6c757d; text-decoration: line-through;">($' . number_format($real_total, 2) . ')</small></div>';
+                                            } elseif ($discount_amount > 0) {
+                                                $paid_amount = max(0, $real_total - $discount_amount);
+                                                echo '<div><span style="font-weight: 500; color: #28a745;">$' . number_format($paid_amount, 2) . '</span><br>';
+                                                echo '<small style="color: #6c757d; text-decoration: line-through;">$' . number_format($real_total, 2) . '</small></div>';
+                                            } else {
+                                                echo '$' . number_format($real_total, 2);
+                                            }
+                                            ?>
+                                        </td>
                                         <td data-label="Estado">
                                             <select class="status-select status-<?php echo $order['status']; ?>" 
                                                     data-order-id="<?php echo $order['order_id']; ?>"
                                                     data-previous-status="<?php echo $order['status']; ?>"
+                                                    <?php if ($order['payment_method'] === 'giftcard'): ?>data-giftcard="true"<?php endif; ?>
                                                     onchange="updateOrderStatus(this)">
                                                 <option value="pending" <?php echo $order['status'] == 'pending' ? 'selected' : ''; ?>>Pendiente</option>
                                                 <option value="processing" <?php echo $order['status'] == 'processing' ? 'selected' : ''; ?>>En proceso</option>
@@ -1147,8 +1297,8 @@ try {
                                             </div>
                                         </td>
                                     </tr>
-                                    <tr data-order-id="<?php echo $order['order_id']; ?>">
-                                        <td colspan="7">
+                                    <tr data-order-id="<?php echo $order['order_id']; ?>" <?php echo $isGiftcardPayment ? 'data-payment="giftcard"' : ''; ?>>
+                                        <td colspan="8">
                                             <div id="order-details-<?php echo $order['order_id']; ?>" class="order-details">
                                                 <div class="customer-info">
                                                     <div class="info-group">
@@ -1202,7 +1352,18 @@ try {
                                                             
                                                             $order_subtotal = 0;
                                                             foreach ($items as $item):
-                                                                $item_total = $item['quantity'] * $item['price'];
+                                                                // Usar la función de calcular precio real
+                                                                $priceData = calcularPrecioReal($item);
+                                                                
+                                                                // Usar los datos calculados
+                                                                $basePrice = $priceData['precio_base'];
+                                                                $displayPrice = $priceData['precio_final'];
+                                                                $item_total = $priceData['subtotal'];
+                                                                $hasPersonalization = $priceData['tiene_personalizacion'];
+                                                                $hasPatch = $priceData['tiene_parche'];
+                                                                $isJersey = $priceData['es_jersey'];
+                                                                
+                                                                // Acumular el subtotal de la orden
                                                                 $order_subtotal += $item_total;
                                                             ?>
                                                                 <tr>
@@ -1230,7 +1391,21 @@ try {
                                                                     </td>
                                                                     <td><strong><?php echo htmlspecialchars($item['size']); ?></strong></td>
                                                                     <td><?php echo $item['quantity']; ?></td>
-                                                                    <td>$<?php echo number_format($item['price'], 2); ?></td>
+                                                                    <td>
+                                                                        <?php if ($isJersey && ($hasPersonalization || $hasPatch)): ?>
+                                                                            <div class="price-container">
+                                                                                <div class="personalized-price">$<?php echo number_format($displayPrice, 2); ?></div>
+                                                                            </div>
+                                                                            <?php if ($hasPersonalization): ?>
+                                                                                <div class="price-detail personalization"></div>
+                                                                            <?php endif; ?>
+                                                                            <?php if ($hasPatch): ?>
+                                                                                <div class="price-detail patch"></div>
+                                                                            <?php endif; ?>
+                                                                        <?php else: ?>
+                                                                            $<?php echo number_format($displayPrice, 2); ?>
+                                                                        <?php endif; ?>
+                                                                    </td>
                                                                     <td>$<?php echo number_format($item_total, 2); ?></td>
                                                                     <td>
                                                                         <?php if (!empty($item['personalization_name']) || !empty($item['personalization_number']) || ($item['product_name'] === 'Mystery Box' && !empty($item['personalization_patch']))): ?>
@@ -1303,6 +1478,7 @@ try {
                                                             // Verificar si hay notas de pago que indiquen descuento de gift card
                                                             $discount_amount = 0;
                                                             $has_discount = false;
+                                                            $is_full_giftcard = $order['payment_method'] === 'giftcard';
                                                             
                                                             // Obtener notas de pago de la orden
                                                             $notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
@@ -1335,8 +1511,17 @@ try {
                                                                 endif;
                                                             }
                                                             
-                                                            // Si no hay descuento, mostrar solo el total
-                                                            if (!$has_discount):
+                                                            // Si es pago completo con gift card, mostrar total como 0.00
+                                                            if ($is_full_giftcard):
+                                                            ?>
+                                                                <tr class="total-row">
+                                                                    <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL PAGADO:</td>
+                                                                    <td style="font-weight: 700; font-size: 1.1em;">$0.00</td>
+                                                                    <td></td>
+                                                                </tr>
+                                                            <?php
+                                                            // Si no hay descuento ni es pago con gift card, mostrar solo el total
+                                                            elseif (!$has_discount):
                                                             ?>
                                                                 <tr class="total-row">
                                                                     <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL:</td>

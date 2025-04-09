@@ -4,7 +4,7 @@ require_once 'config/database.php';
 
 // Clase para gestionar el rastreo de DHL
 class DHLTracker {
-    private $apiKey; 
+    private $apiKey = '0lwVV1XadZM2zAKPQeIx3GJ1I2tz6oki';
     private $baseUrl = 'https://api-eu.dhl.com/track/shipments';
     
     public function __construct($apiKey) {

@@ -8,7 +8,7 @@
 $adminEmail = "jersixmx@gmail.com";
 
 // Configurar correo del remitente (debe coincidir con el dominio)
-$senderEmail = "no-reply@" . ($_SERVER['HTTP_HOST'] ?? 'jersix.mx');
+$senderEmail = "no-reply@jersix.mx";
 $senderName = "Jersix.mx";
 
 // Ruta al log de actividad de correos

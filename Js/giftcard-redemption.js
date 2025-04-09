@@ -51,6 +51,7 @@ class GiftCardHandler {
         giftcardContainer.className = 'giftcard-container';
         giftcardContainer.innerHTML = `
             <h3>¿Tienes una tarjeta de regalo?</h3>
+            <p>Haz doble click en aplicar para ver el precio real de tu compra</p>
             <div class="giftcard-input-group">
                 <input type="text" id="giftcard-code" placeholder="Ingresa el código de tu tarjeta de regalo">
                 <button id="apply-giftcard-btn" class="giftcard-btn">Aplicar</button>
@@ -248,86 +249,154 @@ class GiftCardHandler {
         if (!this.giftcardData) return;
         
         // Obtener el total actual del carrito
-        const totalEl = document.querySelector('.cart-total') || document.querySelector('.checkout-total');
-        if (!totalEl) return;
+        const total = this.getOriginalTotal();
         
-        let total = this.extractNumber(totalEl.textContent);
-        if (isNaN(total) || total <= 0) return;
-        
-        // Calcular descuento (el menor entre el saldo y el total)
+        // Obtener el saldo disponible de la tarjeta
         const availableBalance = parseFloat(this.giftcardData.balance);
         
-        // Detectar si el descuento cubre completamente el total
+        // Determinar si es un descuento completo
         const isFullDiscount = availableBalance >= total;
         
+        // Si es un descuento completo, usar todo el total menos 0.01 para PayPal
+        // Si es parcial, usar el saldo disponible completo
         if (isFullDiscount) {
-            // Si cubre todo el total, usar el total completo
-            this.appliedAmount = total;
-            window.isFullDiscount = true;
-            
-            // Ocultar el botón de PayPal y mostrar nuestro propio botón
+            this.appliedAmount = total - 0.01; // Dejar 0.01 para PayPal
+        } else {
+            this.appliedAmount = Math.min(availableBalance, total);
+        }
+        
+        // Actualizar la visualización
+        this.updateDiscountDisplay();
+        
+        // Actualizar el total del carrito
+        this.updateCartTotal();
+        
+        // Indicar que hay un descuento aplicado
+        this.discountApplied = true;
+        
+        // Ocultar el botón de PayPal y mostrar el botón de completar orden si es un descuento completo
+        // En caso contrario, asegurarse de que PayPal esté visible
+        if (isFullDiscount) {
             this.togglePayPalButton(false);
             this.createCompleteOrderButton();
         } else {
-            this.appliedAmount = Math.min(availableBalance, total);
-            window.isFullDiscount = false;
-            
-            // Mostrar el botón de PayPal (por si antes se ocultó)
             this.togglePayPalButton(true);
             this.removeCompleteOrderButton();
         }
         
-        // Mostrar descuento aplicado
+        // Añadir campos ocultos al formulario
+        this.addGiftCardToForm();
+        
+        // Disparar evento de aplicación de Gift Card
+        document.dispatchEvent(new CustomEvent('giftcard:applied', { 
+            detail: { 
+                code: this.giftcardCode,
+                amount: this.appliedAmount,
+                isFullDiscount: isFullDiscount
+            }
+        }));
+    }
+    
+    /**
+     * Actualizar la visualización del descuento aplicado
+     */
+    updateDiscountDisplay() {
         const discountEl = document.getElementById('giftcard-discount');
         if (discountEl) {
             discountEl.textContent = `$${this.appliedAmount.toFixed(2)}`;
         }
         
-        // Actualizar total visible
-        // Si es full discount, mostrar 0 en la interfaz
-        const displayTotal = isFullDiscount ? 0 : Math.max(0, total - this.appliedAmount);
-        const newTotal = displayTotal.toFixed(2);
-        
-        if (totalEl.querySelector('.total-amount')) {
-            totalEl.querySelector('.total-amount').textContent = `$${newTotal}`;
-        } else {
-            totalEl.textContent = totalEl.textContent.replace(/\$[\d,]+\.\d+/, `$${newTotal}`);
-        }
-        
         // Añadir un mensaje si es descuento completo
-        if (isFullDiscount) {
-            const messageEl = document.getElementById('giftcard-message');
-            if (messageEl) {
-                messageEl.textContent = '¡Tarjeta de regalo válida! Cubre completamente el total de tu compra.';
+        const messageEl = document.getElementById('giftcard-message');
+        if (messageEl) {
+            if (this.appliedAmount > 0) {
+                const isFullDiscount = this.appliedAmount >= (this.getOriginalTotal() - 0.01);
+                if (isFullDiscount) {
+                    messageEl.textContent = '¡Tarjeta de regalo válida! Cubre completamente el total de tu compra.';
+                } else {
+                    messageEl.textContent = '¡Tarjeta de regalo válida! Se ha aplicado un descuento parcial.';
+                }
                 messageEl.className = 'giftcard-message success';
+            } else {
+                messageEl.textContent = '';
+                messageEl.className = 'giftcard-message';
             }
         }
-        
-        this.discountApplied = true;
-        
-        // Añadir campo oculto al formulario
-        this.addGiftCardToForm();
     }
     
     /**
-     * Actualizar el descuento si cambia el total
+     * Actualizar el total del carrito
+     * @param {boolean} reset - Si es true, restablece al total original
+     */
+    updateCartTotal(reset = false) {
+        const totalEl = document.querySelector('#total-amount');
+        if (!totalEl) return;
+        
+        const originalTotal = this.getOriginalTotal();
+        
+        // Guardar el total original si aún no está guardado
+        if (!window.originalTotal) {
+            window.originalTotal = originalTotal;
+            console.log('Total original guardado:', window.originalTotal);
+        }
+        
+        if (reset || !this.discountApplied || this.appliedAmount <= 0) {
+            // Mostrar el total original
+            totalEl.textContent = `$${originalTotal.toFixed(2)} MXN`;
+            console.log('Restaurando total original:', originalTotal);
+        } else {
+            // Calcular el nuevo total con descuento
+            const isFullDiscount = this.appliedAmount >= (originalTotal - 0.01);
+            const newTotal = isFullDiscount ? 0.01 : (originalTotal - this.appliedAmount);
+            totalEl.textContent = `$${newTotal.toFixed(2)} MXN`;
+            console.log('Aplicando descuento:', this.appliedAmount, 'Nuevo total:', newTotal);
+        }
+    }
+    
+    /**
+     * Actualizar el descuento cuando cambia el total
      */
     updateDiscount() {
-        if (!this.discountApplied || !this.giftcardData) return;
-        this.applyDiscount();
+        if (this.discountApplied && this.giftcardData) {
+            this.applyDiscount();
+        }
     }
     
     /**
      * Remover Gift Card y su descuento
      */
     removeGiftCard() {
+        console.log('Iniciando remoción de Gift Card');
+        
         const detailsEl = document.getElementById('giftcard-details');
+        const discountEl = document.getElementById('giftcard-discount');
         const messageEl = document.getElementById('giftcard-message');
         const codeInput = document.getElementById('giftcard-code');
         
+        // Resetear la interfaz
         if (detailsEl) detailsEl.style.display = 'none';
+        if (discountEl) discountEl.textContent = '$0.00';
         if (messageEl) messageEl.textContent = '';
         if (codeInput) codeInput.value = '';
+        
+        // Almacenar el total original antes de limpiarlo
+        const originalTotal = window.originalTotal || this.getOriginalTotal();
+        
+        // Eliminar campos ocultos de manera más exhaustiva
+        const formFields = document.querySelectorAll('input[name^="giftcard_"]');
+        console.log('Eliminando campos ocultos:', formFields.length, 'campos encontrados');
+        formFields.forEach(field => field.remove());
+        
+        // Buscar nuevamente para asegurarse de que se eliminaron
+        const remainingFields = document.querySelectorAll('input[name^="giftcard_"]');
+        if (remainingFields.length > 0) {
+            console.log('ADVERTENCIA: Aún quedan campos de giftcard:', remainingFields.length);
+            remainingFields.forEach(field => field.remove());
+        }
+        
+        // Guardar referencias para el evento
+        const oldCode = this.giftcardCode;
+        const oldAmount = this.appliedAmount;
         
         // Restablecer variables
         this.giftcardCode = null;
@@ -335,23 +404,50 @@ class GiftCardHandler {
         this.appliedAmount = 0;
         this.discountApplied = false;
         
-        // Remover campos ocultos
-        const hiddenFields = document.querySelectorAll('input[name^="giftcard_"]');
-        hiddenFields.forEach(field => field.remove());
+        // Restablecer el total original de manera forzada
+        this.updateCartTotal(true);
         
-        // Actualizar total visible
-        const totalEl = document.querySelector('.cart-total') || document.querySelector('.checkout-total');
+        // Restablecer botones
+        this.togglePayPalButton(true);
+        this.removeCompleteOrderButton();
+        
+        // Limpiar la variable global de manera explícita y completa
+        window.giftcardDiscount = null;
+        window.isFullDiscount = false;
+        
+        // Actualizar el total mostrado directamente
+        const totalEl = document.querySelector('#total-amount');
         if (totalEl) {
-            // Obtener el total original (desde un evento o un caché)
-            const originalTotal = this.getOriginalTotal();
-            if (originalTotal > 0) {
-                if (totalEl.querySelector('.total-amount')) {
-                    totalEl.querySelector('.total-amount').textContent = `$${originalTotal.toFixed(2)}`;
-                } else {
-                    totalEl.textContent = totalEl.textContent.replace(/\$[\d,]+\.\d+/, `$${originalTotal.toFixed(2)}`);
-                }
-            }
+            totalEl.textContent = `$${originalTotal.toFixed(2)} MXN`;
+            console.log('Total restaurado manualmente a:', originalTotal);
         }
+        
+        // Mostrar mensaje
+        this.showMessage('La tarjeta de regalo ha sido removida', 'info');
+        
+        // Lanzar evento con información completa
+        document.dispatchEvent(new CustomEvent('giftcard:removed', { 
+            detail: { 
+                code: oldCode,
+                amount: oldAmount,
+                originalTotal: originalTotal
+            }
+        }));
+        
+        console.log('Finalizada remoción de Gift Card - Variables actuales:', {
+            discountApplied: this.discountApplied,
+            giftcardCode: this.giftcardCode,
+            appliedAmount: this.appliedAmount,
+            windowGiftcardDiscount: window.giftcardDiscount,
+            windowIsFullDiscount: window.isFullDiscount
+        });
+        
+        // Forzar refresco del total
+        setTimeout(() => {
+            if (totalEl) {
+                totalEl.textContent = `$${originalTotal.toFixed(2)} MXN`;
+            }
+        }, 100);
     }
     
     /**
@@ -579,6 +675,13 @@ class GiftCardHandler {
         formData.append('giftcard_amount', this.appliedAmount.toFixed(2));
         formData.append('is_full_discount', 'true');
         
+        // Para depuración
+        console.log('Enviando orden con gift card:', {
+            code: this.giftcardCode,
+            amount: this.appliedAmount.toFixed(2),
+            paymentMethod: 'giftcard'
+        });
+        
         // Enviar datos al servidor
         fetch('process_order.php', {
             method: 'POST',
@@ -616,5 +719,7 @@ class GiftCardHandler {
     }
 }
 
-// Inicializar el manejador de Gift Cards
-const giftCardHandler = new GiftCardHandler(); 
+// Inicializar el manejador de Gift Cards y hacerlo accesible globalmente
+const giftCardHandler = new GiftCardHandler();
+// Exponerlo globalmente para que pueda ser usado por checkout.js
+window.giftCardHandler = giftCardHandler; 

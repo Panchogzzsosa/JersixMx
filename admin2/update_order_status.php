@@ -16,6 +16,81 @@ if (!isset($_POST['order_id']) || !isset($_POST['status'])) {
 // Incluir el archivo de configuración de la base de datos
 require_once __DIR__ . '/../config/database.php';
 
+// Función para calcular el precio real de un producto
+function calcularPrecioReal($item) {
+    // Precio base del producto
+    $precioBase = floatval($item['price']);
+    $precioFinal = $precioBase;
+    
+    // Verificar si tiene personalización (nombre o número)
+    $tienePersonalizacion = !empty($item['personalization_name']) || !empty($item['personalization_number']);
+    
+    // Verificar si tiene parche
+    $tieneParche = false;
+    if (!empty($item['personalization_patch'])) {
+        // Considerar varios casos especiales
+        if ($item['personalization_patch'] === '1') {
+            // Para jerseys, "1" significa que tiene parche
+            $tieneParche = true;
+        } else if ($item['personalization_patch'] !== '0' && 
+                  $item['personalization_patch'] !== '2' && 
+                  $item['personalization_patch'] !== '3' &&
+                  strpos($item['personalization_patch'], 'TIPO:') !== 0 &&
+                  strpos($item['personalization_patch'], 'RCP:') !== 0) {
+            $tieneParche = true;
+        }
+    }
+    
+    // Verificar si es una jersey o camiseta
+    $nombreProducto = strtolower($item['product_name'] ?? '');
+    $esJersey = (
+        strpos($nombreProducto, 'jersey') !== false || 
+        strpos($nombreProducto, 'camiseta') !== false ||
+        strpos($nombreProducto, 'milan') !== false ||
+        strpos($nombreProducto, 'manchester') !== false ||
+        strpos($nombreProducto, 'barcelona') !== false ||
+        strpos($nombreProducto, 'real madrid') !== false ||
+        strpos($nombreProducto, 'rayados') !== false ||
+        strpos($nombreProducto, 'tigres') !== false ||
+        strpos($nombreProducto, 'chivas') !== false ||
+        strpos($nombreProducto, 'america') !== false ||
+        strpos($nombreProducto, 'arsenal') !== false ||
+        strpos($nombreProducto, 'chelsea') !== false ||
+        strpos($nombreProducto, 'liverpool') !== false ||
+        strpos($nombreProducto, 'atletico') !== false ||
+        strpos($nombreProducto, 'ajax') !== false ||
+        strpos($nombreProducto, 'juventus') !== false ||
+        strpos($nombreProducto, 'tottenham') !== false ||
+        strpos($nombreProducto, 'bayern') !== false ||
+        strpos($nombreProducto, 'borussia') !== false ||
+        strpos($nombreProducto, 'napoli') !== false ||
+        strpos($nombreProducto, 'inter') !== false
+    ) && strpos($nombreProducto, 'gift card') === false;
+    
+    // Si es jersey y tiene personalización, añadir costo
+    if ($esJersey) {
+        if ($tienePersonalizacion) {
+            $precioFinal += 100; // Personalización: +$100
+        }
+        
+        if ($tieneParche) {
+            $precioFinal += 50; // Parche: +$50
+        }
+    }
+    
+    // Calcular subtotal (precio final * cantidad)
+    $subtotal = $item['quantity'] * $precioFinal;
+    
+    return [
+        'precio_base' => $precioBase,
+        'precio_final' => $precioFinal,
+        'subtotal' => $subtotal,
+        'tiene_personalizacion' => $tienePersonalizacion,
+        'tiene_parche' => $tieneParche,
+        'es_jersey' => $esJersey
+    ];
+}
+
 try {
     $pdo = getConnection();
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -36,81 +111,167 @@ try {
     
     // Si el nuevo estado es 'completed' y el estado anterior no lo era
     if ($new_status === 'completed' && $previous_status !== 'completed') {
-        // Calcular el total del pedido
-        $total_stmt = $pdo->prepare("
-            SELECT SUM(quantity * price) as order_total 
-            FROM order_items 
-            WHERE order_id = ?
+        // Obtener información del pedido y giftcard aplicada
+        $order_info_stmt = $pdo->prepare("
+            SELECT o.*, 
+                SUM(oi.quantity * oi.price) as full_order_total 
+            FROM orders o
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
+            WHERE o.order_id = ?
+            GROUP BY o.order_id
         ");
-        $total_stmt->execute([$order_id]);
-        $order_total = $total_stmt->fetch(PDO::FETCH_ASSOC)['order_total'];
+        $order_info_stmt->execute([$order_id]);
+        $order_info = $order_info_stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Verificar si hay descuentos aplicados por gift card
-        $payment_notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
-        $payment_notes_stmt->execute([$order_id]);
-        $payment_notes = $payment_notes_stmt->fetchColumn();
+        // Obtener todos los items para calcular el total real incluyendo personalizaciones
+        $items_stmt = $pdo->prepare("
+            SELECT 
+                oi.*,
+                p.name as product_name,
+                p.category,
+                p.description
+            FROM order_items oi
+            LEFT JOIN products p ON oi.product_id = p.product_id
+            WHERE oi.order_id = ?
+        ");
+        $items_stmt->execute([$order_id]);
+        $order_items = $items_stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Si hay notas de pago, buscar información de descuento
-        if (!empty($payment_notes)) {
-            // Buscar información de descuento con gift card
-            if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
-                $discount_amount = floatval($matches[1]);
-                // Restar el descuento del total
-                $order_total = max(0, $order_total - $discount_amount);
-                
-                // Registrar el ajuste para depuración
-                error_log("Ajustando total de orden #{$order_id} por descuento de Gift Card: {$discount_amount}. Total ajustado: {$order_total}");
+        // Calcular el total real considerando personalizaciones y parches
+        $real_order_total = 0;
+        foreach ($order_items as $item) {
+            // Usar la función de calcular precio real que considera personalizaciones y parches
+            $priceData = calcularPrecioReal($item);
+            $real_order_total += $priceData['subtotal'];
+        }
+        
+        // Verificar si debemos procesar este pedido para estadísticas
+        $should_count_for_stats = true;
+        $order_total = $real_order_total; // Usar el total real calculado
+        $discount_amount = 0;
+        
+        // Verificar si es un pago exclusivamente con gift card (no suma a estadísticas)
+        if ($order_info['payment_method'] === 'giftcard') {
+            error_log("Orden #{$order_id} pagada exclusivamente con gift card - NO se suma a estadísticas");
+            $should_count_for_stats = false;
+        }
+        // Verificar si es un pago parcial con gift card
+        else if ($order_info['payment_method'] === 'giftcard+paypal' || 
+                 strpos($order_info['payment_notes'] ?? '', 'Gift Card aplicada') !== false) {
+            
+            error_log("Orden #{$order_id} pagada parcialmente con gift card");
+            
+            // Verificar notas de pago para encontrar información del descuento
+            if (!empty($order_info['payment_notes'])) {
+                // Buscar información de descuento con gift card en las notas
+                if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $order_info['payment_notes'], $matches)) {
+                    $discount_amount = floatval($matches[1]);
+                    error_log("Monto de descuento encontrado en notas: {$discount_amount}");
+                    
+                    // Solo se suma la diferencia (lo que realmente pagó el cliente)
+                    $order_total = max(0, $order_total - $discount_amount);
+                    error_log("Total ajustado: {$order_total}");
+                }
             }
         }
         
-        // Actualizar las estadísticas asegurando valores no negativos
-        $new_total_sales = $current_stats['total_sales'] + $order_total;
-        $new_total_orders = $current_stats['total_orders'] + 1;
-        
-        $pdo->exec("
-            UPDATE sales_stats 
-            SET total_sales = {$new_total_sales},
-                total_orders = {$new_total_orders}
-        ");
+        // Solo actualizar estadísticas si debe contarse para estadísticas
+        if ($should_count_for_stats) {
+            $new_total_sales = $current_stats['total_sales'] + $order_total;
+            $new_total_orders = $current_stats['total_orders'] + 1;
+            
+            error_log("Actualizando estadísticas: Ventas +{$order_total}, Órdenes +1");
+            
+            $pdo->exec("
+                UPDATE sales_stats 
+                SET total_sales = {$new_total_sales},
+                    total_orders = {$new_total_orders}
+            ");
+        } else {
+            error_log("No se actualizaron estadísticas para orden #{$order_id} (gift card)");
+        }
     }
     // Si el estado anterior era 'completed' y el nuevo no lo es
     else if ($previous_status === 'completed' && $new_status !== 'completed') {
-        // Calcular el total del pedido
-        $total_stmt = $pdo->prepare("
-            SELECT SUM(quantity * price) as order_total 
-            FROM order_items 
-            WHERE order_id = ?
+        // Obtener información del pedido y giftcard aplicada
+        $order_info_stmt = $pdo->prepare("
+            SELECT o.*, 
+                SUM(oi.quantity * oi.price) as full_order_total 
+            FROM orders o
+            LEFT JOIN order_items oi ON o.order_id = oi.order_id
+            WHERE o.order_id = ?
+            GROUP BY o.order_id
         ");
-        $total_stmt->execute([$order_id]);
-        $order_total = $total_stmt->fetch(PDO::FETCH_ASSOC)['order_total'];
+        $order_info_stmt->execute([$order_id]);
+        $order_info = $order_info_stmt->fetch(PDO::FETCH_ASSOC);
         
-        // Verificar si hay descuentos aplicados por gift card
-        $payment_notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
-        $payment_notes_stmt->execute([$order_id]);
-        $payment_notes = $payment_notes_stmt->fetchColumn();
+        // Obtener todos los items para calcular el total real incluyendo personalizaciones
+        $items_stmt = $pdo->prepare("
+            SELECT 
+                oi.*,
+                p.name as product_name,
+                p.category,
+                p.description
+            FROM order_items oi
+            LEFT JOIN products p ON oi.product_id = p.product_id
+            WHERE oi.order_id = ?
+        ");
+        $items_stmt->execute([$order_id]);
+        $order_items = $items_stmt->fetchAll(PDO::FETCH_ASSOC);
         
-        // Si hay notas de pago, buscar información de descuento
-        if (!empty($payment_notes)) {
-            // Buscar información de descuento con gift card
-            if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
-                $discount_amount = floatval($matches[1]);
-                // Restar el descuento del total
-                $order_total = max(0, $order_total - $discount_amount);
-                
-                // Registrar el ajuste para depuración
-                error_log("Ajustando total de orden #{$order_id} por descuento de Gift Card: {$discount_amount}. Total ajustado: {$order_total}");
+        // Calcular el total real considerando personalizaciones y parches
+        $real_order_total = 0;
+        foreach ($order_items as $item) {
+            // Usar la función de calcular precio real que considera personalizaciones y parches
+            $priceData = calcularPrecioReal($item);
+            $real_order_total += $priceData['subtotal'];
+        }
+        
+        // Verificar si debemos procesar este pedido para estadísticas
+        $should_count_for_stats = true;
+        $order_total = $real_order_total; // Usar el total real calculado
+        $discount_amount = 0;
+        
+        // Verificar si es un pago exclusivamente con gift card (no afecta a estadísticas)
+        if ($order_info['payment_method'] === 'giftcard') {
+            error_log("Orden #{$order_id} pagada exclusivamente con gift card - NO se resta de estadísticas");
+            $should_count_for_stats = false;
+        }
+        // Verificar si es un pago parcial con gift card
+        else if ($order_info['payment_method'] === 'giftcard+paypal' || 
+                 strpos($order_info['payment_notes'] ?? '', 'Gift Card aplicada') !== false) {
+            
+            error_log("Revertir orden #{$order_id} pagada parcialmente con gift card");
+            
+            // Verificar notas de pago para encontrar información del descuento
+            if (!empty($order_info['payment_notes'])) {
+                // Buscar información de descuento con gift card en las notas
+                if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $order_info['payment_notes'], $matches)) {
+                    $discount_amount = floatval($matches[1]);
+                    error_log("Monto de descuento encontrado en notas: {$discount_amount}");
+                    
+                    // Solo se resta la diferencia (lo que realmente pagó el cliente)
+                    $order_total = max(0, $order_total - $discount_amount);
+                    error_log("Total ajustado: {$order_total}");
+                }
             }
         }
         
-        // Actualizar las estadísticas asegurando valores no negativos
-        $new_total_sales = max(0, $current_stats['total_sales'] - $order_total);
-        $new_total_orders = max(0, $current_stats['total_orders'] - 1);
-        
-        $pdo->exec("
-            UPDATE sales_stats 
-            SET total_sales = {$new_total_sales},
-                total_orders = {$new_total_orders}
-        ");
+        // Solo actualizar estadísticas si debe contarse para estadísticas
+        if ($should_count_for_stats) {
+            $new_total_sales = max(0, $current_stats['total_sales'] - $order_total);
+            $new_total_orders = max(0, $current_stats['total_orders'] - 1);
+            
+            error_log("Actualizando estadísticas: Ventas -{$order_total}, Órdenes -1");
+            
+            $pdo->exec("
+                UPDATE sales_stats 
+                SET total_sales = {$new_total_sales},
+                    total_orders = {$new_total_orders}
+            ");
+        } else {
+            error_log("No se actualizaron estadísticas para orden #{$order_id} (gift card)");
+        }
     }
     
     $pdo->commit();

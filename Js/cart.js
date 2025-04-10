@@ -164,16 +164,13 @@ class ShoppingCart {
         }
 
         // Check if it's a direct call with item data (for gift cards)
-        if (typeof event === 'object' && !event.target) {
-            const item = event;
-            // Asegurar que las gift cards tengan un valor para size
-            if (item.isGiftCard && !item.size) {
-                item.size = "N/A";
-            }
+        if (typeof event === 'object' && !event.target && event.detail) {
+            const item = event.detail;
             this.cart.push(item);
             this.saveCart();
             this.updateCartIcon();
             this.updateCartModal();
+            this.showNotification('Producto agregado al carrito', 'success');
             return;
         }
 
@@ -182,7 +179,7 @@ class ShoppingCart {
 
         const titleElement = productContainer.querySelector('h1.product-title') || productContainer.querySelector('h3.product-title') || productContainer.querySelector('.product-title');
         const title = titleElement ? titleElement.textContent.trim() : null;
-        const price = parseFloat(productContainer.querySelector('.product-price')?.textContent.replace('$', '').trim());
+        const price = parseFloat(productContainer.querySelector('.product-price')?.textContent.replace('$', '').replace(' MXN', '').replace(',', '').trim());
         const currentPath = window.location.pathname;
         const isInProductosEquipos = currentPath.includes('/Productos-equipos/');
         const image = productContainer.querySelector('.product-image')?.src || 
@@ -192,6 +189,26 @@ class ShoppingCart {
         const size = productContainer.querySelector('.size-option.selected')?.textContent;
         const quantity = parseInt(productContainer.querySelector('.quantity-input')?.value || '1');
         const isGiftCard = productContainer.classList.contains('giftcard-container');
+        const isMysteryBox = title?.toLowerCase().includes('mystery box');
+
+        // Obtener el product_id
+        let product_id = null;
+        
+        if (isMysteryBox) {
+            product_id = 65;
+        } else {
+            // Intentar obtener el product_id de diferentes fuentes
+            if (productContainer.dataset.productId) {
+                product_id = parseInt(productContainer.dataset.productId);
+            } else if (productContainer.querySelector('.product-price')?.dataset.productId) {
+                product_id = parseInt(productContainer.querySelector('.product-price').dataset.productId);
+            } else {
+                const urlParams = new URLSearchParams(window.location.search);
+                if (urlParams.has('id')) {
+                    product_id = parseInt(urlParams.get('id'));
+                }
+            }
+        }
 
         if (!title || !price) {
             console.error('Missing required product information');
@@ -199,21 +216,27 @@ class ShoppingCart {
         }
 
         // Skip size validation for gift cards
-        if (!isGiftCard && !size) {
+        if (!isGiftCard && !isMysteryBox && !size) {
             this.showNotification('Por favor selecciona una talla', 'error');
             return;
         }
 
+        // Generar un ID único para este item específico
+        const uniqueItemId = Date.now().toString() + '-' + Math.random().toString(36).substr(2, 5);
+
         const cartItem = {
-            id: Date.now().toString(),
-            title,
-            price,
+            id: uniqueItemId,
+            product_id: product_id,
+            title: title,
+            price: price,
             size: isGiftCard ? null : size,
-            quantity,
-            image,
-            isGiftCard,
+            quantity: quantity,
+            image: image,
+            isGiftCard: isGiftCard,
             personalization: null
         };
+
+        console.log('Agregando item al carrito:', cartItem);
 
         this.cart.push(cartItem);
         this.saveCart();
@@ -414,12 +437,11 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
         }
         
         if (item.isGiftCard && item.details) {
-            // Sanitizar textos para evitar problemas de XSS y JSON
             const sanitizeText = (text) => {
                 if (!text) return '';
                 return String(text)
-                       .replace(/[<>]/g, '') // Eliminar < y >
-                       .replace(/[\u0000-\u001F\u007F-\u009F]/g, '') // Eliminar caracteres de control
+                       .replace(/[<>]/g, '')
+                       .replace(/[\u0000-\u001F\u007F-\u009F]/g, '')
                        .trim();
             };
             
@@ -441,15 +463,12 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
             `;
         }
         
-        // Determinar el precio a mostrar
         let displayPrice = item.price;
         
-        // Si es una gift card, usar realPrice si está disponible
         if (item.isGiftCard) {
             if (item.realPrice && item.realPrice > 0) {
                 displayPrice = item.realPrice;
             } else if (item.price === 0 && item.title) {
-                // Intentar extraer el precio del título (ej: "Tarjeta de Regalo JerSix $1000 MXN")
                 const priceMatch = item.title.match(/\$(\d+)/);
                 if (priceMatch && priceMatch[1]) {
                     displayPrice = parseFloat(priceMatch[1]);
@@ -458,7 +477,7 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
         }
 
         return `
-            <div class="cart-item" data-id="${item.id}">
+            <div class="cart-item" data-id="${item.id}" data-product-id="${item.product_id || ''}" data-size="${item.size || ''}">
                 <img src="${item.image}" alt="${item.title}" ${item.isGiftCard ? 'class="giftcard-image"' : ''}>
                 <div class="cart-item-details">
                     <h4>${item.title}</h4>
@@ -514,8 +533,34 @@ window.location.href = isInProductosEquipos ? '../checkout.html' : 'checkout.htm
             return;
         }
 
+        // Mapeo manual de nombres a IDs para productos conocidos
+        const productMap = {
+            'Bayern Múnich Local 24/25': 9,
+            'Bayern Munich Local 24/25': 9,
+            'Barcelona Local 24/25': 3,
+            'Manchester City Local 24/25': 7,
+            'Rayados Local 24/25': 8,
+            'AC Milan Local 24/25': 10,
+            'Real Madrid Local 24/25': 4
+        };
+
+        // Obtener el product_id
+        let product_id = productData.product_id;
+        
+        // Si no hay product_id, intentar obtenerlo del mapeo
+        if (!product_id && productData.title) {
+            product_id = productMap[productData.title];
+            if (product_id) {
+                console.log('Product ID asignado por nombre:', product_id);
+            }
+        }
+
+        // Generar un ID único para este item específico
+        const uniqueItemId = Date.now().toString() + '-' + Math.random().toString(36).substr(2, 5);
+
         const cartItem = {
-            id: Date.now().toString(),
+            id: uniqueItemId,
+            product_id: product_id, // Agregar el product_id al objeto
             title: productData.title,
             price: productData.price,
             size: productData.size,

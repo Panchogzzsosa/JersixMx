@@ -1,0 +1,83 @@
+[2025-04-10 09:34:42] === INICIO PROCESAMIENTO DE ORDEN DE PRUEBA ===
+[2025-04-10 09:34:42] Conexión a base de datos establecida correctamente
+[2025-04-10 09:34:42] Transacción iniciada
+[2025-04-10 09:34:42] Datos recibidos: Array
+(
+    [fullname] => Usuario de Prueba
+    [email] => test@example.com
+    [phone] => 5512345678
+    [street] => Calle Prueba 123
+    [colonia] => Col. Test
+    [city] => Ciudad Test
+    [state] => Estado de Prueba
+    [postal] => 12345
+    [payment_id] => TEST-1744270482469
+    [cart_items] => [{"id":"1744270186335-0-6aaqr","product_id":3,"title":"Bayern Múnich Local 24/25","price":799,"size":"S","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270188536-0-jt027","product_id":5,"title":"Real Madrid Local 24/25","price":799,"size":"L","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270388527-0-bn4qt","product_id":5,"title":"Real Madrid Local 24/25","price":799,"size":"L","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270392776-0-otom5","product_id":7,"title":"Barcelona Local 24/25","price":799,"size":"XL","quantity":1,"image":"img/LogoNav.png"}]
+)
+
+[2025-04-10 09:34:42] Carrito decodificado correctamente con 4 items
+[2025-04-10 09:34:42] Item #0: Producto 'Bayern Múnich Local 24/25' - product_id: 3
+[2025-04-10 09:34:42] Item #1: Producto 'Real Madrid Local 24/25' - product_id: 5
+[2025-04-10 09:34:42] Item #2: Producto 'Real Madrid Local 24/25' - product_id: 5
+[2025-04-10 09:34:42] Item #3: Producto 'Barcelona Local 24/25' - product_id: 7
+[2025-04-10 09:34:42] Insertando orden con datos: Array
+(
+    [:fullname] => Usuario de Prueba
+    [:email] => test@example.com
+    [:phone] => 5512345678
+    [:street] => Calle Prueba 123
+    [:colonia] => Col. Test
+    [:city] => Ciudad Test
+    [:state] => Estado de Prueba
+    [:zip] => 12345
+    [:payment_method] => test
+    [:payment_id] => TEST-1744270482469
+    [:payment_status] => completed
+)
+
+[2025-04-10 09:34:42] Rollback de la transacción
+[2025-04-10 09:34:42] ERROR: SQLSTATE[42S22]: Column not found: 1054 Unknown column 'customer_phone' in 'field list'
+[2025-04-10 09:37:41] === INICIO PROCESAMIENTO DE ORDEN DE PRUEBA ===
+[2025-04-10 09:37:41] Conexión a base de datos establecida correctamente
+[2025-04-10 09:37:41] Transacción iniciada
+[2025-04-10 09:37:41] Datos recibidos: Array
+(
+    [fullname] => Usuario de Prueba
+    [email] => test@example.com
+    [phone] => 5512345678
+    [street] => Calle Prueba 123
+    [colonia] => Col. Test
+    [city] => Ciudad Test
+    [state] => Estado de Prueba
+    [postal] => 12345
+    [payment_id] => TEST-1744270661855
+    [cart_items] => [{"id":"1744270186335-0-6aaqr","product_id":3,"title":"Bayern Múnich Local 24/25","price":799,"size":"S","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270188536-0-jt027","product_id":5,"title":"Real Madrid Local 24/25","price":799,"size":"L","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270388527-0-bn4qt","product_id":5,"title":"Real Madrid Local 24/25","price":799,"size":"L","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270392776-0-otom5","product_id":7,"title":"Barcelona Local 24/25","price":799,"size":"XL","quantity":1,"image":"img/LogoNav.png"}]
+)
+
+[2025-04-10 09:37:41] Carrito decodificado correctamente con 4 items
+[2025-04-10 09:37:41] Item #0: Producto 'Bayern Múnich Local 24/25' - product_id: 3
+[2025-04-10 09:37:41] Item #1: Producto 'Real Madrid Local 24/25' - product_id: 5
+[2025-04-10 09:37:41] Item #2: Producto 'Real Madrid Local 24/25' - product_id: 5
+[2025-04-10 09:37:41] Item #3: Producto 'Barcelona Local 24/25' - product_id: 7
+[2025-04-10 09:37:41] Insertando orden con datos: Array
+(
+    [:fullname] => Usuario de Prueba
+    [:email] => test@example.com
+    [:phone] => 5512345678
+    [:street] => Calle Prueba 123
+    [:colonia] => Col. Test
+    [:city] => Ciudad Test
+    [:state] => Estado de Prueba
+    [:zip] => 12345
+    [:payment_method] => test
+    [:payment_id] => TEST-1744270661855
+    [:payment_status] => paid
+    [:total_amount] => 3196
+)
+
+[2025-04-10 09:37:41] Orden creada con ID: 21
+[2025-04-10 09:37:41] Item insertado: product_id=3, size=S, quantity=1, price=799
+[2025-04-10 09:37:41] Item insertado: product_id=5, size=L, quantity=1, price=799
+[2025-04-10 09:37:41] Item insertado: product_id=5, size=L, quantity=1, price=799
+[2025-04-10 09:37:41] Item insertado: product_id=7, size=XL, quantity=1, price=799
+[2025-04-10 09:37:41] Transacción completada. Orden guardada en la base de datos

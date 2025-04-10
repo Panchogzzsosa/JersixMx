@@ -50,8 +50,7 @@ class GiftCardHandler {
         const giftcardContainer = document.createElement('div');
         giftcardContainer.className = 'giftcard-container';
         giftcardContainer.innerHTML = `
-            <h3>¿Tienes una tarjeta de regalo?</h3>
-            <p>Haz doble click en aplicar para ver el precio real de tu compra</p>
+            <h3>¿Tienes una tarjeta de regalo? <span class="giftcard-instruction">Haz doble click en aplicar para ver el precio real de tu compra</span></h3>
             <div class="giftcard-input-group">
                 <input type="text" id="giftcard-code" placeholder="Ingresa el código de tu tarjeta de regalo">
                 <button id="apply-giftcard-btn" class="giftcard-btn">Aplicar</button>
@@ -82,9 +81,23 @@ class GiftCardHandler {
             }
             .giftcard-container h3 {
                 margin-top: 0;
-                margin-bottom: 15px;
+                margin-bottom: 10px;
                 font-size: 16px;
                 color: #333;
+            }
+            .giftcard-container p {
+                margin-top: 0;
+                margin-bottom: 12px;
+                font-size: 12px;
+                color: #555;
+                font-weight: 500;
+            }
+            .giftcard-instruction {
+                color: #007bff;
+                font-weight: 400;
+                font-size: 12px;
+                display: inline-block;
+                margin-left: 5px;
             }
             .giftcard-input-group {
                 display: flex;
@@ -257,10 +270,10 @@ class GiftCardHandler {
         // Determinar si es un descuento completo
         const isFullDiscount = availableBalance >= total;
         
-        // Si es un descuento completo, usar todo el total menos 0.01 para PayPal
+        // Si es un descuento completo, usar todo el total
         // Si es parcial, usar el saldo disponible completo
         if (isFullDiscount) {
-            this.appliedAmount = total - 0.01; // Dejar 0.01 para PayPal
+            this.appliedAmount = total; // Aplicar el total completo
         } else {
             this.appliedAmount = Math.min(availableBalance, total);
         }
@@ -346,8 +359,8 @@ class GiftCardHandler {
             console.log('Restaurando total original:', originalTotal);
         } else {
             // Calcular el nuevo total con descuento
-            const isFullDiscount = this.appliedAmount >= (originalTotal - 0.01);
-            const newTotal = isFullDiscount ? 0.01 : (originalTotal - this.appliedAmount);
+            const isFullDiscount = this.appliedAmount >= originalTotal;
+            const newTotal = isFullDiscount ? 0.00 : (originalTotal - this.appliedAmount);
             totalEl.textContent = `$${newTotal.toFixed(2)} MXN`;
             console.log('Aplicando descuento:', this.appliedAmount, 'Nuevo total:', newTotal);
         }

@@ -489,9 +489,9 @@ class SMTP
         }
 
         //Begin encrypted connection
-            set_error_handler(function () {
-                call_user_func_array([$this, 'errorHandler'], func_get_args());
-            });
+        set_error_handler(function () {
+            call_user_func_array([$this, 'errorHandler'], func_get_args());
+        });
         $crypto_ok = stream_socket_enable_crypto(
             $this->smtp_conn,
             true,

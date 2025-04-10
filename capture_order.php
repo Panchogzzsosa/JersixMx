@@ -73,7 +73,7 @@ if ($order_data) {
 
             $stmt->execute([
                 $order_id,
-                $item->id,
+                $item->product_id ?? $item->id ?? 0,
                 $item->quantity,
                 $item->unit_price,
                 $item->size ?? 'M' // Default size if not specified
@@ -81,7 +81,7 @@ if ($order_data) {
 
             // Update product stock
             $update_stock = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE product_id = ?');
-            $update_stock->execute([$item->quantity, $item->id]);
+            $update_stock->execute([$item->quantity, $item->product_id ?? $item->id ?? 0]);
         }
 
         // Commit transaction

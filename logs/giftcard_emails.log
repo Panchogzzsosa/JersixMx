@@ -6631,3 +6631,79 @@
 [2025-04-10 00:18:05] Gift card #0: ID=6, estado_envio=1, estado_comprobado=1, estado=enviada
 [2025-04-10 00:18:05] Gift card #1: ID=4, estado_envio=1, estado_comprobado=1, estado=enviada
 [2025-04-10 00:18:05] Gift card #2: ID=1, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:22:54] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 00:22:54] Se encontraron 3 gift cards en el sistema
+[2025-04-10 00:22:54] Gift card #0: ID=6, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:22:54] Gift card #1: ID=4, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:22:54] Gift card #2: ID=1, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:10] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 00:23:10] Se encontraron 4 gift cards en el sistema
+[2025-04-10 00:23:10] Gift card #0: ID=10, estado_envio=0, estado_comprobado=0, estado=pendiente
+[2025-04-10 00:23:10] Gift card #1: ID=6, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:10] Gift card #2: ID=4, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:10] Gift card #3: ID=1, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:12] Gift card ID 10 marcada como enviada manualmente por admin
+[2025-04-10 00:23:12] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 00:23:12] Se encontraron 4 gift cards en el sistema
+[2025-04-10 00:23:12] Gift card #0: ID=10, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:12] Gift card #1: ID=6, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:12] Gift card #2: ID=4, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:23:12] Gift card #3: ID=1, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:27:12] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 00:27:12] Se encontraron 4 gift cards en el sistema
+[2025-04-10 00:27:12] Gift card #0: ID=10, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:27:12] Gift card #1: ID=6, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:27:12] Gift card #2: ID=4, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 00:27:12] Gift card #3: ID=1, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 20:36:08] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:36:08] Se encontraron 0 gift cards en el sistema
+[2025-04-10 20:36:12] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:36:12] Se encontraron 0 gift cards en el sistema
+[2025-04-10 20:36:13] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:36:13] Se encontraron 0 gift cards en el sistema
+[2025-04-10 20:39:30] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:39:30] Se encontraron 0 gift cards en el sistema
+[2025-04-10 20:42:36] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:42:36] Se encontraron 1 gift cards en el sistema
+[2025-04-10 20:42:36] Gift card #0: ID=2, estado_envio=0, estado_comprobado=0, estado=pendiente
+[2025-04-10 20:43:34] Gift card ID 2 marcada como enviada manualmente por admin
+[2025-04-10 20:43:34] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:43:34] Se encontraron 1 gift cards en el sistema
+[2025-04-10 20:43:34] Gift card #0: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 20:49:20] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:49:20] Se encontraron 1 gift cards en el sistema
+[2025-04-10 20:49:20] Gift card #0: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 20:54:39] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:54:39] Se encontraron 2 gift cards en el sistema
+[2025-04-10 20:54:39] Gift card #0: ID=7, estado_envio=0, estado_comprobado=0, estado=pendiente
+[2025-04-10 20:54:39] Gift card #1: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 20:54:42] Gift card ID 7 marcada como enviada manualmente por admin
+[2025-04-10 20:54:42] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 20:54:42] Se encontraron 2 gift cards en el sistema
+[2025-04-10 20:54:42] Gift card #0: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 20:54:42] Gift card #1: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:08:34] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 21:08:34] Se encontraron 2 gift cards en el sistema
+[2025-04-10 21:08:34] Gift card #0: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:08:34] Gift card #1: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:08:36] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 21:08:36] Se encontraron 2 gift cards en el sistema
+[2025-04-10 21:08:36] Gift card #0: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:08:36] Gift card #1: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:10:50] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 21:10:50] Se encontraron 3 gift cards en el sistema
+[2025-04-10 21:10:50] Gift card #0: ID=9, estado_envio=0, estado_comprobado=0, estado=pendiente
+[2025-04-10 21:10:50] Gift card #1: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:10:50] Gift card #2: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:10:55] Gift card ID 9 marcada como enviada manualmente por admin
+[2025-04-10 21:10:55] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 21:10:55] Se encontraron 3 gift cards en el sistema
+[2025-04-10 21:10:55] Gift card #0: ID=9, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:10:55] Gift card #1: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:10:55] Gift card #2: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:41:08] La columna giftcard_sent existe en la tabla order_items
+[2025-04-10 21:41:08] Se encontraron 4 gift cards en el sistema
+[2025-04-10 21:41:08] Gift card #0: ID=17, estado_envio=0, estado_comprobado=0, estado=pendiente
+[2025-04-10 21:41:08] Gift card #1: ID=9, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:41:08] Gift card #2: ID=7, estado_envio=1, estado_comprobado=1, estado=enviada
+[2025-04-10 21:41:08] Gift card #3: ID=2, estado_envio=1, estado_comprobado=1, estado=enviada

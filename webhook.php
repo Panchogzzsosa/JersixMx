@@ -88,15 +88,15 @@ if ($notification) {
         foreach ($notification->items as $item) {
             $stmt->execute([
                 $order_id,
-                $item->id,
+                $item->product_id ?? $item->id ?? 0,
                 $item->quantity,
                 $item->unit_price,
-                $item->size ?? null // Add size if available
+                $item->size ?? null
             ]);
 
             // Update product stock
             $update_stock = $pdo->prepare('UPDATE products SET stock = stock - ? WHERE product_id = ?');
-            $update_stock->execute([$item->quantity, $item->id]);
+            $update_stock->execute([$item->quantity, $item->product_id ?? $item->id ?? 0]);
         }
 
         // Log successful order

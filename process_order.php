@@ -4,6 +4,20 @@ error_reporting(E_ALL);
 ini_set('display_errors', 0);
 ini_set('log_errors', 1);
 
+// Configurar el manejador de errores personalizado
+set_error_handler(function($errno, $errstr, $errfile, $errline) {
+    $message = date('Y-m-d H:i:s') . " [Error $errno] $errstr en $errfile:$errline\n";
+    error_log($message, 3, __DIR__ . '/logs/order_debug.log');
+    return true;
+});
+
+// Configurar el manejador de excepciones personalizado
+set_exception_handler(function($e) {
+    $message = date('Y-m-d H:i:s') . " [Excepción] " . $e->getMessage() . "\n";
+    $message .= "Stack trace:\n" . $e->getTraceAsString() . "\n";
+    error_log($message, 3, __DIR__ . '/logs/order_debug.log');
+});
+
 // Incluir la clase Mailer
 require_once __DIR__ . '/includes/Mailer.php';
 
@@ -185,64 +199,6 @@ try {
     
     writeLog("Items del carrito después de sanitización: " . print_r($cartItems, true));
 
-    // TEST: Verificar la estructura de la tabla order_items antes de continuar
-    try {
-        // Usar las mismas credenciales que ya están configuradas en lugar de valores fijos
-        $testPdo = getConnection();
-        $testStmt = $testPdo->prepare('DESCRIBE order_items');
-        $testStmt->execute();
-        $tableStructure = $testStmt->fetchAll(PDO::FETCH_ASSOC);
-        writeLog("Estructura de la tabla order_items: " . print_r($tableStructure, true));
-        
-        // Verificar si podemos insertar correctamente en una tabla de prueba
-        $testPdo->exec("CREATE TEMPORARY TABLE temp_order_items LIKE order_items");
-        $testInsert = $testPdo->prepare("
-            INSERT INTO temp_order_items (
-                order_id, 
-                product_id, 
-                quantity, 
-                size, 
-                price,
-                subtotal,
-                personalization_name, 
-                personalization_number, 
-                personalization_patch
-            ) VALUES (1, 1, 1, 'TEST', 100.00, 100.00, NULL, NULL, NULL)
-        ");
-        $testInsert->execute();
-        writeLog("TEST: Inserción en tabla temporal exitosa");
-    } catch (PDOException $e) {
-        writeLog("TEST ERROR: Error al verificar estructura de tabla: " . $e->getMessage());
-    }
-
-    // Verificar si podemos acceder a la tabla products
-    try {
-        $checkTable = $pdo->query("SELECT COUNT(*) as total FROM products");
-        $result = $checkTable->fetch(PDO::FETCH_ASSOC);
-        writeLog("Tabla products accesible. Total productos: " . $result['total']);
-    } catch (PDOException $e) {
-        writeLog("Error al acceder a la tabla products: " . $e->getMessage());
-    }
-
-    // Crear una tabla temporal para diagnosticar problemas
-    writeLog("Creando tabla temporal para diagnóstico...");
-    try {
-        $pdo->exec("CREATE TEMPORARY TABLE IF NOT EXISTS temp_diagnostic AS SELECT * FROM products LIMIT 0");
-        writeLog("Tabla temporal creada correctamente");
-        
-        // Insertar un producto de diagnóstico en la tabla temporal
-        $tempInsert = $pdo->prepare("INSERT INTO temp_diagnostic SELECT * FROM products WHERE product_id = 66");
-        $tempInsert->execute();
-        writeLog("Datos copiados a tabla temporal");
-        
-        // Verificar si podemos leer de la tabla temporal
-        $tempCheck = $pdo->query("SELECT * FROM temp_diagnostic");
-        $tempProducts = $tempCheck->fetchAll(PDO::FETCH_ASSOC);
-        writeLog("Productos en tabla temporal: " . print_r($tempProducts, true));
-    } catch (PDOException $e) {
-        writeLog("Error al crear/usar tabla temporal: " . $e->getMessage());
-    }
-
     // Verificar si es un pago completo con Gift Card
     $paymentMethod = 'paypal'; // Valor predeterminado
     $paymentStatus = 'paid';   // Valor predeterminado
@@ -258,7 +214,7 @@ try {
         writeLog("Método de pago: Gift Card + PayPal (nominal)");
     }
 
-    // Insertar la orden
+    // Crear la orden primero
     $stmt = $pdo->prepare("
         INSERT INTO orders (
             customer_name,
@@ -310,12 +266,12 @@ try {
     $orderId = $pdo->lastInsertId();
     writeLog("Orden creada con ID: $orderId");
 
-    // Insertar items
-    writeLog("Insertando items de la orden...");
+    // Preparar la sentencia para insertar items
     $stmt = $pdo->prepare("
         INSERT INTO order_items (
             order_id,
             product_id,
+            cart_item_id,
             quantity,
             size,
             price,
@@ -326,6 +282,7 @@ try {
         ) VALUES (
             :order_id,
             :product_id,
+            :cart_item_id,
             :quantity,
             :size,
             :price,
@@ -336,7 +293,36 @@ try {
         )
     ");
 
-    foreach ($cartItems as $item) {
+    // Verificar que no haya duplicados en los items del carrito
+    $processedIds = [];
+    
+    // Asegurar que $cartItems sea un array y tenga los índices correctos
+    $cartItemsArray = json_decode(json_encode($cartItems), true);
+    
+    foreach ($cartItemsArray as $index => $item) {
+        writeLog("=== PROCESANDO NUEVO ITEM DEL CARRITO ===");
+        writeLog("Índice del item: " . $index);
+        writeLog("Total de items en el carrito: " . count($cartItemsArray));
+        
+        if (empty($item['id']) || empty($item['title'])) {
+            writeLog("ADVERTENCIA: Item inválido encontrado, saltando...");
+            continue;
+        }
+
+        writeLog("Datos originales del item: " . print_r($item, true));
+        writeLog("ID del item en el carrito: " . ($item['id'] ?? 'No disponible'));
+        writeLog("Product ID: " . ($item['product_id'] ?? 'No disponible'));
+        writeLog("Título: " . ($item['title'] ?? 'No disponible'));
+        writeLog("Talla: " . ($item['size'] ?? 'No disponible'));
+
+        // Verificar si este item ya fue procesado usando una combinación única de id y título y talla
+        $itemKey = $item['id'] . '-' . $item['title'] . '-' . $item['size'];
+        if (isset($processedIds[$itemKey])) {
+            writeLog("ADVERTENCIA: Item ya procesado, saltando duplicado. ID: " . $item['id'] . ", Título: " . $item['title'] . ", Talla: " . $item['size']);
+            continue;
+        }
+        $processedIds[$itemKey] = true;
+
         $productId = null;
         
         // Registro detallado para depuración
@@ -378,32 +364,70 @@ try {
                 }
             }
         } else {
-            // Para productos normales, buscamos por nombre exacto primero
-            $productStmt = $pdo->prepare("SELECT product_id, price FROM products WHERE name = ?");
-            $productStmt->execute([$item['title']]);
+            // Usar el product_id directamente del item del carrito
+            $productId = intval($item['product_id']);
+            
+            // Buscar el producto por ID
+            $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE product_id = ?");
+            $productStmt->execute([$productId]);
             $product = $productStmt->fetch(PDO::FETCH_ASSOC);
             
-            // Si no encuentra, busca con LIKE (más flexible)
-            if (!$product) {
-                writeLog("Producto no encontrado con nombre exacto: " . $item['title'] . ". Intentando búsqueda con LIKE.");
-                $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE name LIKE ?");
-                $productStmt->execute(['%' . $item['title'] . '%']);
+            // Si no se encuentra por ID, intentar buscar por nombre
+            if (!$product && isset($item['title'])) {
+                writeLog("Producto no encontrado con ID: " . $productId . ", intentando buscar por nombre: " . $item['title']);
+                
+                // Intentar diferentes variaciones del nombre
+                $productName = $item['title'];
+                $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE name = ?");
+                $productStmt->execute([$productName]);
                 $product = $productStmt->fetch(PDO::FETCH_ASSOC);
                 
-                if ($product) {
-                    writeLog("Producto encontrado con LIKE: " . $product['name']);
+                // Si no se encuentra, intentar con una versión simplificada del nombre
+                if (!$product) {
+                    // Extraer el nombre del equipo y la temporada
+                    if (preg_match('/^([^0-9]+)\s+([0-9\/]+)$/', $productName, $matches)) {
+                        $teamName = trim($matches[1]);
+                        $season = trim($matches[2]);
+                        
+                        // Buscar por nombre del equipo
+                        $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE name LIKE ?");
+                        $productStmt->execute([$teamName . '%']);
+                        $product = $productStmt->fetch(PDO::FETCH_ASSOC);
+                        
+                        writeLog("Buscando por nombre del equipo: " . $teamName . ", resultado: " . ($product ? "encontrado" : "no encontrado"));
+                    }
+                }
+                
+                // Si aún no se encuentra, crear el producto en la base de datos
+                if (!$product) {
+                    writeLog("Producto no encontrado en la base de datos, creando nuevo registro: " . $productName);
+                    
+                    // Insertar el nuevo producto
+                    $insertStmt = $pdo->prepare("INSERT INTO products (name, price, image_url) VALUES (?, ?, ?)");
+                    $imageUrl = isset($item['image']) ? $item['image'] : '';
+                    $insertStmt->execute([$productName, $item['price'], $imageUrl]);
+                    
+                    // Obtener el ID del nuevo producto
+                    $productId = $pdo->lastInsertId();
+                    
+                    // Obtener el producto recién creado
+                    $productStmt = $pdo->prepare("SELECT product_id, price, name FROM products WHERE product_id = ?");
+                    $productStmt->execute([$productId]);
+                    $product = $productStmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    writeLog("Nuevo producto creado con ID: " . $productId);
+                } else {
+                    writeLog("Producto encontrado por nombre. ID: " . $product['product_id']);
+                    $productId = $product['product_id'];
                 }
             }
             
             if (!$product) {
-                writeLog("Producto no encontrado después de múltiples intentos: " . $item['title']);
+                writeLog("Producto no encontrado con ID: " . $productId . " ni por nombre: " . $item['title']);
                 throw new Exception('Producto no encontrado: ' . $item['title']);
             }
             
-            // Verificar que el precio coincida con el de la base de datos para productos normales
-            $productId = $product['product_id'];
-            
-            // Verificar si el precio ha cambiado significativamente (tolerancia de 0.01)
+            // Verificar que el precio coincida con el de la base de datos
             $priceDifference = abs($product['price'] - $item['price']);
             if ($priceDifference > 0.01) {
                 writeLog("Advertencia: El precio del producto ha cambiado. Base de datos: " . $product['price'] . ", Carrito: " . $item['price']);
@@ -514,18 +538,41 @@ try {
         
         $itemData = [
             ':order_id' => $orderId,
-            ':product_id' => $productId,
+            ':product_id' => isset($item['isGiftCard']) && $item['isGiftCard'] ? 66 : $productId,
             ':quantity' => $item['quantity'],
             ':size' => isset($item['isGiftCard']) && $item['isGiftCard'] ? 'N/A' : ($item['size'] ?? 'N/A'),
             ':price' => $item['price'],
             ':subtotal' => $subtotal,
             ':personalization_name' => $personalizationName,
             ':personalization_number' => $personalizationNumber,
-            ':personalization_patch' => $personalizationPatch
+            ':personalization_patch' => $personalizationPatch,
+            ':cart_item_id' => isset($item['id']) && !empty($item['id']) ? 
+                $item['id'] : 
+                $orderId . '-' . $productId . '-' . uniqid()
         ];
+
+        writeLog("Datos preparados para inserción: " . print_r($itemData, true));
         
-        writeLog("Insertando item con personalización: " . print_r($itemData, true));
-        $stmt->execute($itemData);
+        // Verificar que el product_id sea válido antes de insertar
+        if (!isset($item['isGiftCard']) || !$item['isGiftCard']) {
+            if ($productId <= 0) {
+                writeLog("Error: product_id inválido para item no-gift card: " . $productId);
+                throw new Exception('Error: ID de producto inválido para ' . $item['title']);
+            }
+        }
+        
+        try {
+            $stmt->execute($itemData);
+            writeLog("✅ Item insertado exitosamente en la base de datos");
+            writeLog("Order ID: " . $orderId);
+            writeLog("Product ID: " . $itemData[':product_id']);
+            writeLog("Cart Item ID: " . $itemData[':cart_item_id']);
+        } catch (Exception $e) {
+            writeLog("❌ Error al insertar item: " . $e->getMessage());
+            throw $e;
+        }
+        
+        writeLog("=== FIN PROCESAMIENTO DE ITEM ===\n");
     }
 
     // Actualizar estadísticas de ventas

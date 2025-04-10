@@ -1262,9 +1262,11 @@ function calcularPrecioReal($item) {
                                             if ($order['payment_method'] === 'giftcard') {
                                                 echo '<div style="font-weight: 500; color: #28a745;">$0 <small style="color: #6c757d; text-decoration: line-through;">($' . number_format($real_total, 2) . ')</small></div>';
                                             } elseif ($discount_amount > 0) {
-                                                $paid_amount = max(0, $real_total - $discount_amount);
-                                                echo '<div><span style="font-weight: 500; color: #28a745;">$' . number_format($paid_amount, 2) . '</span><br>';
-                                                echo '<small style="color: #6c757d; text-decoration: line-through;">$' . number_format($real_total, 2) . '</small></div>';
+                                                $paid_amount = $real_total - $discount_amount;
+                                                echo '<div>';
+                                                echo '<span style="font-weight: 500; color: #28a745;">$' . number_format($paid_amount, 2) . '</span><br>';
+                                                echo '<small style="color: #6c757d; text-decoration: line-through;">$' . number_format($real_total, 2) . '</small>';
+                                                echo '</div>';
                                             } else {
                                                 echo '$' . number_format($real_total, 2);
                                             }
@@ -1490,6 +1492,11 @@ function calcularPrecioReal($item) {
                                                                 if (preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
                                                                     $discount_amount = floatval($matches[1]);
                                                                     $has_discount = true;
+                                                                    
+                                                                    // Si el descuento es igual o mayor al subtotal, ajustarlo al subtotal exacto
+                                                                    if ($discount_amount >= $order_subtotal || abs($discount_amount - $order_subtotal) < 0.01) {
+                                                                        $discount_amount = $order_subtotal;
+                                                                    }
                                                                 }
                                                                 
                                                                 // Mostrar fila de descuento si existe
@@ -1499,15 +1506,31 @@ function calcularPrecioReal($item) {
                                                                     <td colspan="6" class="text-right" style="text-align: right; font-weight: 500; color: #dc3545;">
                                                                         Descuento (Gift Card):
                                                                     </td>
-                                                                    <td style="color: #dc3545;">-$<?php echo number_format($discount_amount, 2); ?></td>
+                                                                    <td style="color: #dc3545;">$<?php echo number_format($discount_amount, 2); ?></td>
                                                                     <td></td>
                                                                 </tr>
-                                                                <tr class="total-row">
-                                                                    <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL PAGADO:</td>
-                                                                    <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($order_subtotal - $discount_amount, 2); ?></td>
-                                                                    <td></td>
-                                                                </tr>
-                                                            <?php 
+                                                                <?php
+                                                                    // Calcular el total después del descuento
+                                                                    $remaining = $order_subtotal - $discount_amount;
+                                                                    
+                                                                    // Mostrar el total solo si no es pago completo con gift card
+                                                                    if (!$is_full_giftcard):
+                                                                        if ($remaining <= 0):
+                                                                ?>
+                                                                    <tr class="total-row">
+                                                                        <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL PAGADO:</td>
+                                                                        <td style="font-weight: 700; font-size: 1.1em;">$0.00</td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                <?php else: ?>
+                                                                    <tr class="total-row">
+                                                                        <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL PAGADO:</td>
+                                                                        <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($remaining, 2); ?></td>
+                                                                        <td></td>
+                                                                    </tr>
+                                                                <?php 
+                                                                        endif;
+                                                                    endif;
                                                                 endif;
                                                             }
                                                             

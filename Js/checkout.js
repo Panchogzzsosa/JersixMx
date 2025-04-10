@@ -116,60 +116,54 @@ document.addEventListener('DOMContentLoaded', function() {
             // Verificar si el descuento cubre completamente el total
             if (discountAmount >= finalTotal) {
                 fullDiscount = true;
-                // Limitar el descuento para dejar al menos 0.01 para PayPal
-                window.giftcardDiscount.actualAmount = finalTotal - 0.01;
-                finalTotal = 0.01;
+                window.giftcardDiscount.actualAmount = finalTotal;
+                finalTotal = 0.00;
             } else {
                 window.giftcardDiscount.actualAmount = discountAmount;
                 finalTotal = finalTotal - discountAmount;
             }
             
             console.log('Descuento aplicado de Gift Card:', window.giftcardDiscount.actualAmount, 'Total final:', finalTotal, 'Descuento completo:', fullDiscount);
-        } else {
-            // Verificar explícitamente si no hay giftcard activa
-            const giftcardAmountField = document.querySelector('input[name="giftcard_amount"]');
-            const giftcardCodeField = document.querySelector('input[name="giftcard_code"]');
+        }
+        
+        // Verificar explícitamente si no hay giftcard activa
+        const giftcardAmountField = document.querySelector('input[name="giftcard_amount"]');
+        const giftcardCodeField = document.querySelector('input[name="giftcard_code"]');
+        
+        // Si el handler indica que no hay descuento o faltan los campos, devolver el total original
+        if (!giftCardHandlerActive || !giftcardAmountField || !giftcardCodeField) {
+            console.log('No hay giftcard activa según verificación DOM, usando total original:', finalTotal);
+            window.isFullDiscount = false;
+            return finalTotal;
+        }
+        
+        // Si hay campos ocultos aún en el DOM y el handler indica descuento activo
+        if (giftcardAmountField && giftcardCodeField && 
+            !isNaN(parseFloat(giftcardAmountField.value)) && 
+            giftCardHandlerActive) {
             
-            // Si el handler indica que no hay descuento o faltan los campos, devolver el total original
-            if (!giftCardHandlerActive || !giftcardAmountField || !giftcardCodeField) {
-                // No hay giftcard activa, devolver el total original
-                console.log('No hay giftcard activa según verificación DOM, usando total original:', finalTotal);
-                window.isFullDiscount = false;
-                return finalTotal;
-            }
+            const discountAmount = parseFloat(giftcardAmountField.value);
             
-            // Si hay campos ocultos aún en el DOM y el handler indica descuento activo
-            if (giftcardAmountField && giftcardCodeField && 
-                !isNaN(parseFloat(giftcardAmountField.value)) && 
-                giftCardHandlerActive) {
+            // Verificar si el descuento cubre completamente el total
+            if (discountAmount >= finalTotal) {
+                fullDiscount = true;
+                window.giftcardDiscount = window.giftcardDiscount || {};
+                window.giftcardDiscount.code = giftcardCodeField.value;
+                window.giftcardDiscount.amount = discountAmount;
+                window.giftcardDiscount.actualAmount = finalTotal;
                 
-                const discountAmount = parseFloat(giftcardAmountField.value);
-                
-                // Verificar si el descuento cubre completamente el total
-                if (discountAmount >= finalTotal) {
-                    fullDiscount = true;
-                    // Crear objeto global si no existe
-                    window.giftcardDiscount = window.giftcardDiscount || {};
-                    window.giftcardDiscount.code = giftcardCodeField.value;
-                    window.giftcardDiscount.amount = discountAmount;
-                    window.giftcardDiscount.actualAmount = finalTotal - 0.01;
-                    
-                    // Actualizar el campo oculto con el valor ajustado
-                    giftcardAmountField.value = window.giftcardDiscount.actualAmount.toFixed(2);
-                    finalTotal = 0.01;
-                } else {
-                    window.giftcardDiscount = window.giftcardDiscount || {};
-                    window.giftcardDiscount.code = giftcardCodeField.value;
-                    window.giftcardDiscount.amount = discountAmount;
-                    window.giftcardDiscount.actualAmount = discountAmount;
-                    finalTotal = finalTotal - discountAmount;
-                }
-                
-                console.log('Descuento aplicado desde campo oculto:', window.giftcardDiscount.actualAmount, 'Total final:', finalTotal, 'Descuento completo:', fullDiscount);
+                // Actualizar el campo oculto con el valor ajustado
+                giftcardAmountField.value = window.giftcardDiscount.actualAmount.toFixed(2);
+                finalTotal = 0.00;
             } else {
-                // No hay campos o valores válidos
-                console.log('No hay información de descuento válida, usando total original:', finalTotal);
+                window.giftcardDiscount = window.giftcardDiscount || {};
+                window.giftcardDiscount.code = giftcardCodeField.value;
+                window.giftcardDiscount.amount = discountAmount;
+                window.giftcardDiscount.actualAmount = discountAmount;
+                finalTotal = finalTotal - discountAmount;
             }
+            
+            console.log('Descuento aplicado desde campo oculto:', window.giftcardDiscount.actualAmount, 'Total final:', finalTotal, 'Descuento completo:', fullDiscount);
         }
         
         // Almacenar si es un descuento completo para usarlo después

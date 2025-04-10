@@ -62,7 +62,7 @@ try {
     foreach ($data['items'] as $item) {
         $itemStmt->execute([
             'order_id' => $orderId,
-            'product_id' => $item['id'],
+            'product_id' => $item['product_id'] ?? $item['id'] ?? 0,
             'quantity' => $item['quantity'],
             'price' => $item['price'],
             'size' => $item['size'] ?? null

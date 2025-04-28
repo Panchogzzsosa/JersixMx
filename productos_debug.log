@@ -1,0 +1,350 @@
+Status column exists: Yes
+Products count: 5
+[
+    {
+        "product_id": 3,
+        "name": "Barcelona Local 24\/25",
+        "description": "Jersey oficial Local de Barcelona para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "898.84",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae499e5b65.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 18:53:13",
+        "updated_at": "2025-04-01 20:07:53",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 7,
+        "name": "Manchester City Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25\t",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743533045_67a795c9030e8.png",
+        "category": "Equipos",
+        "created_at": "2025-04-01 18:44:05",
+        "updated_at": "2025-04-01 20:08:07",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 8,
+        "name": "Rayados Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743537813_67a54ccd76ae6.jpg",
+        "category": "Equipos",
+        "created_at": "2025-04-01 20:03:33",
+        "updated_at": "2025-04-01 20:03:33",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 4,
+        "name": "Real Madrid Local 24\/25",
+        "description": "Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae690dcbfc.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 19:01:36",
+        "updated_at": "2025-03-31 19:01:36",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 2,
+        "name": "Seleccion Mexicana 24\/25",
+        "description": "Jersey oficial Local de Selecion Mexicana para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 10,
+        "image_url": "img\/Jerseys\/67eae2e97a1b8.jpg",
+        "category": "Selecciones",
+        "created_at": "2025-03-31 18:46:01",
+        "updated_at": "2025-03-31 19:02:18",
+        "image_path": null,
+        "status": 1
+    }
+]
+
+Status column exists: Yes
+Products count: 5
+[
+    {
+        "product_id": 3,
+        "name": "Barcelona Local 24\/25",
+        "description": "Jersey oficial Local de Barcelona para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "898.84",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae499e5b65.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 18:53:13",
+        "updated_at": "2025-04-01 20:07:53",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 7,
+        "name": "Manchester City Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25\t",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743533045_67a795c9030e8.png",
+        "category": "Equipos",
+        "created_at": "2025-04-01 18:44:05",
+        "updated_at": "2025-04-01 20:08:07",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 8,
+        "name": "Rayados Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743537813_67a54ccd76ae6.jpg",
+        "category": "Equipos",
+        "created_at": "2025-04-01 20:03:33",
+        "updated_at": "2025-04-01 20:03:33",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 4,
+        "name": "Real Madrid Local 24\/25",
+        "description": "Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae690dcbfc.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 19:01:36",
+        "updated_at": "2025-03-31 19:01:36",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 2,
+        "name": "Seleccion Mexicana 24\/25",
+        "description": "Jersey oficial Local de Selecion Mexicana para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 10,
+        "image_url": "img\/Jerseys\/67eae2e97a1b8.jpg",
+        "category": "Selecciones",
+        "created_at": "2025-03-31 18:46:01",
+        "updated_at": "2025-03-31 19:02:18",
+        "image_path": null,
+        "status": 1
+    }
+]
+
+Status column exists: Yes
+Products count: 5
+[
+    {
+        "product_id": 3,
+        "name": "Barcelona Local 24\/25",
+        "description": "Jersey oficial Local de Barcelona para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "898.84",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae499e5b65.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 18:53:13",
+        "updated_at": "2025-04-01 20:07:53",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 7,
+        "name": "Manchester City Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25\t",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743533045_67a795c9030e8.png",
+        "category": "Equipos",
+        "created_at": "2025-04-01 18:44:05",
+        "updated_at": "2025-04-01 20:08:07",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 8,
+        "name": "Rayados Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743537813_67a54ccd76ae6.jpg",
+        "category": "Equipos",
+        "created_at": "2025-04-01 20:03:33",
+        "updated_at": "2025-04-01 20:03:33",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 4,
+        "name": "Real Madrid Local 24\/25",
+        "description": "Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae690dcbfc.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 19:01:36",
+        "updated_at": "2025-03-31 19:01:36",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 2,
+        "name": "Seleccion Mexicana 24\/25",
+        "description": "Jersey oficial Local de Selecion Mexicana para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 10,
+        "image_url": "img\/Jerseys\/67eae2e97a1b8.jpg",
+        "category": "Selecciones",
+        "created_at": "2025-03-31 18:46:01",
+        "updated_at": "2025-03-31 19:02:18",
+        "image_path": null,
+        "status": 1
+    }
+]
+
+Status column exists: Yes
+Products count: 5
+[
+    {
+        "product_id": 3,
+        "name": "Barcelona Local 24\/25",
+        "description": "Jersey oficial Local de Barcelona para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "898.84",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae499e5b65.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 18:53:13",
+        "updated_at": "2025-04-01 20:07:53",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 7,
+        "name": "Manchester City Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25\t",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743533045_67a795c9030e8.png",
+        "category": "Equipos",
+        "created_at": "2025-04-01 18:44:05",
+        "updated_at": "2025-04-01 20:08:07",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 8,
+        "name": "Rayados Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743537813_67a54ccd76ae6.jpg",
+        "category": "Equipos",
+        "created_at": "2025-04-01 20:03:33",
+        "updated_at": "2025-04-01 20:03:33",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 4,
+        "name": "Real Madrid Local 24\/25",
+        "description": "Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae690dcbfc.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 19:01:36",
+        "updated_at": "2025-03-31 19:01:36",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 2,
+        "name": "Seleccion Mexicana 24\/25",
+        "description": "Jersey oficial Local de Selecion Mexicana para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 10,
+        "image_url": "img\/Jerseys\/67eae2e97a1b8.jpg",
+        "category": "Selecciones",
+        "created_at": "2025-03-31 18:46:01",
+        "updated_at": "2025-03-31 19:02:18",
+        "image_path": null,
+        "status": 1
+    }
+]
+
+Status column exists: Yes
+Products count: 5
+[
+    {
+        "product_id": 3,
+        "name": "Barcelona Local 24\/25",
+        "description": "Jersey oficial Local de Barcelona para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "898.84",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae499e5b65.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 18:53:13",
+        "updated_at": "2025-04-01 20:07:53",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 7,
+        "name": "Manchester City Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25\t",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743533045_67a795c9030e8.png",
+        "category": "Equipos",
+        "created_at": "2025-04-01 18:44:05",
+        "updated_at": "2025-04-01 20:08:07",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 8,
+        "name": "Rayados Local 24\/25",
+        "description": "Jersey de Rayados Local temporada 24\/25",
+        "price": "799.00",
+        "stock": 10,
+        "image_url": "img\/products\/1743537813_67a54ccd76ae6.jpg",
+        "category": "Equipos",
+        "created_at": "2025-04-01 20:03:33",
+        "updated_at": "2025-04-01 20:03:33",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 4,
+        "name": "Real Madrid Local 24\/25",
+        "description": "Jersey oficial Local de Real Madrid para la temporada 2024-2025. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 7,
+        "image_url": "img\/Jerseys\/67eae690dcbfc.jpg",
+        "category": "Equipos",
+        "created_at": "2025-03-31 19:01:36",
+        "updated_at": "2025-03-31 19:01:36",
+        "image_path": null,
+        "status": 1
+    },
+    {
+        "product_id": 2,
+        "name": "Seleccion Mexicana 24\/25",
+        "description": "Jersey oficial Local de Selecion Mexicana para la temporada 2023-2024. 100% poli\u00e9ster, ajuste regular.",
+        "price": "899.00",
+        "stock": 10,
+        "image_url": "img\/Jerseys\/67eae2e97a1b8.jpg",
+        "category": "Selecciones",
+        "created_at": "2025-03-31 18:46:01",
+        "updated_at": "2025-03-31 19:02:18",
+        "image_path": null,
+        "status": 1
+    }
+]
+

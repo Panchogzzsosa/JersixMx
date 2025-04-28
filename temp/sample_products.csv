@@ -1,0 +1,3 @@
+name,price,stock,category,description,image_url
+"Jersey Real Madrid Local",999.00,10,"Equipos","Jersey oficial Real Madrid temporada 2023-2024","https://ejemplo.com/imagen.jpg"
+"Jersey Barcelona Visitante",899.00,15,"Equipos","Jersey oficial FC Barcelona temporada 2023-2024","https://ejemplo.com/imagen2.jpg"

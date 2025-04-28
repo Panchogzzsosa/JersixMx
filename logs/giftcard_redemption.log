@@ -1,0 +1,549 @@
+[2025-04-07 08:00:34] Verificando código de Gift Card: GC-fc72cfb
+[2025-04-07 08:00:34] Error de base de datos: SQLSTATE[42S02]: Base table or view not found: 1146 Table 'checkout.giftcard_redemptions' doesn't exist
+[2025-04-07 08:14:42] Verificando código de Gift Card: GC-fc72cfb
+[2025-04-07 08:14:42] Gift Card no válida - Orden no completada: GC-fc72cfb
+[2025-04-07 08:18:11] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:18:11] Gift Card no válida - Orden no completada: GC-0eddea0
+[2025-04-07 08:19:15] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:19:15] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:19:53] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:19:53] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:20:21] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:20:21] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:22:50] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:22:50] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:26:56] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:26:56] Gift Card válida: GC-0eddea0 - Saldo: $1000.00
+[2025-04-07 08:28:04] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:04] Gift Card válida: GC-0eddea0 - Saldo: $201.01
+[2025-04-07 08:28:11] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:11] Gift Card válida: GC-0eddea0 - Saldo: $201.01
+[2025-04-07 08:28:58] Verificando código de Gift Card: GC-0eddea0
+[2025-04-07 08:28:58] Gift Card ya utilizada completamente: GC-0eddea0
+[2025-04-07 08:33:13] Verificando código de Gift Card: GC-0824bec
+[2025-04-07 08:33:13] Gift Card válida: GC-0824bec - Saldo: $2000.00
+[2025-04-07 08:52:44] Verificando código de Gift Card: GC-0824bec
+[2025-04-07 08:52:44] Gift Card válida: GC-0824bec - Saldo: $1201.00
+[2025-04-08 05:33:43] Verificando código de Gift Card: GC-d263e2b
+[2025-04-08 05:33:43] Gift Card no válida - Orden no completada: GC-d263e2b
+[2025-04-08 05:34:13] Verificando código de Gift Card: GC-d263e2b
+[2025-04-08 05:34:13] Gift Card válida: GC-d263e2b - Saldo: $799.00
+[2025-04-09 20:14:11] Verificando código de Gift Card: GC-6f5de7b
+[2025-04-09 20:14:11] Gift Card válida: GC-6f5de7b - Saldo: $2000.00
+[2025-04-09 20:17:03] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:17:03] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 20:18:30] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:18:30] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 20:28:11] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:28:11] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 20:29:20] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:29:20] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 20:30:59] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 20:30:59] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 20:41:08] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 20:41:08] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 20:45:57] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 20:45:57] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 20:46:05] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 20:46:05] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 20:46:11] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:46:11] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 20:48:11] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 20:48:11] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 21:03:57] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:03:57] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 21:04:04] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:04:04] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 21:08:44] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:08:44] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-09 21:08:44] Gift Card GC-3a379a7 - Sin transacciones anteriores registradas
+[2025-04-09 21:08:44] Gift Card válida: GC-3a379a7 - Saldo: $2000.00
+[2025-04-09 21:09:13] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:09:13] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1201.00
+[2025-04-09 21:09:13] Gift Card GC-3a379a7 - Transacciones anteriores: 1, Total usado: $799.00, Saldo actual: $1201.00
+[2025-04-09 21:09:13] Gift Card válida: GC-3a379a7 - Saldo: $1201.00
+[2025-04-09 21:10:44] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:10:44] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1201.00
+[2025-04-09 21:10:44] Gift Card GC-3a379a7 - Transacciones anteriores: 1, Total usado: $799.00, Saldo actual: $1201.00
+[2025-04-09 21:10:44] Gift Card válida: GC-3a379a7 - Saldo: $1201.00
+[2025-04-09 21:11:22] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:11:22] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.00
+[2025-04-09 21:11:22] Gift Card GC-3a379a7 - Transacciones anteriores: 2, Total usado: $1598.00, Saldo actual: $402.00
+[2025-04-09 21:11:22] Gift Card válida: GC-3a379a7 - Saldo: $402.00
+[2025-04-09 21:16:15] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:16:15] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:16:15] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:16:15] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:16:27] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:16:27] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:16:27] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:16:27] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:17:10] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:17:10] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:17:10] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:17:10] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:17:30] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:17:30] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:17:30] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:17:30] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:21:09] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:21:09] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:21:09] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:21:09] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:22:26] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:22:26] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.00
+[2025-04-09 21:22:26] Gift Card GC-3a379a7 - Transacciones anteriores: 2, Total usado: $1598.00, Saldo actual: $402.00
+[2025-04-09 21:22:26] Gift Card válida: GC-3a379a7 - Saldo: $402.00
+[2025-04-09 21:30:26] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:30:26] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:30:26] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:30:26] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:31:50] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:31:50] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:31:50] Gift Card GC-88cc117 - Sin transacciones anteriores registradas
+[2025-04-09 21:31:50] Gift Card válida: GC-88cc117 - Saldo: $1000.00
+[2025-04-09 21:35:53] Verificando código de Gift Card: GC-d3a0342
+[2025-04-09 21:35:53] Nuevo registro creado en giftcard_redemptions para: GC-d3a0342 con saldo = $2000.00
+[2025-04-09 21:35:53] Gift Card GC-d3a0342 - Sin transacciones anteriores registradas
+[2025-04-09 21:35:53] Gift Card válida: GC-d3a0342 - Saldo: $2000.00
+[2025-04-09 21:38:58] Verificando código de Gift Card: GC-d3a0342
+[2025-04-09 21:38:58] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-09 21:38:58] Gift Card GC-d3a0342 - Sin transacciones anteriores registradas
+[2025-04-09 21:38:58] Gift Card válida: GC-d3a0342 - Saldo: $2000.00
+[2025-04-09 21:39:41] Verificando código de Gift Card: GC-d3a0342
+[2025-04-09 21:39:41] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-09 21:39:41] Gift Card GC-d3a0342 - Sin transacciones anteriores registradas
+[2025-04-09 21:39:41] Gift Card válida: GC-d3a0342 - Saldo: $2000.00
+[2025-04-09 21:39:45] Verificando código de Gift Card: GC-d3a0342
+[2025-04-09 21:39:45] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-09 21:39:45] Gift Card GC-d3a0342 - Sin transacciones anteriores registradas
+[2025-04-09 21:39:45] Gift Card válida: GC-d3a0342 - Saldo: $2000.00
+[2025-04-09 21:40:08] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:40:08] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.00
+[2025-04-09 21:40:08] Gift Card GC-3a379a7 - Transacciones anteriores: 2, Total usado: $1598.00, Saldo actual: $402.00
+[2025-04-09 21:40:08] Gift Card válida: GC-3a379a7 - Saldo: $402.00
+[2025-04-09 21:40:47] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 21:40:47] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.00
+[2025-04-09 21:40:47] Gift Card GC-3a379a7 - Transacciones anteriores: 2, Total usado: $1598.00, Saldo actual: $402.00
+[2025-04-09 21:40:47] Gift Card válida: GC-3a379a7 - Saldo: $402.00
+[2025-04-09 21:40:53] Verificando código de Gift Card: GC-302ad14
+[2025-04-09 21:40:53] Código de Gift Card no encontrado: GC-302ad14
+[2025-04-09 21:40:57] Verificando código de Gift Card: GC-302ad14
+[2025-04-09 21:40:57] Código de Gift Card no encontrado: GC-302ad14
+[2025-04-09 21:41:05] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:41:05] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.00
+[2025-04-09 21:41:05] Gift Card GC-88cc117 - Transacciones anteriores: 1, Total usado: $799.00, Saldo actual: $201.00
+[2025-04-09 21:41:05] Gift Card válida: GC-88cc117 - Saldo: $201.00
+[2025-04-09 21:41:12] Verificando código de Gift Card: GC-6108d9d
+[2025-04-09 21:41:12] Código de Gift Card no encontrado: GC-6108d9d
+[2025-04-09 21:41:29] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:41:29] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.00
+[2025-04-09 21:41:29] Gift Card GC-88cc117 - Transacciones anteriores: 1, Total usado: $799.00, Saldo actual: $201.00
+[2025-04-09 21:41:29] Gift Card válida: GC-88cc117 - Saldo: $201.00
+[2025-04-09 21:41:35] Verificando código de Gift Card: GC-88cc117
+[2025-04-09 21:41:35] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.00
+[2025-04-09 21:41:35] Gift Card GC-88cc117 - Transacciones anteriores: 1, Total usado: $799.00, Saldo actual: $201.00
+[2025-04-09 21:41:35] Gift Card válida: GC-88cc117 - Saldo: $201.00
+[2025-04-09 21:46:17] Verificando código de Gift Card: GC-7772ebf
+[2025-04-09 21:46:17] Nuevo registro creado en giftcard_redemptions para: GC-7772ebf con saldo = $1000.00
+[2025-04-09 21:46:17] Gift Card GC-7772ebf - Sin transacciones anteriores registradas
+[2025-04-09 21:46:17] Gift Card válida: GC-7772ebf - Saldo: $1000.00
+[2025-04-09 21:58:50] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 21:58:50] Nuevo registro creado en giftcard_redemptions para: GC-b5cd078 con saldo = $1000.00
+[2025-04-09 21:58:50] Gift Card GC-b5cd078 - Sin transacciones anteriores registradas
+[2025-04-09 21:58:50] Gift Card válida: GC-b5cd078 - Saldo: $1000.00
+[2025-04-09 21:58:56] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 21:58:56] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 21:58:56] Gift Card GC-b5cd078 - Sin transacciones anteriores registradas
+[2025-04-09 21:58:56] Gift Card válida: GC-b5cd078 - Saldo: $1000.00
+[2025-04-09 22:06:51] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:06:51] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:06:51] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:06:51] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:07:23] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:07:23] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:07:23] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:07:23] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:07:34] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:07:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:07:34] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:07:34] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:07:43] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:07:43] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:07:43] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:07:43] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:07:51] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:07:51] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:07:51] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:07:51] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:07:54] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:07:54] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:07:54] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:07:54] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:08:02] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:08:02] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:08:02] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:08:02] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:08:04] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:08:04] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:08:04] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:08:04] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:10:16] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:10:16] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:10:16] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:10:16] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:10:18] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:10:18] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:10:18] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:10:18] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:10:28] Verificando código de Gift Card: GC-3a379a7
+[2025-04-09 22:10:28] Código de Gift Card no encontrado: GC-3a379a7
+[2025-04-09 22:10:33] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:10:33] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:10:33] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:10:33] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:10:51] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:10:51] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:10:51] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:10:51] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:11:30] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:11:30] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:11:30] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:11:30] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:11:31] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:11:31] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:11:31] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:11:31] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:32] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:33] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:33] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:33] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:33] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:33] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:33] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:33] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:34] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:34] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:34] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:34] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:34] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:34] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:34] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:34] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:34] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:34] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:34] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:34] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:13:35] Verificando código de Gift Card: GC-b5cd078
+[2025-04-09 22:13:35] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 22:13:35] Gift Card GC-b5cd078 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 22:13:35] Gift Card válida: GC-b5cd078 - Saldo: $201.01
+[2025-04-09 22:17:30] Verificando código de Gift Card: GC-e918812
+[2025-04-09 22:17:30] Nuevo registro creado en giftcard_redemptions para: GC-e918812 con saldo = $799.00
+[2025-04-09 22:17:30] Gift Card GC-e918812 - Sin transacciones anteriores registradas
+[2025-04-09 22:17:30] Gift Card válida: GC-e918812 - Saldo: $799.00
+[2025-04-09 22:17:35] Verificando código de Gift Card: GC-e918812
+[2025-04-09 22:17:35] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-09 22:17:35] Gift Card GC-e918812 - Sin transacciones anteriores registradas
+[2025-04-09 22:17:35] Gift Card válida: GC-e918812 - Saldo: $799.00
+[2025-04-09 23:20:48] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:20:48] Nuevo registro creado en giftcard_redemptions para: GC-3099066 con saldo = $1000.00
+[2025-04-09 23:20:48] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:20:48] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:20:49] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:20:49] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:20:49] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:20:49] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:22:47] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:22:47] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:22:47] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:22:47] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:23:50] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:23:50] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:23:50] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:23:50] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:24:03] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:24:03] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:24:03] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:24:03] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:24:03] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:24:03] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:24:03] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:24:03] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:33:23] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:33:23] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:33:23] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:33:23] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:33:35] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:33:35] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:33:35] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:33:35] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:34:36] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:34:36] Nuevo registro creado en giftcard_redemptions para: GC-b774ba8 con saldo = $1000.00
+[2025-04-09 23:34:36] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:34:36] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:34:38] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:34:38] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:34:38] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:34:38] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:34:43] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:34:43] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:34:43] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:34:43] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:34:44] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:34:44] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:34:44] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:34:44] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:36:59] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:36:59] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:36:59] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:36:59] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:38:12] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:38:12] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:38:12] Gift Card GC-b774ba8 - Sin transacciones anteriores registradas
+[2025-04-09 23:38:12] Gift Card válida: GC-b774ba8 - Saldo: $1000.00
+[2025-04-09 23:38:42] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:38:42] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:38:42] Gift Card GC-b774ba8 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:38:42] Gift Card válida: GC-b774ba8 - Saldo: $201.01
+[2025-04-09 23:38:43] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:38:43] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:38:43] Gift Card GC-b774ba8 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:38:43] Gift Card válida: GC-b774ba8 - Saldo: $201.01
+[2025-04-09 23:39:06] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:39:06] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:39:06] Gift Card GC-b774ba8 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:39:06] Gift Card válida: GC-b774ba8 - Saldo: $201.01
+[2025-04-09 23:39:10] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:39:10] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:39:10] Gift Card GC-b774ba8 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:39:10] Gift Card válida: GC-b774ba8 - Saldo: $201.01
+[2025-04-09 23:42:57] Verificando código de Gift Card: GC-b774ba8
+[2025-04-09 23:42:57] Gift card encontrada con registro en giftcard_redemptions: Saldo = $0.00
+[2025-04-09 23:42:57] Gift Card ya utilizada completamente: GC-b774ba8 (Saldo = $0.00)
+[2025-04-09 23:43:13] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:43:13] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-09 23:43:13] Gift Card GC-3099066 - Sin transacciones anteriores registradas
+[2025-04-09 23:43:13] Gift Card válida: GC-3099066 - Saldo: $1000.00
+[2025-04-09 23:44:14] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:44:14] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:44:14] Gift Card GC-3099066 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:44:14] Gift Card válida: GC-3099066 - Saldo: $201.01
+[2025-04-09 23:44:16] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:44:16] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:44:16] Gift Card GC-3099066 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:44:16] Gift Card válida: GC-3099066 - Saldo: $201.01
+[2025-04-09 23:47:52] Verificando código de Gift Card: GC-3099066
+[2025-04-09 23:47:52] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-09 23:47:52] Gift Card GC-3099066 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-09 23:47:52] Gift Card válida: GC-3099066 - Saldo: $201.01
+[2025-04-09 23:52:51] Verificando código de Gift Card: GC-34108bc
+[2025-04-09 23:52:51] Nuevo registro creado en giftcard_redemptions para: GC-34108bc con saldo = $799.00
+[2025-04-09 23:52:51] Gift Card GC-34108bc - Sin transacciones anteriores registradas
+[2025-04-09 23:52:51] Gift Card válida: GC-34108bc - Saldo: $799.00
+[2025-04-09 23:59:07] Verificando código de Gift Card: GC-61d9322
+[2025-04-09 23:59:07] Código de Gift Card no encontrado: GC-61d9322
+[2025-04-10 00:00:38] Verificando código de Gift Card: GC-48ae788
+[2025-04-10 00:00:38] Nuevo registro creado en giftcard_redemptions para: GC-48ae788 con saldo = $799.00
+[2025-04-10 00:00:38] Gift Card GC-48ae788 - Sin transacciones anteriores registradas
+[2025-04-10 00:00:38] Gift Card válida: GC-48ae788 - Saldo: $799.00
+[2025-04-10 00:01:28] Verificando código de Gift Card: GC-48ae788
+[2025-04-10 00:01:28] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:01:28] Gift Card GC-48ae788 - Sin transacciones anteriores registradas
+[2025-04-10 00:01:28] Gift Card válida: GC-48ae788 - Saldo: $799.00
+[2025-04-10 00:09:44] Verificando código de Gift Card: GC-d7d11e2
+[2025-04-10 00:09:44] Nuevo registro creado en giftcard_redemptions para: GC-d7d11e2 con saldo = $799.00
+[2025-04-10 00:09:44] Gift Card GC-d7d11e2 - Sin transacciones anteriores registradas
+[2025-04-10 00:09:44] Gift Card válida: GC-d7d11e2 - Saldo: $799.00
+[2025-04-10 00:10:17] Verificando código de Gift Card: GC-d7d11e2
+[2025-04-10 00:10:17] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:10:17] Gift Card GC-d7d11e2 - Sin transacciones anteriores registradas
+[2025-04-10 00:10:17] Gift Card válida: GC-d7d11e2 - Saldo: $799.00
+[2025-04-10 00:12:14] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:12:14] Nuevo registro creado en giftcard_redemptions para: GC-3d537c5 con saldo = $1000.00
+[2025-04-10 00:12:14] Gift Card GC-3d537c5 - Sin transacciones anteriores registradas
+[2025-04-10 00:12:14] Gift Card válida: GC-3d537c5 - Saldo: $1000.00
+[2025-04-10 00:13:23] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:13:23] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 00:13:23] Gift Card GC-3d537c5 - Sin transacciones anteriores registradas
+[2025-04-10 00:13:23] Gift Card válida: GC-3d537c5 - Saldo: $1000.00
+[2025-04-10 00:17:32] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:17:32] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 00:17:32] Gift Card GC-3d537c5 - Sin transacciones anteriores registradas
+[2025-04-10 00:17:32] Gift Card válida: GC-3d537c5 - Saldo: $1000.00
+[2025-04-10 00:17:33] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:17:33] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 00:17:33] Gift Card GC-3d537c5 - Sin transacciones anteriores registradas
+[2025-04-10 00:17:33] Gift Card válida: GC-3d537c5 - Saldo: $1000.00
+[2025-04-10 00:18:34] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:18:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-10 00:18:34] Gift Card GC-3d537c5 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-10 00:18:34] Gift Card válida: GC-3d537c5 - Saldo: $201.01
+[2025-04-10 00:18:37] Verificando código de Gift Card: GC-3d537c5
+[2025-04-10 00:18:37] Gift card encontrada con registro en giftcard_redemptions: Saldo = $201.01
+[2025-04-10 00:18:37] Gift Card GC-3d537c5 - Transacciones anteriores: 1, Total usado: $798.99, Saldo actual: $201.01
+[2025-04-10 00:18:37] Gift Card válida: GC-3d537c5 - Saldo: $201.01
+[2025-04-10 00:23:23] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:23:23] Nuevo registro creado en giftcard_redemptions para: GC-61c0947 con saldo = $799.00
+[2025-04-10 00:23:23] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:23:23] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:23:27] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:23:27] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:23:27] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:23:27] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:24:57] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:24:57] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:24:57] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:24:57] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:24:58] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:24:58] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:24:58] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:24:58] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:27:21] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:27:21] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:27:21] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:27:21] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:27:25] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:27:25] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:27:25] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:27:25] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:27:45] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:27:45] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:27:45] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:27:45] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:27:51] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:27:51] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:27:51] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:27:51] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:29:25] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:29:25] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:29:25] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:29:25] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:29:44] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:29:44] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:29:44] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:29:44] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:30:04] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:30:04] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:30:04] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:30:04] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 00:33:34] Verificando código de Gift Card: GC-61c0947
+[2025-04-10 00:33:34] Gift card encontrada con registro en giftcard_redemptions: Saldo = $799.00
+[2025-04-10 00:33:34] Gift Card GC-61c0947 - Sin transacciones anteriores registradas
+[2025-04-10 00:33:34] Gift Card válida: GC-61c0947 - Saldo: $799.00
+[2025-04-10 20:43:47] Verificando código de Gift Card: GC-34092f8
+[2025-04-10 20:43:47] Nuevo registro creado en giftcard_redemptions para: GC-34092f8 con saldo = $2000.00
+[2025-04-10 20:43:47] Gift Card GC-34092f8 - Sin transacciones anteriores registradas
+[2025-04-10 20:43:47] Gift Card válida: GC-34092f8 - Saldo: $2000.00
+[2025-04-10 20:43:49] Verificando código de Gift Card: GC-34092f8
+[2025-04-10 20:43:49] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 20:43:49] Gift Card GC-34092f8 - Sin transacciones anteriores registradas
+[2025-04-10 20:43:49] Gift Card válida: GC-34092f8 - Saldo: $2000.00
+[2025-04-10 20:49:45] Verificando código de Gift Card: GC-34092f8
+[2025-04-10 20:49:45] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.01
+[2025-04-10 20:49:45] Gift Card GC-34092f8 - Transacciones anteriores: 1, Total usado: $1597.99, Saldo actual: $402.01
+[2025-04-10 20:49:45] Gift Card válida: GC-34092f8 - Saldo: $402.01
+[2025-04-10 20:49:49] Verificando código de Gift Card: GC-34092f8
+[2025-04-10 20:49:49] Gift card encontrada con registro en giftcard_redemptions: Saldo = $402.01
+[2025-04-10 20:49:49] Gift Card GC-34092f8 - Transacciones anteriores: 1, Total usado: $1597.99, Saldo actual: $402.01
+[2025-04-10 20:49:49] Gift Card válida: GC-34092f8 - Saldo: $402.01
+[2025-04-10 20:55:10] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 20:55:10] Nuevo registro creado en giftcard_redemptions para: GC-678d63b con saldo = $1000.00
+[2025-04-10 20:55:10] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 20:55:10] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 20:55:15] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 20:55:15] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 20:55:15] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 20:55:15] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 20:57:07] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 20:57:07] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 20:57:07] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 20:57:07] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 20:57:10] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 20:57:10] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 20:57:10] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 20:57:10] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 20:58:37] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 20:58:37] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 20:58:37] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 20:58:37] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:00:04] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:00:04] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:00:04] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:00:04] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:00:12] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:00:12] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:00:12] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:00:12] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:02:20] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:02:20] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:02:20] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:02:20] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:02:22] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:02:22] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:02:22] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:02:22] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:04:03] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:04:03] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:04:03] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:04:03] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:04:08] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:04:08] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:04:08] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:04:08] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:06:16] Verificando código de Gift Card: GC-678d63b
+[2025-04-10 21:06:16] Gift card encontrada con registro en giftcard_redemptions: Saldo = $1000.00
+[2025-04-10 21:06:16] Gift Card GC-678d63b - Sin transacciones anteriores registradas
+[2025-04-10 21:06:16] Gift Card válida: GC-678d63b - Saldo: $1000.00
+[2025-04-10 21:11:24] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:11:24] Nuevo registro creado en giftcard_redemptions para: GC-58e586a con saldo = $2000.00
+[2025-04-10 21:11:24] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:11:24] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:12:12] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:12:12] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:12:12] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:12:12] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:13:19] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:13:19] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:13:19] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:13:19] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:13:52] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:13:52] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:13:52] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:13:52] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:14:07] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:14:07] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:14:07] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:14:07] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:14:10] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:14:10] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:14:10] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:14:10] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:15:07] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:15:07] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:15:07] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:15:07] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:15:11] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:15:11] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:15:11] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:15:11] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:17:33] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:17:33] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:17:33] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:17:33] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:17:35] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:17:35] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:17:35] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:17:35] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:18:09] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:18:09] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:18:09] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:18:09] Gift Card válida: GC-58e586a - Saldo: $2000.00
+[2025-04-10 21:18:11] Verificando código de Gift Card: GC-58e586a
+[2025-04-10 21:18:11] Gift card encontrada con registro en giftcard_redemptions: Saldo = $2000.00
+[2025-04-10 21:18:11] Gift Card GC-58e586a - Sin transacciones anteriores registradas
+[2025-04-10 21:18:11] Gift Card válida: GC-58e586a - Saldo: $2000.00

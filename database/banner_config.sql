@@ -1,0 +1,11 @@
+USE jersixmx_checkout;
+
+CREATE TABLE IF NOT EXISTS banner_config (
+    id INT PRIMARY KEY AUTO_INCREMENT,
+    mensaje TEXT NOT NULL,
+    color_texto VARCHAR(20) DEFAULT '#FFFFFF',
+    color_fondo VARCHAR(20) DEFAULT '#000000',
+    activo BOOLEAN DEFAULT true,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+); 

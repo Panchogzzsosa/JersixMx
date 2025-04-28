@@ -1,0 +1,307 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Preguntas Frecuentes | JersixMx</title>
+    <link rel="stylesheet" href="Css/index.css">
+    <link rel="stylesheet" href="Css/cart.css">
+    <link rel="stylesheet" href="Css/notificacion.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="Js/products-data.js"></script>
+    <script src="Js/index.js"></script>
+    <script src="Js/search.js"></script>
+    <script src="Js/cart.js" defer></script>
+    <style>
+
+        .nombre{
+            color: #828282;
+        }
+        
+        .faq-container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 1rem;
+        }
+
+        .faq-section {
+            margin-bottom: 2rem;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 1.5rem;
+        }
+
+        .faq-section h2 {
+            color: #333;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            border-bottom: 2px solid #e0e0e0;
+            padding-bottom: 0.5rem;
+        }
+
+        .faq-item {
+            margin-bottom: 1.5rem;
+            border: 1px solid #eee;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .faq-question {
+            font-weight: 600;
+            color: #2c3e50;
+            margin: 0;
+            font-size: 1.1rem;
+            padding: 1rem;
+            background: #f8f9fa;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            transition: background-color 0.3s ease;
+        }
+
+        .faq-question:hover {
+            background-color: #f0f0f0;
+        }
+
+        .faq-question::after {
+            content: '\f107';
+            font-family: 'Font Awesome 5 Free';
+            font-weight: 900;
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-question::after {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            color: #666;
+            line-height: 1.6;
+            padding: 0 1rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: all 0.3s ease-in-out;
+            margin: 0;
+        }
+
+        .faq-item.active .faq-answer {
+            padding: 1rem;
+            max-height: 800px;
+            margin-bottom: 0;
+        }
+
+        .page-title {
+            text-align: center;
+            margin: 2rem 0;
+            color: black;
+            font-size: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .faq-container {
+                margin: 1rem;
+            }
+
+            .faq-section {
+                padding: 1rem;
+            }
+        }
+    </style>
+    <script src="Js/products-data.js"></script>
+    <script src="Js/cart.js" defer></script>
+    <script src="Js/search.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const faqItems = document.querySelectorAll('.faq-item');
+            
+            faqItems.forEach(item => {
+                const question = item.querySelector('.faq-question');
+                question.addEventListener('click', () => {
+                    const isActive = item.classList.contains('active');
+                    
+                    // Close all other items
+                    faqItems.forEach(otherItem => {
+                        if (otherItem !== item) {
+                            otherItem.classList.remove('active');
+                        }
+                    });
+                    
+                    // Toggle current item
+                    item.classList.toggle('active');
+                });
+            });
+        });
+    </script>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <button class="menu-toggle">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="logo"><img src="img/LogoNav.png" alt="JerSix Logo"></div>
+            <ul class="nav-links">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li><a href="index.php">Inicio</a></li>
+                <li><a href="productos.php">Productos</a></li>
+                <li><a href="mistery-box.html">Mistery Pack</a></li>
+                <li><a href="giftcard.html">Gift Card</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" placeholder="Buscar productos..." class="search-input">
+                <button class="search-button">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+            </div>
+            <div class="cart-icon">
+                <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <h1 class="page-title">Preguntas Frecuentes</h1>
+
+        <div class="faq-container">
+            <section class="faq-section">
+                <h2>Envíos y Entregas</h2>
+                <div class="faq-item">
+                    <p class="faq-question">¿Cuánto tiempo tarda en llegar mi pedido?</p>
+                    <p class="faq-answer">De 9 a 15 días hábiles, pero puede variar. Puedes consultar el tiempo estimado de entrega en la página de seguimiento de tu pedido.
+                        Si el pedido no llega en 30 dias hábiles, puedes solicitar un reembolso o el pedido sera gratis.
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Cuál es el costo de envío?</p>
+                    <p class="faq-answer">¡El envío no tiene costo! Por ser miembro de la comunidad <b>JERSIX</b>  damos este y muchísimos beneficios mas. </p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Puedo hacer seguimiento de mi envío?</p>
+                    <p class="faq-answer">Sí, una vez que tu pedido sea enviado, recibirás un correo electrónico con un número de seguimiento. Puedes utilizar este número para rastrear tu envío en la sección de <a href="tracking.php">Seguimiento</a></p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Puedo cambiar la dirección de envío después de haber realizado la compra?</p>
+                    <p class="faq-answer">Si necesitas cambiar la dirección de envío después de haber realizado la compra, contáctanos lo antes posible. Si el pedido aún no ha sido enviado, podremos modificar la dirección de envío.</p>
+                </div>
+            </section>
+
+            <section class="faq-section">
+                <h2>Devoluciones</h2>
+                <div class="faq-item">
+                    <p class="faq-question">¿Puedo devolver un producto?</p>
+                    <p class="faq-answer">Sí, puedes devolver un producto dentro de un plazo de 5 días hábiles a partir de la fecha de entrega. Para solicitar una devolución, contáctanos y te daremos las instrucciones. Aplican restricciones.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Qué pasa si mi pedido llega dañado o incorrecto?</p>
+                    <p class="faq-answer">Si tu pedido llega dañado o incorrecto, contáctanos lo antes posible. Te pediremos que nos proporciones fotos del paquete y de los productos dañados o incorrectos. Una vez que hayamos verificado la información, te daremos una solución, como el reemplazo del producto o el reembolso de la compra.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Cuáles son los motivos de devolución aceptados?</p>
+                    <p class="faq-answer">Aceptamos devoluciones por diversos motivos, como:
+                        <br>
+                        1. Producto dañado o defectuoso
+                        <br>
+                        2. Producto incorrecto
+                        <br>
+                        3. Talla o color incorrectos
+                    </p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Puedo devolver cualquier producto?</p>
+                    <p class="faq-answer">Algunos productos pueden tener restricciones de devolución, como jerseys personalizados o productos en oferta final. Consulta nuestras políticas de devolución para obtener más información.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Cuándo recibiré el reembolso?</p>
+                    <p class="faq-answer">Una vez que recibamos y verifiquemos el producto devuelto, procesaremos el reembolso en un plazo de 15 días hábiles. El tiempo que tarde en aparecer el reembolso en tu cuenta dependerá de tu banco o método de pago.</p>
+                </div>
+                <div class="faq-item">
+                    <p class="faq-question">¿Cómo recibiré el reembolso?</p>
+                    <p class="faq-answer">El reembolso se realizará a través del mismo método de pago que utilizaste para realizar la compra, a menos que se acuerde lo contrario.</p>
+                </div>
+            </section>
+
+            <section class="faq-section">
+                <h2>Metodos de Pago</h2>
+                <div class="faq-item">
+                    <p class="faq-question">¿Qué métodos de pago aceptan?</p>
+                    <p class="faq-answer">Nuestro método de pago está vinculado a Mercado Pago, quien te asegura una compra protegida.
+                        <br>
+                        <br>
+                        Tarjetas de crédito:
+                        <br>
+                        Visa
+                        <br>
+                        Mastercard
+                        <br>
+                        American Express
+                        <br>
+                        <br>
+                        Tarjetas de débito:
+                        <br>
+                        Visa
+                        <br>
+                        Mastercard
+                        <br>
+                        Cuenta de PayPal
+                        <br>
+                        <br>
+                        O si te funciona mejor, puedes solicitar tu pago por transferencia desde WhatsApp.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre JersixMx</h3>
+                <p>Somos una tienda especializada en jerseys deportivos y casuales de alta calidad. Nuestro compromiso es ofrecer diseños únicos y materiales premium para nuestros clientes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Preguntas Frecuentes</h3>
+                <ul>
+                    <li><a href="Preguntas_Frecuentes.html">Envíos y Entregas</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Devoluciones</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Métodos de Pago</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Generales</h3>
+                <ul>
+                    <li><a href="PoliticaDevolucion.html">Politica de Devoluciones</a></li>
+                    <li><a href="aviso_privacidad.html">Aviso de Privacidad</a></li>
+                    <li><a href="TerminosYcondicones.html">Terminos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Suscríbete para recibir las últimas novedades y ofertas especiales.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Tu correo electrónico" class="newsletter-input">
+                    <button class="newsletter-button">Suscribirse</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <a href="#" class="social-link"><i class="fab fa-tiktok"></i></a>
+                <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados. | <a class="nombre" href="https://franciscogonzalez.netlify.app/" target="_blank">Francisco Gonzalez Sosa</a></p>
+        </div>
+    </footer>
+    <div class="whatsapp-button">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+</body>
+</html>

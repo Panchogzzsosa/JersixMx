@@ -1,0 +1,97 @@
+RewriteEngine On
+
+# Excluir la carpeta admin (regla corregida)
+RewriteCond %{REQUEST_URI} !^/admin/.*$
+RewriteCond %{REQUEST_URI} !^/admin$
+
+# Force HTTPS
+
+
+# Remove .php extension from product pages
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteRule ^Productos-equipos/([^/]+)/?$ Productos-equipos/$1.php [L]
+
+# Remove .php extension from other pages
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.php -f
+RewriteRule ^([^/]+)/?$ $1.php [L]
+
+# Remove .html extension
+RewriteCond %{REQUEST_FILENAME} !-d
+RewriteCond %{REQUEST_FILENAME}.html -f
+RewriteRule ^([^/]+)/?$ $1.html [L]
+
+# Prevent viewing of .htaccess file
+<Files .htaccess>
+Order allow,deny
+Deny from all
+</Files>
+
+# Permitir acceso directo a archivos existentes
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Reglas para las URLs amigables
+RewriteRule ^Productos-equipos/producto$ producto.php [L,QSA]
+
+# Evitar bucles de redirección
+RewriteCond %{ENV:REDIRECT_STATUS} !^$
+RewriteRule ^ - [L]
+
+# Habilitar CORS
+<IfModule mod_headers.c>
+    Header set Access-Control-Allow-Origin "*"
+    Header set Access-Control-Allow-Methods "GET, POST, OPTIONS"
+    Header set Access-Control-Allow-Headers "Content-Type, Authorization"
+    Header set Access-Control-Allow-Credentials "true"
+</IfModule>
+
+# Manejar la solicitud OPTIONS para preflight requests
+<IfModule mod_rewrite.c>
+    RewriteCond %{REQUEST_METHOD} OPTIONS
+    RewriteRule ^(.*)$ $1 [R=200,L]
+</IfModule>
+
+# Configuración PHP
+<IfModule mod_php7.c>
+    php_value display_errors 0
+    php_value log_errors 1
+    php_value error_log logs/php_errors.log
+    php_value max_execution_time 300
+    php_value memory_limit 256M
+    php_value post_max_size 20M
+    php_value upload_max_filesize 20M
+</IfModule>
+
+# Configuración PHP 8.x
+<IfModule mod_php.c>
+    php_value display_errors 0
+    php_value log_errors 1
+    php_value error_log logs/php_errors.log
+    php_value max_execution_time 300
+    php_value memory_limit 256M
+    php_value post_max_size 20M
+    php_value upload_max_filesize 20M
+</IfModule>
+
+# Comprimir archivos para mejorar rendimiento
+<IfModule mod_deflate.c>
+    AddOutputFilterByType DEFLATE text/html text/plain text/xml text/css text/javascript application/javascript application/json
+</IfModule>
+
+# Cacheo de recursos estáticos
+<IfModule mod_expires.c>
+    ExpiresActive On
+    ExpiresByType image/jpg "access plus 1 year"
+    ExpiresByType image/jpeg "access plus 1 year"
+    ExpiresByType image/gif "access plus 1 year"
+    ExpiresByType image/png "access plus 1 year"
+    ExpiresByType image/webp "access plus 1 year"
+    ExpiresByType text/css "access plus 1 month"
+    ExpiresByType application/pdf "access plus 1 month"
+    ExpiresByType text/javascript "access plus 1 month"
+    ExpiresByType application/javascript "access plus 1 month"
+    ExpiresByType image/x-icon "access plus 1 year"
+    ExpiresDefault "access plus 2 days"
+</IfModule>

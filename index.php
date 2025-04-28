@@ -132,11 +132,39 @@ try {
                 margin: 0 2px;
                 font-size: 11px;
             }
-
             .site-banner {
-                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                z-index: 1002;
+                width: 100vw;
+                transition: transform 0.3s;
+                margin-bottom: 0 !important;
+                padding-bottom: 0 !important;
+                border-bottom: none !important;
             }
-            
+            .site-banner.hide {
+                transform: translateY(-100%);
+            }
+            .navbar {
+                position: fixed;
+                left: 0;
+                right: 0;
+                z-index: 1001;
+                top: 0;
+                transition: top 0.3s;
+                margin-top: 0 !important;
+                box-shadow: none !important;
+                border-top: none !important;
+            }
+            main {
+                margin-top: 0 !important;
+                transition: margin-top 0.2s;
+            }
+            main.banner-visible {
+                /* margin-top eliminado, ahora será dinámico por JS */
+            }
         }
     </style>
 </head>
@@ -393,5 +421,49 @@ try {
         </a>
     </div>
 <div id="notification" class="notification"></div>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        var banner = document.querySelector('.site-banner');
+        var navbar = document.querySelector('.navbar');
+        var main = document.querySelector('main');
+        var heroCarousel = document.querySelector('.hero-carousel');
+        function adjustHeroCarouselMargin() {
+            if (!navbar || !heroCarousel) return;
+            if (window.innerWidth <= 768) {
+                var navbarHeight = navbar.offsetHeight || 60;
+                if (banner) {
+                    var bannerVisible = !banner.classList.contains('hide');
+                    var bannerHeight = bannerVisible ? banner.offsetHeight : 0;
+                    navbar.style.top = bannerVisible ? bannerHeight + 'px' : '0px';
+                } else {
+                    navbar.style.top = '0px';
+                }
+                heroCarousel.style.marginTop = navbarHeight + 'px';
+                if(main) main.style.marginTop = '0px';
+            } else {
+                heroCarousel.style.marginTop = '0px';
+                if(navbar) navbar.style.top = '';
+                if(main) main.style.marginTop = '0px';
+            }
+        }
+        function handleScrollAndBanner() {
+            if (banner) {
+                if (window.scrollY > 10) {
+                    banner.classList.add('hide');
+                    if(navbar) navbar.classList.remove('banner-visible');
+                    if(main) main.classList.remove('banner-visible');
+                } else {
+                    banner.classList.remove('hide');
+                    if(navbar) navbar.classList.add('banner-visible');
+                    if(main) main.classList.add('banner-visible');
+                }
+            }
+            adjustHeroCarouselMargin();
+        }
+        handleScrollAndBanner();
+        window.addEventListener('scroll', handleScrollAndBanner);
+        window.addEventListener('resize', handleScrollAndBanner);
+    });
+</script>
 </body>
 </html>

@@ -17,6 +17,14 @@
     <script src="Js/mistery-box.js"></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/newsletter.js" defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2PPJD4LWKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2PPJD4LWKZ');
+    </script>
     <style>
         html, body {
             margin: 0 !important;
@@ -587,10 +595,21 @@
 
         // Manejo de selección de tipo
         const tipoOptions = document.querySelectorAll('.tipo-option');
+        const productPriceElement = document.querySelector('.product-price');
+        const originalPrice = 799.00;
+        const retroPrice = 899.00;
+
         tipoOptions.forEach(option => {
             option.addEventListener('click', () => {
                 tipoOptions.forEach(opt => opt.classList.remove('selected'));
                 option.classList.add('selected');
+                
+                // Actualizar el precio según el tipo seleccionado
+                if (option.dataset.tipo === 'Retro') {
+                    productPriceElement.textContent = `$ ${retroPrice.toFixed(2)} MXN`;
+                } else {
+                    productPriceElement.textContent = `$ ${originalPrice.toFixed(2)} MXN`;
+                }
             });
         });
 

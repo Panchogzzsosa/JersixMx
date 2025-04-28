@@ -180,6 +180,14 @@ function getStatusName($status) {
     <script src="Js/search.js"></script>
     <script src="Js/cart.js" defer></script>
     <script src="Js/newsletter.js" defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2PPJD4LWKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2PPJD4LWKZ');
+    </script>
     <style>
         /* Solo estilos para el contenido específico de tracking */
         :root {

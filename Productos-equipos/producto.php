@@ -1085,11 +1085,12 @@ try {
                 <div class="customization-options" id="customizationFields" style="margin-bottom: 30px; display: none;">
                     <div class="customization-field" style="margin-bottom: 15px;">
                         <label for="jerseyName" style="display: block; margin-bottom: 8px; font-weight: 500;">Nombre en la camiseta:</label>
-                        <input type="text" id="jerseyName" name="jerseyName" maxlength="20" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el nombre">
+                        <input type="text" id="jerseyName" name="jerseyName" maxlength="10" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el nombre" pattern="[A-Za-zÁÉÍÓÚáéíóúÑñ ]+" inputmode="text" autocomplete="off">
+                        <p style="font-size: 13px; color: #888; margin-top: 5px;">Máximo 10 caracteres permitidos.</p>
                     </div>
                     <div class="customization-field" style="margin-bottom: 15px;">
                         <label for="jerseyNumber" style="display: block; margin-bottom: 8px; font-weight: 500;">Número:</label>
-                        <input type="number" id="jerseyNumber" name="jerseyNumber" min="0" max="99" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el número" oninput="validateJerseyNumber(this)">
+                        <input type="number" id="jerseyNumber" name="jerseyNumber" min="0" max="99" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el número" oninput="validateJerseyNumber(this)" pattern="[0-9]+" inputmode="numeric" autocomplete="off">
                     </div>
                     <div class="customization-field" style="margin-bottom: 15px;">
                         <label style="display: flex; align-items: center; cursor: pointer;">
@@ -2448,6 +2449,19 @@ try {
     // Función para abrir el modal de reseña
     document.getElementById('openReviewForm').addEventListener('click', function() {
         document.getElementById('reviewModal').style.display = 'flex';
+    });
+    </script>
+
+    <script>
+    // Validar solo letras en el nombre
+    const jerseyNameInput = document.getElementById('jerseyName');
+    jerseyNameInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^A-Za-zÁÉÍÓÚáéíóúÑñ ]/g, '');
+    });
+    // Validar solo números en el número (ya está cubierto por el input type, pero reforzamos)
+    const jerseyNumberInput = document.getElementById('jerseyNumber');
+    jerseyNumberInput.addEventListener('input', function(e) {
+        this.value = this.value.replace(/[^0-9]/g, '');
     });
     </script>
 </body>

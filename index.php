@@ -114,6 +114,132 @@ try {
             opacity: 1;
         }
 
+        /* Estilos para la sección de reseñas */
+        .reviews-container {
+            overflow-x: auto;
+            scroll-snap-type: x mandatory;
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 0;
+            width: 100%;
+            align-items: center;
+        }
+        .reviews-slider {
+            display: flex;
+            gap: 25px;
+            width: auto;
+        }
+        .review-card {
+            background: #fff;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            border: 1.5px solid #000000;
+            flex-shrink: 0;
+            width: 370px;
+            scroll-snap-align: start;
+        }
+        .review-card:hover {
+            transform: translateY(-5px);
+        }
+        .review-header {
+            margin-bottom: 20px;
+            position: relative;
+        }
+        .review-info h3 {
+            margin: 0;
+            font-size: 1.1em;
+            color: #333;
+            font-weight: 500;
+        }
+        .product-name {
+            color: #666;
+            font-size: 0.9em;
+            margin: 4px 0 0 0;
+        }
+        .review-stars {
+            color: #FFD600;
+            margin: 4px 0 0 0;
+            font-size: 1em;
+        }
+        .review-title {
+            color: #333;
+            font-size: 1.1em;
+            margin: 6px 0 4px 0;
+            font-weight: 500;
+        }
+        .review-text {
+            color: #666;
+            line-height: 1.6;
+            font-size: 0.95em;
+            margin: 0 0 10px 0;
+            word-break: break-word;
+        }
+        .review-images {
+            margin-top: 15px;
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding: 5px 0;
+        }
+        .review-images img {
+            width: 120px;
+            height: 120px;
+            object-fit: cover;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: box-shadow 0.2s;
+        }
+        .review-images img:hover {
+            box-shadow: 0 0 0 3px #FFD60044;
+        }
+        .review-date {
+            color: #999;
+            font-size: 0.85em;
+            margin-top: auto;
+            text-align: right;
+            padding-top: 15px;
+        }
+        @media (max-width: 1024px) {
+            .review-card {
+                width: 320px;
+            }
+        }
+        @media (max-width: 768px) {
+            .review-card {
+                width: 90vw;
+                min-width: 260px;
+                max-width: 98vw;
+                padding: 20px;
+                scroll-snap-align: center;
+            }
+            
+            .review-images img {
+                width: 100px;
+                height: 100px;
+            }
+        }
+        @media (max-width: 480px) {
+            .reviews-container {
+                padding: 15px;
+            }
+
+            .review-images img {
+                width: 80px;
+                height: 80px;
+            }
+
+            .review-title {
+                font-size: 1em;
+            }
+
+            .review-text {
+                font-size: 0.9em;
+            }
+        }
         @media (max-width: 768px) {
             .collection-grid {
                 display: flex;
@@ -165,6 +291,65 @@ try {
             main.banner-visible {
                 /* margin-top eliminado, ahora será dinámico por JS */
             }
+        }
+
+        .reviews {
+            padding: 30px 0;
+        }
+
+        .reviews h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.5em;
+            color: #333;
+        }
+
+        .best-sellers h2 {
+            text-align: center;
+            margin-bottom: 30px;
+            font-size: 1.8em;
+            color: #333;
+        }
+
+        /* Lightbox */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,0,0,0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 9999;
+            display: none;
+        }
+        .lightbox-overlay.active {
+            display: flex;
+        }
+        .lightbox-img {
+            max-width: 90vw;
+            max-height: 80vh;
+            border-radius: 10px;
+            box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+            background: #fff;
+        }
+        .lightbox-close {
+            position: absolute;
+            top: 30px;
+            right: 40px;
+            font-size: 2.5em;
+            color: #fff;
+            background: none;
+            border: none;
+            cursor: pointer;
+            z-index: 10000;
+        }
+        .review-recomienda {
+            margin: 4px 0 0 0;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 0.85em;
         }
     </style>
 </head>
@@ -308,58 +493,76 @@ try {
             </div>
         </section>
 
-        <section class="size-guide">
-            <h2>Guía de Tallas</h2>
-            <div class="size-guide-container">
-                <table class="size-table">
-                    <thead>
-                        <tr>
-                            <th>Talla</th>
-                            <th>Largo (cm)</th>
-                            <th>Ancho (cm)</th>
-                            <th>Altura (cm)</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td>S</td>
-                            <td>69-71</td>
-                            <td>53-55</td>
-                            <td>162-170</td>
-                        </tr>
-                        <tr>
-                            <td>M</td>
-                            <td>71-73</td>
-                            <td>55-57</td>
-                            <td>170-176</td>
-                        </tr>
-                        <tr>
-                            <td>L</td>
-                            <td>73-75</td>
-                            <td>57-58</td>
-                            <td>176-182</td>
-                        </tr>
-                        <tr>
-                            <td>XL</td>
-                            <td>75-78</td>
-                            <td>58-60</td>
-                            <td>182-190</td>
-                        </tr>
-                        <tr>
-                            <td>XXL</td>
-                            <td>78-81</td>
-                            <td>60-62</td>
-                            <td>190-195</td>
-                        </tr>
-                    </tbody>
-                </table>
-                <div class="size-guide-info">
-                    <h3>¿Cómo medir?</h3>
-                    <ul>
-                        <li><strong>Largo:</strong> Mide desde el cuello hasta abajo de la jersey</li>
-                        <li><strong>Ancho:</strong> Mide desde axila a axila, es decir, de un lado al otro del pecho.</li>
-                        <li><strong>Altura:</strong> Altura de la persona que usaría esa talla</li>
-                    </ul>
+        <section class="reviews">
+            <h2>Reseñas de Nuestros Clientes</h2>
+            <div class="reviews-container">
+                <div class="reviews-slider">
+                    <?php
+                    try {
+                        $pdo = getConnection();
+                        $stmt = $pdo->query("SELECT r.*, p.name as producto_nombre 
+                                           FROM resenas r 
+                                           JOIN products p ON r.producto_id = p.product_id 
+                                           ORDER BY r.fecha_creacion DESC");
+                        $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+                        foreach ($reviews as $review):
+                            $stars = '';
+                            for ($i = 1; $i <= 5; $i++) {
+                                if ($i <= $review['calificacion']) {
+                                    $stars .= '<i class="fas fa-star"></i>';
+                                } else if ($i - 0.5 <= $review['calificacion']) {
+                                    $stars .= '<i class="fas fa-star-half-alt"></i>';
+                                } else {
+                                    $stars .= '<i class="far fa-star"></i>';
+                                }
+                            }
+                    ?>
+                        <div class="review-card">
+                            <div class="review-header">
+                                <div class="review-info">
+                                    <h3><?php echo htmlspecialchars($review['nombre']); ?></h3>
+                                    <p class="product-name">
+                                        <a href="Productos-equipos/producto.php?id=<?php echo $review['producto_id']; ?>" style="color: #666; text-decoration: underline; cursor: pointer;">
+                                            <?php echo htmlspecialchars($review['producto_nombre']); ?>
+                                        </a>
+                                    </p>
+                                    <div class="review-stars">
+                                        <?php echo $stars; ?>
+                                    </div>
+                                    <?php if (isset($review['recomienda'])): ?>
+                                        <div class="review-recomienda">
+                                            <?php if ($review['recomienda']): ?>
+                                                <span title="Recomendado" style="color: #43a047; font-size: 1em;"><i class="fas fa-thumbs-up"></i> Recomendado</span>
+                                            <?php else: ?>
+                                                <span title="No recomendado" style="color: #e53935; font-size: 1em;"><i class="fas fa-thumbs-down"></i> No recomendado</span>
+                                            <?php endif; ?>
+                                        </div>
+                                    <?php endif; ?>
+                                </div>
+                            </div>
+                            <h4 class="review-title"><?php echo htmlspecialchars($review['titulo']); ?></h4>
+                            <p class="review-text"><?php echo htmlspecialchars($review['contenido']); ?></p>
+                            <?php if ($review['imagen_path']): ?>
+                                <div class="review-images">
+                                    <?php 
+                                    $images = json_decode($review['imagen_path'], true);
+                                    if (is_array($images)) {
+                                        foreach ($images as $image) {
+                                            echo '<img src="' . htmlspecialchars($image) . '" alt="Reseña de ' . htmlspecialchars($review['nombre']) . '">';
+                                        }
+                                    }
+                                    ?>
+                                </div>
+                            <?php endif; ?>
+                            <p class="review-date"><?php echo date('d/m/Y', strtotime($review['fecha_creacion'])); ?></p>
+                        </div>
+                    <?php 
+                        endforeach;
+                    } catch(PDOException $e) {
+                        echo '<p class="error">No se pudieron cargar las reseñas en este momento.</p>';
+                    }
+                    ?>
                 </div>
             </div>
         </section>
@@ -421,6 +624,10 @@ try {
         </a>
     </div>
 <div id="notification" class="notification"></div>
+<div id="lightbox" class="lightbox-overlay">
+    <button class="lightbox-close" aria-label="Cerrar">&times;</button>
+    <img src="" alt="Imagen ampliada" class="lightbox-img" />
+</div>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         var banner = document.querySelector('.site-banner');
@@ -463,6 +670,64 @@ try {
         handleScrollAndBanner();
         window.addEventListener('scroll', handleScrollAndBanner);
         window.addEventListener('resize', handleScrollAndBanner);
+    });
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const container = document.querySelector('.reviews-container');
+        const cards = document.querySelectorAll('.review-card');
+        let currentIndex = 0;
+        function getVisibleCards() {
+            if(window.innerWidth <= 768) return 1;
+            if(window.innerWidth <= 1024) return 2;
+            return 3;
+        }
+        function autoMove() {
+            const visibleCards = getVisibleCards();
+            const totalCards = cards.length;
+            const maxIndex = Math.max(0, totalCards - visibleCards);
+            if (totalCards > visibleCards && currentIndex < maxIndex) {
+                currentIndex++;
+                const card = cards[currentIndex];
+                if(card) {
+                    const left = card.offsetLeft - container.offsetLeft;
+                    container.scrollTo({left, behavior: 'smooth'});
+                }
+            }
+        }
+        window.addEventListener('resize', () => {
+            currentIndex = 0;
+            if(cards[0]) {
+                const left = cards[0].offsetLeft - container.offsetLeft;
+                container.scrollTo({left, behavior: 'smooth'});
+            }
+        });
+        setInterval(autoMove, 5000);
+    });
+</script>
+<script>
+    // Lightbox para imágenes de reseñas
+    document.addEventListener('DOMContentLoaded', function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.querySelector('.lightbox-img');
+        const closeBtn = document.querySelector('.lightbox-close');
+        document.querySelectorAll('.review-images img').forEach(img => {
+            img.addEventListener('click', function() {
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                lightboxImg.alt = this.alt;
+            });
+        });
+        closeBtn.addEventListener('click', function() {
+            lightbox.classList.remove('active');
+            lightboxImg.src = '';
+        });
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                lightboxImg.src = '';
+            }
+        });
     });
 </script>
 </body>

@@ -976,6 +976,38 @@ try {
             color: #666;
         }
     </style>
+    <style>
+    .lightbox-overlay {
+        position: fixed;
+        top: 0; left: 0; right: 0; bottom: 0;
+        background: rgba(0,0,0,0.8);
+        display: none;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+    }
+    .lightbox-overlay.active {
+        display: flex;
+    }
+    .lightbox-img {
+        max-width: 90vw;
+        max-height: 80vh;
+        border-radius: 10px;
+        box-shadow: 0 4px 32px rgba(0,0,0,0.4);
+        background: #fff;
+    }
+    .lightbox-close {
+        position: absolute;
+        top: 30px;
+        right: 40px;
+        font-size: 2.5em;
+        color: #fff;
+        background: none;
+        border: none;
+        cursor: pointer;
+        z-index: 10000;
+    }
+    </style>
 </head>
 <body>
     <header>
@@ -1265,241 +1297,122 @@ try {
 
     <!-- Sección de Reseñas -->
     <div class="reviews-section" style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
-        <div class="reviews-container" style="max-width: 900px; margin: 0 auto;">
-            <div class="reviews-header" style="text-align: center; margin-bottom: 40px;">
-                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; color: #000;">Opiniones de Clientes</h2>
-                <?php
-                // Obtener calificación promedio y número de reseñas DE TODAS LAS RESEÑAS
-                try {
-                    $stmt = $pdo->prepare('SELECT COUNT(*) as total, AVG(calificacion) as promedio FROM resenas');
-                    $stmt->execute();
-                    $reviewStats = $stmt->fetch(PDO::FETCH_ASSOC);
-                    
-                    $totalReviews = $reviewStats['total'] ?? 0;
-                    $avgRating = number_format($reviewStats['promedio'] ?? 0, 1);
-                } catch (PDOException $e) {
-                    $totalReviews = 0;
-                    $avgRating = 0;
-                }
-                ?>
-                
-                <div style="display: flex; justify-content: center; margin-top: 10px;">
-                    <div class="rating-stars" style="font-size: 22px; color: #FFD700; margin-right: 10px;">
-                        <?php
-                        $fullStars = floor($avgRating);
-                        $halfStar = ($avgRating - $fullStars) >= 0.5;
-                        
-                        for ($i = 1; $i <= 5; $i++) {
-                            if ($i <= $fullStars) {
-                                echo '<i class="fas fa-star"></i>';
-                            } elseif ($i == $fullStars + 1 && $halfStar) {
-                                echo '<i class="fas fa-star-half-alt"></i>';
-                            } else {
-                                echo '<i class="far fa-star"></i>';
-                            }
+        <h2 style="text-align: center; font-size: 2em; color: #333; margin-bottom: 30px;">Reseñas de Nuestros Clientes</h2>
+        <div class="reviews-container" style="overflow-x: auto; scroll-snap-type: x mandatory; display: flex; gap: 25px; max-width: 100%; margin: 0 auto; padding-bottom: 10px; align-items: stretch;">
+            <?php
+            try {
+                $stmt = $pdo->prepare('SELECT r.*, p.name as producto_nombre FROM resenas r JOIN products p ON r.producto_id = p.product_id ORDER BY r.fecha_creacion DESC');
+                $stmt->execute();
+                $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                foreach ($reviews as $review):
+                    $stars = '';
+                    for ($i = 1; $i <= 5; $i++) {
+                        if ($i <= $review['calificacion']) {
+                            $stars .= '<i class="fas fa-star"></i>';
+                        } else if ($i - 0.5 <= $review['calificacion']) {
+                            $stars .= '<i class="fas fa-star-half-alt"></i>';
+                        } else {
+                            $stars .= '<i class="far fa-star"></i>';
                         }
-                        ?>
-                    </div>
-                    <div style="font-size: 18px; font-weight: 500; color: #333;">
-                        <span style="color: #FFD700; font-weight: bold;"><?php echo $avgRating; ?></span> <span style="color: #666; font-size: 16px; font-weight: normal;">(<?php echo $totalReviews; ?> opiniones)</span>
-                    </div>
-                </div>
-            </div>
-            
-            <?php if ($totalReviews > 0): ?>
-            <!-- Carrusel de Reseñas -->
-            <div class="reviews-carousel-container" style="position: relative;">
-                <div class="reviews-carousel" style="overflow: hidden; position: relative; margin: 0 40px;">
-                    <div class="reviews-track" id="reviewsTrack" style="display: flex; transition: transform 0.5s ease;">
-                        <?php
-                        try {
-                            // Obtener TODAS las reseñas de la base de datos, no solo para este producto
-                            $stmt = $pdo->prepare('
-                                SELECT r.*, p.name as product_name, 
-                                DATE_FORMAT(r.fecha_creacion, "%d/%m/%Y") as fecha_formateada
-                                FROM resenas r
-                                JOIN products p ON r.producto_id = p.product_id
-                                ORDER BY r.fecha_creacion DESC
-                            ');
-                            $stmt->execute();
-                            $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
-                        } catch (PDOException $e) {
-                            $reviews = [];
-                        }
-                        
-                        foreach ($reviews as $review):
-                        ?>
-                        <div class="review-card" style="min-width: 300px; flex: 0 0 calc(100% - 20px); max-width: 100%; padding: 30px; margin: 0 10px; background-color: #f9f9f9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 3px solid #cc0000;">
-                            <div class="review-card-header" style="margin-bottom: 15px;">
-                                <div class="reviewer-name" style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
-                                    <?php echo htmlspecialchars($review['nombre']); ?>
-                                </div>
-                                
-                                <div style="display: flex; justify-content: space-between; align-items: center;">
-                                    <div class="review-rating" style="color: #FFD700; font-size: 22px;">
-                                        <?php
-                                        $rating = $review['calificacion'];
-                                        $fullStars = floor($rating);
-                                        $halfStar = ($rating - $fullStars) >= 0.5;
-                                        
-                                        for ($i = 1; $i <= 5; $i++) {
-                                            if ($i <= $fullStars) {
-                                                echo '<i class="fas fa-star"></i>';
-                                            } elseif ($i == $fullStars + 1 && $halfStar) {
-                                                echo '<i class="fas fa-star-half-alt"></i>';
-                                            } else {
-                                                echo '<i class="far fa-star"></i>';
-                                            }
-                                        }
-                                        ?>
-                                    </div>
-                                    
-                                    <div class="review-date" style="color: #888; font-size: 14px;">
-                                        <?php echo $review['fecha_formateada']; ?>
-                                    </div>
-                                </div>
-                            </div>
-                            
-                            <!-- Mostrar el nombre del producto -->
-                            <div style="font-size: 14px; color: #666; margin-bottom: 10px; border-left: 3px solid #cc0000; padding-left: 10px;">
-                                Producto: <a href="producto.php?id=<?php echo $review['producto_id']; ?>" style="color: #000; text-decoration: underline; font-weight: 500;"><?php echo htmlspecialchars($review['product_name']); ?></a>
-                            </div>
-                            
-                            <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;"><?php echo htmlspecialchars($review['titulo']); ?></h3>
-                            <p style="color: #555; line-height: 1.6; margin-bottom: 15px; font-size: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?php echo nl2br(htmlspecialchars($review['contenido'])); ?></p>
-                            
-                            <?php if (isset($review['imagen_path']) && !empty($review['imagen_path'])): 
-                                $images = [];
-                                // Intentar decodificar JSON (para múltiples imágenes)
-                                $decoded = json_decode(str_replace('\\/', '/', $review['imagen_path']), true);
-                                
-                                // Verificar si es un array válido después de decodificar
-                                if (is_array($decoded) && json_last_error() === JSON_ERROR_NONE) {
-                                    $images = $decoded;
-                                } else {
-                                    // Si no es JSON válido, asumir que es una sola imagen en formato de cadena
-                                    $images = [$review['imagen_path']];
-                                }
-                                
-                                // Eliminar valores vacíos o nulos
-                                $images = array_filter($images, function($img) {
-                                    return !empty($img);
-                                });
-                                
-                                if (!empty($images)):
-                            ?>
-                            <div class="review-gallery" style="margin: 10px 0; border-radius: 6px; overflow: hidden;">
-                                <!-- Imágenes en horizontal -->
-                                <div class="images-row" style="display: flex; flex-wrap: nowrap; gap: 6px; overflow-x: auto; max-width: 100%; scrollbar-width: none; -ms-overflow-style: none; padding: 2px 0;">
-                                    <?php 
-                                    // Mostrar hasta 5 imágenes
-                                    $max_images = 5;
-                                    $count = 0;
-                                    
-                                    foreach ($images as $index => $image_path): 
-                                        if ($count >= $max_images) break;
-                                        $count++;
-                                        
-                                        // Limpiar ruta de imagen
-                                        $image_path = str_replace('\\/', '/', $image_path);
-                                        
-                                        // Construir ruta completa
-                                        if (strpos($image_path, 'uploads/') === 0) {
-                                            $full_path = '../' . $image_path;
-                                        } elseif (strpos($image_path, '../uploads/') === 0) {
-                                            $full_path = $image_path;
-                                        } else {
-                                            $full_path = '../uploads/reviews/' . basename($image_path);
-                                        }
-                                        
-                                        // Determinar si es la última imagen visible y hay más para mostrar
-                                        $show_overlay = ($count == $max_images && count($images) > $max_images);
-                                    ?>
-                                    <div onclick="openImageModal('<?php echo htmlspecialchars($full_path); ?>')" 
-                                         style="flex: 0 0 auto; width: 80px; height: 80px; position: relative; overflow: hidden; border-radius: 6px; cursor: pointer; border: 1px solid #eee; transition: transform 0.2s ease;">
-                                        
-                                        <img src="<?php echo htmlspecialchars($full_path); ?>" 
-                                             alt="Foto <?php echo $index + 1; ?>" 
-                                             style="width: 100%; height: 100%; object-fit: cover;" 
-                                             onerror="this.src='../uploads/reviews/imagen_no_disponible.jpg'; this.style.opacity=0.6;">
-                                        
-                                        <?php if ($show_overlay): ?>
-                                        <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); display: flex; align-items: center; justify-content: center; color: white; font-size: 14px; font-weight: 500;">
-                                            +<?php echo count($images) - $max_images + 1; ?>
-                                        </div>
-                                        <?php endif; ?>
-                                    </div>
-                                    <?php endforeach; ?>
-                                </div>
-                                
-                                <!-- Pequeña etiqueta de fotos -->
-                                <div style="display: flex; align-items: center; margin-top: 6px;">
-                                    <i class="fas fa-camera" style="color: #777; margin-right: 5px; font-size: 12px;"></i>
-                                    <span style="color: #777; font-size: 12px;">
-                                        <?php echo count($images) > 1 ? count($images) . ' fotos' : '1 foto'; ?>
-                                    </span>
-                                </div>
-                            </div>
-                            <?php endif; endif; ?>
-                            
-                            <?php if ($review['recomienda'] == 'si'): ?>
-                            <div style="color: #2e7d32; font-size: 14px; display: flex; align-items: center;">
-                                <i class="fas fa-thumbs-up" style="margin-right: 5px;"></i> Recomendado
-                            </div>
-                            <?php else: ?>
-                            <div style="color: #c62828; font-size: 14px; display: flex; align-items: center;">
-                                <i class="fas fa-thumbs-down" style="margin-right: 5px;"></i> No recomendado
-                            </div>
-                            <?php endif; ?>
+                    }
+            ?>
+            <div class="review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1.5px solid #e0e0e0; flex-shrink: 0; width: 370px; scroll-snap-align: start; min-width: 300px; max-width: 95vw;">
+                <div class="review-header">
+                    <div class="review-info">
+                        <h3 style="margin: 0; font-size: 1.1em; color: #333; font-weight: 500;"><?php echo htmlspecialchars($review['nombre']); ?></h3>
+                        <p class="product-name" style="color: #666; font-size: 0.9em; margin: 4px 0 0 0;">
+                            <a href="producto.php?id=<?php echo $review['producto_id']; ?>" style="color: #666; text-decoration: underline; cursor: pointer;">
+                                <?php echo htmlspecialchars($review['producto_nombre']); ?>
+                            </a>
+                        </p>
+                        <div class="review-stars" style="color: #FFD600; margin: 4px 0 0 0; font-size: 1em;">
+                            <?php echo $stars; ?>
                         </div>
-                        <?php endforeach; ?>
+                        <?php if (isset($review['recomienda'])): ?>
+                            <div class="review-recomienda" style="margin: 4px 0 0 0; font-weight: 500; display: flex; align-items: center; gap: 6px; font-size: 0.85em;">
+                                <?php if ($review['recomienda'] == 'si' || $review['recomienda'] == 1): ?>
+                                    <span title="Recomendado" style="color: #43a047; font-size: 1em;"><i class="fas fa-thumbs-up"></i> Recomendado</span>
+                                <?php else: ?>
+                                    <span title="No recomendado" style="color: #e53935; font-size: 1em;"><i class="fas fa-thumbs-down"></i> No recomendado</span>
+                                <?php endif; ?>
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
-                
-                <!-- Controles del carrusel -->
-                <button id="prevReview" class="carousel-control prev" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
-                    <i class="fas fa-chevron-left" style="color: #000;"></i>
-                </button>
-                <button id="nextReview" class="carousel-control next" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
-                    <i class="fas fa-chevron-right" style="color: #000;"></i>
-                </button>
-                
-                <!-- Indicadores de página -->
-                <div class="review-page-indicators" style="display: flex; justify-content: center; margin-top: 20px; gap: 6px;">
-                    <?php 
-                    $totalReviews = count($reviews);
-                    $maxIndicators = 5; // Limitar a 5 indicadores
-                    $visibleIndicators = min($totalReviews, $maxIndicators);
-                    
-                    for ($i = 0; $i < $visibleIndicators; $i++): 
-                        $isActive = ($i === 0) ? true : false;
-                    ?>
-                    <button class="review-indicator <?php echo $isActive ? 'active' : ''; ?>" 
-                            data-index="<?php echo $i; ?>" 
-                            data-position="<?php echo $i / max(1, min($maxIndicators-1, $totalReviews-1)) * max(1, $totalReviews-1); ?>"
-                            aria-label="Grupo de reseñas <?php echo $i+1; ?>"
-                            style="width: 8px; height: 8px; border-radius: 50%; background-color: <?php echo $isActive ? '#cc0000' : '#ddd'; ?>; border: none; cursor: pointer; padding: 0; transition: background-color 0.3s;">
-                    </button>
-                    <?php endfor; ?>
-                </div>
+                <h4 class="review-title" style="color: #333; font-size: 1.1em; margin: 6px 0 4px 0; font-weight: 500;"><?php echo htmlspecialchars($review['titulo']); ?></h4>
+                <p class="review-text" style="color: #666; line-height: 1.6; font-size: 0.95em; margin: 0 0 10px 0; word-break: break-word;"><?php echo htmlspecialchars($review['contenido']); ?></p>
+                <?php if ($review['imagen_path']): ?>
+                    <div class="review-images" style="margin-top: 15px; display: flex; gap: 10px; overflow-x: auto; padding: 5px 0;">
+                        <?php 
+                        $images = json_decode($review['imagen_path'], true);
+                        if (!is_array($images)) {
+                            $images = [$review['imagen_path']];
+                        }
+                        foreach ($images as $image) {
+                            $image = str_replace('\\/', '/', $image);
+                            if (strpos($image, 'uploads/') === 0) {
+                                $full_path = '../' . $image;
+                            } elseif (strpos($image, '../uploads/') === 0) {
+                                $full_path = $image;
+                            } else {
+                                $full_path = '../uploads/reviews/' . basename($image);
+                            }
+                            echo '<img src="' . htmlspecialchars($full_path) . '" alt="Reseña de ' . htmlspecialchars($review['nombre']) . '" style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: box-shadow 0.2s;" onclick="openLightbox(\'' . htmlspecialchars($full_path) . '\', \'Reseña de ' . htmlspecialchars($review['nombre']) . '\')">';
+                        }
+                        ?>
+                    </div>
+                <?php endif; ?>
+                <p class="review-date" style="color: #999; font-size: 0.85em; margin-top: auto; text-align: right; padding-top: 15px;">
+                    <?php echo date('d/m/Y', strtotime($review['fecha_creacion'])); ?>
+                </p>
             </div>
-            <?php else: ?>
-            <div class="no-reviews" style="text-align: center; padding: 40px; background-color: #f9f9f9; border-radius: 12px; border-top: 3px solid #cc0000;">
-                <div style="font-size: 50px; color: #cc0000; margin-bottom: 15px;">
-                    <i class="far fa-comment-dots"></i>
-                </div>
-                <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #333;">¡Sé el primero en dejar una reseña!</h3>
-                <p style="color: #666; max-width: 500px; margin: 0 auto;">Tu opinión es muy importante para nosotros y para otros clientes. Comparte tu experiencia con este producto.</p>
-            </div>
-            <?php endif; ?>
-            
-            <!-- Botón para escribir una reseña -->
-            <div style="text-align: center; margin-top: 40px;">
-                <button id="openReviewForm" style="background-color: #000; color: white; padding: 12px 24px; border: none; border-radius: 5px; font-size: 15px; cursor: pointer; transition: background-color 0.3s ease; font-weight: 500; letter-spacing: 0.2px; display: flex; align-items: center; justify-content: center; margin: 0 auto;">
-                    <i class="fas fa-pencil-alt" style="margin-right: 10px; font-size: 16px;"></i>Escribir una reseña
-                </button>
-            </div>
+            <?php endforeach; } catch(PDOException $e) { echo '<p class="error">No se pudieron cargar las reseñas en este momento.</p>'; } ?>
         </div>
+        <!-- Lightbox para imágenes -->
+        <div id="lightbox" class="lightbox-overlay">
+            <button class="lightbox-close" aria-label="Cerrar">&times;</button>
+            <img src="" alt="Imagen ampliada" class="lightbox-img" />
+        </div>
+        <script>
+        // Lightbox para imágenes de reseñas (idéntico a index.php)
+        document.addEventListener('DOMContentLoaded', function() {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImg = document.querySelector('.lightbox-img');
+            const closeBtn = document.querySelector('.lightbox-close');
+            document.querySelectorAll('.review-images img').forEach(img => {
+                img.addEventListener('click', function() {
+                    lightbox.classList.add('active');
+                    lightboxImg.src = this.src;
+                    lightboxImg.alt = this.alt;
+                    document.body.style.overflow = 'hidden';
+                });
+            });
+            closeBtn.addEventListener('click', function() {
+                lightbox.classList.remove('active');
+                lightboxImg.src = '';
+                document.body.style.overflow = '';
+            });
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    lightbox.classList.remove('active');
+                    lightboxImg.src = '';
+                    document.body.style.overflow = '';
+                }
+            });
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.classList.contains('active') && (e.key === 'Escape' || e.key === 'Esc')) {
+                    lightbox.classList.remove('active');
+                    lightboxImg.src = '';
+                    document.body.style.overflow = '';
+                }
+            });
+        });
+        </script>
+    </div>
+    <div style="text-align: center; margin-top: 10px; margin-bottom: 40px;">
+        <button id="openReviewForm" style="background: #000; color: #fff; border: none; border-radius: 6px; padding: 14px 28px; font-size: 1.1em; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.2s;">
+            <i class="fas fa-pen"></i> Agregar reseña
+        </button>
     </div>
     
     <!-- Modal para escribir reseñas -->
@@ -1546,7 +1459,8 @@ try {
                 
                 <div class="form-group" style="margin-bottom: 20px;">
                     <label for="contenido" style="display: block; margin-bottom: 8px; font-weight: 500;">Tu reseña</label>
-                    <textarea id="contenido" name="contenido" rows="5" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                    <textarea id="contenido" name="contenido" rows="5" required maxlength="100" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                    <p id="charCount" style="font-size: 13px; color: #888; text-align: right; margin-top: 2px;">0/100 caracteres</p>
                 </div>
                 
                 <div class="form-group" style="margin-bottom: 20px;">
@@ -1715,11 +1629,13 @@ try {
                 
                 if ($result) {
                     echo "<script>
-                        alert('¡Gracias por tu reseña!');
-                        window.location.href = window.location.pathname + '?id=" . $product_id . "';
-                        </script>";
+                        document.addEventListener('DOMContentLoaded', function() {
+                            showMiniToast('¡Gracias por tu reseña!');
+                            setTimeout(function() { window.location.href = window.location.pathname + '?id=" . $product_id . "'; }, 1800);
+                        });
+                    </script>";
                 } else {
-                    echo "<script>alert('Hubo un error al guardar tu reseña. Por favor, intenta nuevamente.');</script>";
+                    echo "<script>document.addEventListener('DOMContentLoaded', function() { showMiniToast('Hubo un error al guardar tu reseña. Por favor, intenta nuevamente.'); });</script>";
                 }
             } catch (PDOException $e) {
                 echo "<script>alert('Error en el servidor. Por favor, intenta nuevamente más tarde.');</script>";
@@ -2463,6 +2379,80 @@ try {
     jerseyNumberInput.addEventListener('input', function(e) {
         this.value = this.value.replace(/[^0-9]/g, '');
     });
+    </script>
+
+    <!-- Lightbox para imágenes -->
+    <div id="lightbox" class="lightbox-overlay">
+        <button class="lightbox-close" aria-label="Cerrar">&times;</button>
+        <img src="" alt="Imagen ampliada" class="lightbox-img" />
+    </div>
+    <script>
+    // Lightbox para imágenes de reseñas (idéntico a index.php)
+    document.addEventListener('DOMContentLoaded', function() {
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.querySelector('.lightbox-img');
+        const closeBtn = document.querySelector('.lightbox-close');
+        document.querySelectorAll('.review-images img').forEach(img => {
+            img.addEventListener('click', function() {
+                lightbox.classList.add('active');
+                lightboxImg.src = this.src;
+                lightboxImg.alt = this.alt;
+                document.body.style.overflow = 'hidden';
+            });
+        });
+        closeBtn.addEventListener('click', function() {
+            lightbox.classList.remove('active');
+            lightboxImg.src = '';
+            document.body.style.overflow = '';
+        });
+        lightbox.addEventListener('click', function(e) {
+            if (e.target === lightbox) {
+                lightbox.classList.remove('active');
+                lightboxImg.src = '';
+                document.body.style.overflow = '';
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (lightbox.classList.contains('active') && (e.key === 'Escape' || e.key === 'Esc')) {
+                lightbox.classList.remove('active');
+                lightboxImg.src = '';
+                document.body.style.overflow = '';
+            }
+        });
+    });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+    // Contador de caracteres para el textarea de reseña
+    const contenidoTextarea = document.getElementById('contenido');
+    const charCount = document.getElementById('charCount');
+    if (contenidoTextarea && charCount) {
+        contenidoTextarea.addEventListener('input', function() {
+            charCount.textContent = this.value.length + '/300 caracteres';
+        });
+    }
+    </script>
+    <!-- Toast minimalista para notificaciones -->
+    <div id="miniToast" style="display:none; position: fixed; top: 32px; right: 32px; background: #222; color: #fff; padding: 14px 28px; border-radius: 8px; font-size: 1.05em; box-shadow: 0 4px 16px rgba(0,0,0,0.12); z-index: 99999; min-width: 180px; text-align: center; font-weight: 500; letter-spacing: 0.01em;"></div>
+    <script>
+    // Toast minimalista
+    function showMiniToast(msg) {
+        const toast = document.getElementById('miniToast');
+        if (!toast) return;
+        toast.textContent = msg;
+        toast.style.display = 'block';
+        toast.style.opacity = '1';
+        setTimeout(() => {
+            toast.style.transition = 'opacity 0.5s';
+            toast.style.opacity = '0';
+        }, 2000);
+        setTimeout(() => {
+            toast.style.display = 'none';
+            toast.style.transition = '';
+            toast.style.opacity = '1';
+        }, 2500);
+    }
     </script>
 </body>
 </html>

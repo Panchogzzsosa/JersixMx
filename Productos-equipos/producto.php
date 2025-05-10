@@ -1281,11 +1281,46 @@ try {
                         <p style="color: #555;">Recibirás tu número de rastreo en 8 - 12 días hábiles</p>
                     </div>
                 </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Separador -->
+    <div style="max-width: 80%; margin: 0 auto 40px; height: 1px; background-color: #e0e0e0;"></div>
+
+    <!-- Sección de Cuidado de Jersey -->
+    <div class="care-section" style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
+        <div class="care-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="care-header" onclick="toggleCareInfo()" style="text-align: center; margin-bottom: 20px; cursor: pointer; user-select: none;">
+                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    Cuidado de tu Jersey
+                    <i class="fas fa-chevron-down" id="care-arrow" style="font-size: 20px; transition: transform 0.3s ease;"></i>
+                </h2>
+            </div>
+
+            <div id="care-content" style="display: none; transition: all 0.3s ease;">
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">🧼</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Lavado</h3>
+                        <p style="color: #555;">Lavar a mano o en lavadora con agua fría. Usar detergente suave y no usar blanqueador.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">🔥</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Planchado</h3>
+                        <p style="color: #555;">Planchar a temperatura baja y por el revés. Evitar planchar sobre estampados o logos.</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">👕</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Almacenamiento</h3>
+                        <p style="color: #555;">Guardar en un lugar seco y fresco. Colgar en una percha para mantener su forma.</p>
+                    </div>
+                </div>
 
                 <div style="background-color: #f8f8f8; padding: 25px; border-radius: 10px; text-align: center;">
                     <p style="font-size: 16px; color: #333; margin-bottom: 0;">
-                        <strong>Garantía de satisfacción:</strong> Si tu espera supera los 30 días hábiles, 
-                        recibirás un reembolso de tu compra y tus Jersix serán gratis.
+                        <strong>Consejo:</strong> Para mantener los colores brillantes y la calidad de tu jersey, 
+                        evita exponerla directamente al sol por largos períodos.
                     </p>
                 </div>
             </div>
@@ -1298,25 +1333,25 @@ try {
     <!-- Sección de Reseñas -->
     <div class="reviews-section" style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
         <h2 style="text-align: center; font-size: 2em; color: #333; margin-bottom: 30px;">Reseñas de Nuestros Clientes</h2>
-        <div class="reviews-container" style="overflow-x: auto; scroll-snap-type: x mandatory; display: flex; gap: 25px; max-width: 100%; margin: 0 auto; padding-bottom: 10px; align-items: stretch;">
-            <?php
-            try {
+        <div class="reviews-container" style="overflow-x: auto; scroll-snap-type: x mandatory; display: flex; gap: 25px; width: calc(100% + 40px); margin: 0 -50px; padding: 0 50px; padding-bottom: 10px; align-items: stretch;">
+                <?php
+                try {
                 $stmt = $pdo->prepare('SELECT r.*, p.name as producto_nombre FROM resenas r JOIN products p ON r.producto_id = p.product_id ORDER BY r.fecha_creacion DESC');
-                $stmt->execute();
+                    $stmt->execute();
                 $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 foreach ($reviews as $review):
                     $stars = '';
-                    for ($i = 1; $i <= 5; $i++) {
+                        for ($i = 1; $i <= 5; $i++) {
                         if ($i <= $review['calificacion']) {
                             $stars .= '<i class="fas fa-star"></i>';
                         } else if ($i - 0.5 <= $review['calificacion']) {
                             $stars .= '<i class="fas fa-star-half-alt"></i>';
-                        } else {
+                            } else {
                             $stars .= '<i class="far fa-star"></i>';
+                            }
                         }
-                    }
-            ?>
-            <div class="review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.05); display: flex; flex-direction: column; border: 1.5px solid #e0e0e0; flex-shrink: 0; width: 370px; scroll-snap-align: start; min-width: 300px; max-width: 95vw;">
+                        ?>
+            <div class="review-card" style="background: #fff; border-radius: 12px; padding: 25px; box-shadow: 0 2px 15px rgba(0,0,0,0.1); display: flex; flex-direction: column; border: 1.5px solid #000; flex-shrink: 0; width: 370px; scroll-snap-align: start; min-width: 300px; max-width: 95vw;">
                 <div class="review-header">
                     <div class="review-info">
                         <h3 style="margin: 0; font-size: 1.1em; color: #333; font-weight: 500;"><?php echo htmlspecialchars($review['nombre']); ?></h3>
@@ -1327,7 +1362,7 @@ try {
                         </p>
                         <div class="review-stars" style="color: #FFD600; margin: 4px 0 0 0; font-size: 1em;">
                             <?php echo $stars; ?>
-                        </div>
+                    </div>
                         <?php if (isset($review['recomienda'])): ?>
                             <div class="review-recomienda" style="margin: 4px 0 0 0; font-weight: 500; display: flex; align-items: center; gap: 6px; font-size: 0.85em;">
                                 <?php if ($review['recomienda'] == 'si' || $review['recomienda'] == 1): ?>
@@ -1335,15 +1370,15 @@ try {
                                 <?php else: ?>
                                     <span title="No recomendado" style="color: #e53935; font-size: 1em;"><i class="fas fa-thumbs-down"></i> No recomendado</span>
                                 <?php endif; ?>
-                            </div>
-                        <?php endif; ?>
                     </div>
+                        <?php endif; ?>
                 </div>
+            </div>
                 <h4 class="review-title" style="color: #333; font-size: 1.1em; margin: 6px 0 4px 0; font-weight: 500;"><?php echo htmlspecialchars($review['titulo']); ?></h4>
                 <p class="review-text" style="color: #666; line-height: 1.6; font-size: 0.95em; margin: 0 0 10px 0; word-break: break-word;"><?php echo htmlspecialchars($review['contenido']); ?></p>
                 <?php if ($review['imagen_path']): ?>
                     <div class="review-images" style="margin-top: 15px; display: flex; gap: 10px; overflow-x: auto; padding: 5px 0;">
-                        <?php 
+                        <?php
                         $images = json_decode($review['imagen_path'], true);
                         if (!is_array($images)) {
                             $images = [$review['imagen_path']];
@@ -1354,25 +1389,25 @@ try {
                                 $full_path = '../' . $image;
                             } elseif (strpos($image, '../uploads/') === 0) {
                                 $full_path = $image;
-                            } else {
+                                            } else {
                                 $full_path = '../uploads/reviews/' . basename($image);
-                            }
+                                            }
                             echo '<img src="' . htmlspecialchars($full_path) . '" alt="Reseña de ' . htmlspecialchars($review['nombre']) . '" style="width: 120px; height: 120px; object-fit: cover; border-radius: 4px; cursor: pointer; transition: box-shadow 0.2s;" onclick="openLightbox(\'' . htmlspecialchars($full_path) . '\', \'Reseña de ' . htmlspecialchars($review['nombre']) . '\')">';
-                        }
-                        ?>
-                    </div>
+                                        }
+                                        ?>
+                                    </div>
                 <?php endif; ?>
                 <p class="review-date" style="color: #999; font-size: 0.85em; margin-top: auto; text-align: right; padding-top: 15px;">
                     <?php echo date('d/m/Y', strtotime($review['fecha_creacion'])); ?>
                 </p>
-            </div>
+                                    </div>
             <?php endforeach; } catch(PDOException $e) { echo '<p class="error">No se pudieron cargar las reseñas en este momento.</p>'; } ?>
-        </div>
+                                </div>
         <!-- Lightbox para imágenes -->
         <div id="lightbox" class="lightbox-overlay">
             <button class="lightbox-close" aria-label="Cerrar">&times;</button>
             <img src="" alt="Imagen ampliada" class="lightbox-img" />
-        </div>
+                            </div>
         <script>
         // Lightbox para imágenes de reseñas (idéntico a index.php)
         document.addEventListener('DOMContentLoaded', function() {
@@ -1397,7 +1432,7 @@ try {
                     lightbox.classList.remove('active');
                     lightboxImg.src = '';
                     document.body.style.overflow = '';
-                }
+                                        }
             });
             document.addEventListener('keydown', function(e) {
                 if (lightbox.classList.contains('active') && (e.key === 'Escape' || e.key === 'Esc')) {
@@ -1408,11 +1443,11 @@ try {
             });
         });
         </script>
-    </div>
+                                        </div>
     <div style="text-align: center; margin-top: 10px; margin-bottom: 40px;">
         <button id="openReviewForm" style="background: #000; color: #fff; border: none; border-radius: 6px; padding: 14px 28px; font-size: 1.1em; display: inline-flex; align-items: center; gap: 10px; cursor: pointer; box-shadow: 0 2px 8px rgba(0,0,0,0.08); transition: background 0.2s;">
             <i class="fas fa-pen"></i> Agregar reseña
-        </button>
+                </button>
     </div>
     
     <!-- Modal para escribir reseñas -->
@@ -1633,7 +1668,7 @@ try {
                             showMiniToast('¡Gracias por tu reseña!');
                             setTimeout(function() { window.location.href = window.location.pathname + '?id=" . $product_id . "'; }, 1800);
                         });
-                    </script>";
+                        </script>";
                 } else {
                     echo "<script>document.addEventListener('DOMContentLoaded', function() { showMiniToast('Hubo un error al guardar tu reseña. Por favor, intenta nuevamente.'); });</script>";
                 }
@@ -2452,6 +2487,21 @@ try {
             toast.style.transition = '';
             toast.style.opacity = '1';
         }, 2500);
+    }
+    </script>
+
+    <script>
+    function toggleCareInfo() {
+        const content = document.getElementById('care-content');
+        const arrow = document.getElementById('care-arrow');
+        
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+        } else {
+            content.style.display = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+        }
     }
     </script>
 </body>

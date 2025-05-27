@@ -1,0 +1,5 @@
+[26-Feb-2025 11:12:01 America/Mexico_City] PHP Warning:  Undefined array key "title" in /home/jersixmx/public_html/save_order.php on line 100
+[26-Feb-2025 11:14:29 America/Mexico_City] Database error: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Franciscogzz03@gmail.com' for key 'email'\nStack trace: #0 /home/jersixmx/public_html/save_order.php(71): PDOStatement->execute()
+#1 {main}
+[26-Feb-2025 11:14:52 America/Mexico_City] Database error: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry 'Franciscogzz03@gmail.com' for key 'email'\nStack trace: #0 /home/jersixmx/public_html/save_order.php(71): PDOStatement->execute()
+#1 {main}

@@ -1,0 +1,1935 @@
+[08-Feb-2025 14:25:44 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:25:44 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[08-Feb-2025 14:25:44 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:25:44 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:25:44 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:25:44 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:25:44 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:25:44 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[08-Feb-2025 14:40:37 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:40:37 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[08-Feb-2025 14:40:37 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:40:37 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:40:37 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:40:37 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:40:37 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:40:37 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:50:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:51:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:52:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:53:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:54:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:55:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:56:16 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Operation timed out
+[14-Feb-2025 17:56:16 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:16 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:16 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:16 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:16 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:16 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:16 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:16 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:16 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:17 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:17 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:17 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:17 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:17 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:18 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:16 -0600
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <QQwv2ODtmKBcDb0kQ1bQnU3KcQshy2yN7jSykgNJ84@localhost>
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_QQwv2ODtmKBcDb0kQ1bQnU3KcQshy2yN7jSykgNJ84"
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_QQwv2ODtmKBcDb0kQ1bQnU3KcQshy2yN7jSykgNJ84
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAyNjgyNjg=
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_QQwv2ODtmKBcDb0kQ1bQnU3KcQshy2yN7jSykgNJ84
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4yNjgyNjg8L2I+
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_QQwv2ODtmKBcDb0kQ1bQnU3KcQshy2yN7jSykgNJ84--
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577207 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:19 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:20 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 46e09a7af769-727002580dcsm1662325a34.45 - gsmtp
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:20 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:20 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:20 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:20 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:20 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:20 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:20 -0600
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <Z557IelgEuzt102nVxXvii1OGoR15EcfFsr3jG0o@localhost>
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_Z557IelgEuzt102nVxXvii1OGoR15EcfFsr3jG0o"
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Z557IelgEuzt102nVxXvii1OGoR15EcfFsr3jG0o
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA1MTcyNjc=
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Z557IelgEuzt102nVxXvii1OGoR15EcfFsr3jG0o
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj41MTcyNjc8L2I+
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Z557IelgEuzt102nVxXvii1OGoR15EcfFsr3jG0o--
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:21 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577210 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:22 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 586e51a60fabf-2b954820707sm2083947fac.10 - gsmtp
+
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:22 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:22 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:22 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:22 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:22 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:22 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:23 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:22 -0600
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <Uf97g1aX2ykw2c0op9tymBAxH7lALaGf906Di8ilE@localhost>
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_Uf97g1aX2ykw2c0op9tymBAxH7lALaGf906Di8ilE"
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uf97g1aX2ykw2c0op9tymBAxH7lALaGf906Di8ilE
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA3ODczNDU=
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uf97g1aX2ykw2c0op9tymBAxH7lALaGf906Di8ilE
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj43ODczNDU8L2I+
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uf97g1aX2ykw2c0op9tymBAxH7lALaGf906Di8ilE--
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:24 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577212 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:25 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 46e09a7af769-727001fc6basm1667058a34.31 - gsmtp
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:25 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:25 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:25 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:25 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:25 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:25 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:25 -0600
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <xfLix2WtLWliNifg0GLia1GYmBHGE7ZrhiN2LpPDtY@localhost>
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_xfLix2WtLWliNifg0GLia1GYmBHGE7ZrhiN2LpPDtY"
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xfLix2WtLWliNifg0GLia1GYmBHGE7ZrhiN2LpPDtY
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA3Nzg4ODM=
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xfLix2WtLWliNifg0GLia1GYmBHGE7ZrhiN2LpPDtY
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj43Nzg4ODM8L2I+
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xfLix2WtLWliNifg0GLia1GYmBHGE7ZrhiN2LpPDtY--
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:26 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577215 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:27 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 5614622812f47-3f3da9fe656sm1650154b6e.39 - gsmtp
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:27 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:27 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:27 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:27 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:27 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:27 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:28 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:27 -0600
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <6zTQhLOwqi5ebRqPD6oVUjnvffxLqCp0sZsRwqzmCTc@localhost>
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_6zTQhLOwqi5ebRqPD6oVUjnvffxLqCp0sZsRwqzmCTc"
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_6zTQhLOwqi5ebRqPD6oVUjnvffxLqCp0sZsRwqzmCTc
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAzMzA1Nzk=
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_6zTQhLOwqi5ebRqPD6oVUjnvffxLqCp0sZsRwqzmCTc
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4zMzA1Nzk8L2I+
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_6zTQhLOwqi5ebRqPD6oVUjnvffxLqCp0sZsRwqzmCTc--
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:29 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577218 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:30 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 006d021491bc7-5fcb17a4c04sm1536128eaf.29 - gsmtp
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:30 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:30 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:30 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:30 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:30 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:30 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:30 -0600
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <dhhpOLqebAXmqYA1SayCC9UC6drCR8lcxGAgpTwUA@localhost>
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_dhhpOLqebAXmqYA1SayCC9UC6drCR8lcxGAgpTwUA"
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_dhhpOLqebAXmqYA1SayCC9UC6drCR8lcxGAgpTwUA
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAyMTc2MTk=
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_dhhpOLqebAXmqYA1SayCC9UC6drCR8lcxGAgpTwUA
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4yMTc2MTk8L2I+
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_dhhpOLqebAXmqYA1SayCC9UC6drCR8lcxGAgpTwUA--
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:31 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577220 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:32 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 46e09a7af769-727002580b2sm1659204a34.46 - gsmtp
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:32 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:32 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:32 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:32 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:32 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:32 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:33 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:32 -0600
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <oF0I63XpaJPrzt8wcT37M0azD3yHXM7GCzlbN3kdnX4@localhost>
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_oF0I63XpaJPrzt8wcT37M0azD3yHXM7GCzlbN3kdnX4"
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_oF0I63XpaJPrzt8wcT37M0azD3yHXM7GCzlbN3kdnX4
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA0MTU3MzQ=
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_oF0I63XpaJPrzt8wcT37M0azD3yHXM7GCzlbN3kdnX4
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj40MTU3MzQ8L2I+
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_oF0I63XpaJPrzt8wcT37M0azD3yHXM7GCzlbN3kdnX4--
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577222 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:34 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:35 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 5614622812f47-3f3da92b7c6sm1627490b6e.6 - gsmtp
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:35 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:35 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:35 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:35 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:35 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:35 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:35 -0600
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <eJfdRFA9zkGSk0Lq7PGOZKHUnzM5P1YtBsGwph0@localhost>
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_eJfdRFA9zkGSk0Lq7PGOZKHUnzM5P1YtBsGwph0"
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_eJfdRFA9zkGSk0Lq7PGOZKHUnzM5P1YtBsGwph0
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA4NDE0NDk=
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_eJfdRFA9zkGSk0Lq7PGOZKHUnzM5P1YtBsGwph0
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj44NDE0NDk8L2I+
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_eJfdRFA9zkGSk0Lq7PGOZKHUnzM5P1YtBsGwph0--
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:36 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577224 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:37 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 006d021491bc7-5fcb16a8f4csm1507608eaf.13 - gsmtp
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:37 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:37 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:37 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:37 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:37 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:37 -0600
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <Tqv5SZMkxEPMottNq0tAqwCQY68zIMT2qsfGKQQoHw@localhost>
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_Tqv5SZMkxEPMottNq0tAqwCQY68zIMT2qsfGKQQoHw"
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Tqv5SZMkxEPMottNq0tAqwCQY68zIMT2qsfGKQQoHw
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAzMzQ3OTk=
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Tqv5SZMkxEPMottNq0tAqwCQY68zIMT2qsfGKQQoHw
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4zMzQ3OTk8L2I+
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Tqv5SZMkxEPMottNq0tAqwCQY68zIMT2qsfGKQQoHw--
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577226 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:39 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 006d021491bc7-5fcb17ae385sm1493853eaf.35 - gsmtp
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 17:56:39 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 17:56:39 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 17:56:39 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 17:56:39 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 17:56:39 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 17:56:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 17:56:39 -0600
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <xtj4KQOrcWDnvzYY7ARLnV7omWSYGNY2OVwOCHjRz3Q@localhost>
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_xtj4KQOrcWDnvzYY7ARLnV7omWSYGNY2OVwOCHjRz3Q"
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xtj4KQOrcWDnvzYY7ARLnV7omWSYGNY2OVwOCHjRz3Q
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA3NTE5OTM=
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xtj4KQOrcWDnvzYY7ARLnV7omWSYGNY2OVwOCHjRz3Q
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj43NTE5OTM8L2I+
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_xtj4KQOrcWDnvzYY7ARLnV7omWSYGNY2OVwOCHjRz3Q--
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 17:56:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739577229 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:41 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 46e09a7af769-727001ff3absm1673110a34.39 - gsmtp
+
+[14-Feb-2025 17:56:41 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 18:26:37 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:26:37 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 18:26:37 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 18:26:37 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 18:26:37 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 18:26:37 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 18:26:37 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:26:37 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 18:26:37 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 18:26:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 18:26:37 -0600
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <zyMYG1YiiIfwUD4snCv9wU8UK1MqTW138T68NK2o4X0@localhost>
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_zyMYG1YiiIfwUD4snCv9wU8UK1MqTW138T68NK2o4X0"
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_zyMYG1YiiIfwUD4snCv9wU8UK1MqTW138T68NK2o4X0
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA1Mjc2NjE=
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_zyMYG1YiiIfwUD4snCv9wU8UK1MqTW138T68NK2o4X0
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj41Mjc2NjE8L2I+
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_zyMYG1YiiIfwUD4snCv9wU8UK1MqTW138T68NK2o4X0--
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:26:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739579028 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:40 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 5614622812f47-3f3da92baacsm1659674b6e.5 - gsmtp
+
+[14-Feb-2025 18:26:40 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 18:29:36 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:29:36 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 18:29:36 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 18:29:36 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 18:29:36 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 18:29:36 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 18:29:36 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:29:36 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 18:29:36 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 18:29:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:29:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:29:37 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 18:29:37 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:38 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 18:29:36 -0600
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <RgxMldwePRZjdt8WFKIjAFK669yHz9ONvtHE2EufroI@localhost>
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_RgxMldwePRZjdt8WFKIjAFK669yHz9ONvtHE2EufroI"
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_RgxMldwePRZjdt8WFKIjAFK669yHz9ONvtHE2EufroI
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAwNTQ1MTM=
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_RgxMldwePRZjdt8WFKIjAFK669yHz9ONvtHE2EufroI
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4wNTQ1MTM8L2I+
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_RgxMldwePRZjdt8WFKIjAFK669yHz9ONvtHE2EufroI--
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:29:39 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739579207 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:40 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 006d021491bc7-5fcb167c763sm1523146eaf.6 - gsmtp
+
+[14-Feb-2025 18:29:40 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 18:32:05 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 141
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 143
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 144
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 146
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Warning:  Trying to access array offset on value of type null in /Applications/XAMPP/xamppfiles/htdocs/web/verify_email.php on line 157
+[14-Feb-2025 18:32:05 America/Mexico_City] PHP Deprecated:  preg_replace(): Passing null to parameter #3 ($subject) of type array|string is deprecated in /Applications/XAMPP/xamppfiles/htdocs/web/vendor/phpmailer/phpmailer/src/PHPMailer.php on line 1314
+[14-Feb-2025 18:32:05 America/Mexico_City] SMTP Debug [3]: Invalid address:  (From): 
+[14-Feb-2025 18:32:05 America/Mexico_City] Detailed Mailer Error: Invalid address:  (From): 
+[14-Feb-2025 18:32:05 America/Mexico_City] SMTP Debug Info: 3
+[14-Feb-2025 18:32:05 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[14-Feb-2025 18:32:05 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:32:05 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 18:32:05 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:32:06 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 18:32:05 -0600
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <Uha6mXt1F0TQhjW49tPSgxLQZj5rE5eghyYxuQxDn0@localhost>
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_Uha6mXt1F0TQhjW49tPSgxLQZj5rE5eghyYxuQxDn0"
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uha6mXt1F0TQhjW49tPSgxLQZj5rE5eghyYxuQxDn0
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAyODcxNzk=
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uha6mXt1F0TQhjW49tPSgxLQZj5rE5eghyYxuQxDn0
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4yODcxNzk8L2I+
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_Uha6mXt1F0TQhjW49tPSgxLQZj5rE5eghyYxuQxDn0--
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:32:07 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739579356 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:09 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 586e51a60fabf-2b954875e0esm2133869fac.14 - gsmtp
+
+[14-Feb-2025 18:32:09 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 18:34:10 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[14-Feb-2025 18:34:10 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[14-Feb-2025 18:34:10 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [131.178.102.208]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[14-Feb-2025 18:34:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Fri, 14 Feb 2025 18:34:10 -0600
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <JwqmvELvcGTK6hdc2Xk0QQsUkLnxl6fUNuhJsODf4Q@localhost>
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_JwqmvELvcGTK6hdc2Xk0QQsUkLnxl6fUNuhJsODf4Q"
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_JwqmvELvcGTK6hdc2Xk0QQsUkLnxl6fUNuhJsODf4Q
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA5NjU4Njc=
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_JwqmvELvcGTK6hdc2Xk0QQsUkLnxl6fUNuhJsODf4Q
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj45NjU4Njc8L2I+
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_JwqmvELvcGTK6hdc2Xk0QQsUkLnxl6fUNuhJsODf4Q--
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[14-Feb-2025 18:34:12 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[14-Feb-2025 18:34:13 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739579481 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:13 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[14-Feb-2025 18:34:14 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:14 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[14-Feb-2025 18:34:14 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[14-Feb-2025 18:34:14 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 586e51a60fabf-2b954820085sm2104388fac.6 - gsmtp
+
+[14-Feb-2025 18:34:14 America/Mexico_City] SMTP Debug [3]: Connection: closed
+[14-Feb-2025 18:34:36 America/Mexico_City] Received input: {"action":"verify","email":"franciscogzz03@gmail.com","code":"965867"}
+[17-Feb-2025 00:04:08 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array()
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [3]: Connection: opened
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 smtp.gmail.com ESMTP 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [2806:108e:17:552c:4504:8b93:639d:6b20]
+250-SIZE 35882577
+250-8BITMIME
+250-STARTTLS
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: STARTTLS
+
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 220 2.0.0 Ready to start TLS
+
+[17-Feb-2025 00:04:08 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: EHLO localhost
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250-smtp.gmail.com at your service, [2806:108e:17:552c:4504:8b93:639d:6b20]
+250-SIZE 35882577
+250-8BITMIME
+250-AUTH LOGIN PLAIN XOAUTH2 PLAIN-CLIENTTOKEN OAUTHBEARER XOAUTH
+250-ENHANCEDSTATUSCODES
+250-PIPELINING
+250-CHUNKING
+250 SMTPUTF8
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: AUTH LOGIN
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 VXNlcm5hbWU6
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 334 UGFzc3dvcmQ6
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: [credentials hidden]
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 235 2.7.0 Accepted
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MAIL FROM:<franciscogzz03@gmail.com>
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.0 OK 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RCPT TO:<franciscogzz03@gmail.com>
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 OK 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:09 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: DATA
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 354 Go ahead 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Date: Mon, 17 Feb 2025 00:04:08 -0600
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: To: franciscogzz03@gmail.com
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: From: Jersix <franciscogzz03@gmail.com>
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Subject: =?UTF-8?B?Q8OzZGlnbyBkZSBWZXJpZmljYWNpw7NuIC0gSmVyc2V5cyBTaG9w?=
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Message-ID: <fa37b6m6wQmfoHz3rcihmYnfZ4SLSnKOFeoINLabsAg@localhost>
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: X-Mailer: PHPMailer 6.9.3 (https://github.com/PHPMailer/PHPMailer)
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: MIME-Version: 1.0
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: multipart/alternative;
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER:  boundary="b1=_fa37b6m6wQmfoHz3rcihmYnfZ4SLSnKOFeoINLabsAg"
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_fa37b6m6wQmfoHz3rcihmYnfZ4SLSnKOFeoINLabsAg
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/plain; charset=UTF-8
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiAwOTc2MjU=
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_fa37b6m6wQmfoHz3rcihmYnfZ4SLSnKOFeoINLabsAg
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Type: text/html; charset=UTF-8
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: Content-Transfer-Encoding: base64
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: VHUgY8OzZGlnbyBkZSB2ZXJpZmljYWNpw7NuIGVzOiA8Yj4wOTc2MjU8L2I+
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: --b1=_fa37b6m6wQmfoHz3rcihmYnfZ4SLSnKOFeoINLabsAg--
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: 
+
+[17-Feb-2025 00:04:10 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: .
+
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.0.0 OK  1739772071 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: RSET
+
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 250 2.1.5 Flushed 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:11 America/Mexico_City] Email sent successfully to: franciscogzz03@gmail.com
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [1]: CLIENT -> SERVER: QUIT
+
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [2]: SERVER -> CLIENT: 221 2.0.0 closing connection 006d021491bc7-5fcb16a7b8dsm2688209eaf.12 - gsmtp
+
+[17-Feb-2025 00:04:11 America/Mexico_City] SMTP Debug [3]: Connection: closed

@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout | JersixMx</title>
+    <link rel="stylesheet" href="Css/checkout2.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="Js/giftcard-redemption.js" defer></script>
+    <script src="Js/promo-code.js" defer></script>
+    <!-- Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-XXXXXXXXXX"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+        gtag('config', 'G-2PPJD4LWKZ');
+    </script>
+    <style>
+        /* Override para asegurar el color gris en Gift Card */
+        .personalization-info,
+        .gift-card-info,
+        [class*="gift-card"],
+        div[style*="gift-card"] {
+            border-left-color: #e2e8f0 !important;
+        }
+        
+        /* Estilos para el botón de PayPal */
+        #paypal-button-container {
+            max-width: 500px;
+            margin: 20px auto;
+        }
+
+        /* Para dispositivos móviles */
+        @media (max-width: 768px) {
+            #paypal-button-container {
+                max-width: 320px;
+            }
+        }
+        
+        .cart-item {
+            display: flex;
+            align-items: center;
+            padding: 1rem;
+            border-bottom: 1px solid #eee;
+        }
+        .cart-item img {
+            width: 60px;
+            height: 60px;
+            object-fit: cover;
+            margin-right: 1rem;
+            border-radius: 4px;
+        }
+        .cart-item-details {
+            flex-grow: 1;
+        }
+        .cart-item-name {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #2c3e50;
+            font-size: 1.1rem;
+        }
+        .cart-item-quantity {
+            color: #666;
+            font-size: 0.9rem;
+        }
+        
+        .promo-code-section {
+            margin-top: 15px;
+            padding-top: 15px;
+            border-top: 1px solid #eee;
+        }
+        
+        .promo-code-section h3 {
+            font-size: 16px;
+            margin-bottom: 10px;
+            color: #333;
+        }
+        
+        .promo-input-group {
+            display: flex;
+            margin-bottom: 0;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            overflow: hidden;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+        }
+        
+        .promo-input-group input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            font-size: 15px;
+            outline: none;
+        }
+        
+        .promo-input-group input::placeholder {
+            color: #888;
+            font-size: 15px;
+        }
+        
+        .promo-input-group input:disabled {
+            background-color: #f9f9f9;
+            color: #666;
+        }
+        
+        .promo-btn {
+            padding: 0 20px;
+            border: none;
+            background-color: #3a86ff;
+            color: white;
+            cursor: pointer;
+            font-size: 15px;
+            white-space: nowrap;
+            transition: background-color 0.3s;
+        }
+        
+        .promo-btn:hover {
+            background-color: #2a76ef;
+        }
+        
+        .promo-btn:disabled {
+            background-color: #b0c4de;
+            cursor: not-allowed;
+        }
+        
+        .promo-message {
+            font-size: 13px;
+            color: #666;
+            min-height: 16px;
+            margin: 1px 0;
+        }
+        
+        .promo-message.error {
+            color: #dc3545;
+        }
+        
+        .promo-message.info {
+            color: #17a2b8;
+            font-style: italic;
+        }
+        
+        .promo-success-message {
+            color: #28a745;
+            font-size: 13px;
+            padding: 0;
+            margin: 1px 0 0 2px;
+        }
+        
+        .promo-details {
+            padding: 0;
+            margin: 0 0 5px 0;
+        }
+        
+        #promo-discount-amount {
+            color: #e53935;
+            font-weight: bold;
+        }
+        
+        .remove-promo-btn {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: transparent;
+            border: 1px solid #dc3545;
+            border-radius: 4px;
+            color: #dc3545;
+            cursor: pointer;
+            font-size: 12px;
+            text-align: center;
+            width: 100%;
+            transition: all 0.3s;
+        }
+        
+        .remove-promo-btn:hover {
+            background-color: #dc3545;
+            color: white;
+        }
+        
+        /* Estilos para la personalización */
+        .personalization-info {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: white;
+            border-left: 4px solid #000 !important;
+            border-radius: 4px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+        
+        .personalization-info h4 {
+            margin: 0 0 10px 0;
+            font-size: 16px;
+            color: #000000;
+            font-weight: 500;
+        }
+        
+        .personalization-info p {
+            margin: 5px 0;
+            color: #4a5568;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        .personalization-info strong {
+            color: #2c3e50;
+        }
+        
+        .mystery-box-type {
+            margin-top: 5px;
+            font-size: 0.85rem;
+            color: #555;
+        }
+        
+        .unwanted-team {
+            margin-top: 15px;
+            padding: 15px;
+            background-color: #fff5f5;
+            border-radius: 4px;
+        }
+        
+        .unwanted-team p:first-child {
+            margin: 0;
+            color: #e74c3c;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+        
+        .unwanted-team p:last-child {
+            margin: 0;
+            color: #666;
+            font-size: 16px;
+        }
+        
+        .unwanted-team strong {
+            color: #e74c3c;
+        }
+        
+        /* Estilos para Mystery Box */
+        .mystery-box-info {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: white;
+            border-left: 4px solid #e74c3c;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .mystery-box-info p {
+            margin: 5px 0;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.5;
+        }
+        
+        /* Estilos para Gift Card */
+        .gift-card-info {
+            margin-top: 10px;
+            padding: 15px;
+            background-color: white;
+            border-left: 4px solid #e2e8f0 !important;
+            border-radius: 4px;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .gift-card-info h4 {
+            margin: 0 0 15px 0;
+            font-size: 16px;
+            color: #2d3748;
+            font-weight: 500;
+        }
+        
+        .gift-card-info p {
+            margin: 8px 0;
+            color: #666;
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        
+        /* Estilos específicos para dispositivos móviles */
+        @media (max-width: 768px) {
+            .checkout-container {
+                padding: 10px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+            }
+            
+            .checkout-main {
+                flex-direction: column-reverse;
+                gap: 20px;
+                align-items: flex-start; /* Alinear a la izquierda */
+            }
+            
+            /* Estilos para la información de contacto y dirección */
+            .checkout-form {
+                width: 100%;
+                padding-left: 0; /* Eliminar padding izquierdo */
+                margin-left: -5px; /* Mover hacia la izquierda */
+            }
+            
+            .checkout-form h2, .checkout-form h3 {
+                margin-left: 0; /* Sin margen a la izquierda */
+                text-align: left; /* Alinear texto a la izquierda */
+            }
+            
+            .form-group, .form-row {
+                margin-left: 0; /* Sin margen a la izquierda */
+                width: 100%;
+            }
+            
+            .form-group label, .form-group input {
+                margin-left: 0; /* Sin margen a la izquierda */
+                width: 100%;
+            }
+            
+            .order-summary {
+                width: 100%;
+                margin-top: 20px;
+                padding: 15px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+                border-radius: 10px;
+                box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                background-color: #f9f9f9;
+                margin-left: -8px; /* Mover más a la izquierda */
+                position: relative;
+                right: 10px; /* Mover más a la izquierda */
+            }
+            
+            .order-summary h2 {
+                font-size: 1.4rem;
+                margin-bottom: 15px;
+                color: #333;
+                text-align: left; /* Alinear a la izquierda */
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-items {
+                max-height: none;
+                overflow-y: visible;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-item {
+                padding: 12px 8px;
+                padding-left: 5px; /* Menos padding a la izquierda */
+                background-color: white;
+                margin-bottom: 8px;
+                border-radius: 8px;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .cart-item-details {
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .order-total {
+                margin-top: 15px;
+                padding-top: 15px;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .subtotal, .shipping, .total {
+                padding: 8px 0;
+                font-size: 1rem;
+                margin-left: 0; /* Sin margen a la izquierda */
+                text-align: left; /* Alinear a la izquierda */
+            }
+            
+            .cart-total {
+                font-size: 1.2rem;
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+            
+            .promo-code-section {
+                margin-left: 0; /* Sin margen a la izquierda */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="checkout-container">
+        <div class="checkout-main">
+            <div class="order-summary">
+                <h2>Resumen del Pedido</h2>
+                <div id="cart-summary" class="cart-items">
+                    <!-- Cart items will be dynamically inserted here with product image, name and quantity -->
+                </div>
+                <div class="promo-code-section">
+                    <div class="promo-input-group">
+                        <input type="text" id="promo-code" placeholder="INGRESA TU CÓDIGO PROMOCIONAL" style="text-transform: uppercase;">
+                        <button id="apply-promo-btn" class="promo-btn">Aplicar</button>
+                    </div>
+                    <div id="promo-message" class="promo-message"></div>
+                    <div id="promo-details" class="promo-details" style="display: none; margin-top: -2px;">
+                        <div class="promo-success-message">Código aplicado</div>
+                    </div>
+                </div>
+                <div class="order-total">
+                    <div class="subtotal">
+                        <span>Subtotal:</span>
+                        <span id="subtotal-amount">$0.00 MXN</span>
+                    </div>
+                    <div class="shipping">
+                        <span>Envío:</span>
+                        <span id="shipping-amount">$0.00 MXN</span>
+                    </div>
+                    <div id="promo-discount-container" style="display: none;">
+                        <span>Descuento:</span>
+                        <span id="promo-discount-amount" style="color: #e53935; font-weight: bold;">-$0.00 MXN</span>
+                    </div>
+                    <div class="total">
+                        <span>Total:</span>
+                        <div class="cart-total">
+                            <span id="total-amount">$0.00 MXN</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="checkout-form">
+                <h2>Información de Contacto</h2>
+                <form id="contact-form" class="contact-info">
+                    <div class="form-group">
+                        <label for="email">Correo Electrónico</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone">Teléfono</label>
+                        <input type="tel" id="phone" name="phone" pattern="[0-9]{10}" maxlength="10" title="Por favor ingresa un número de teléfono válido de 10 dígitos" required onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onpaste="return false">
+                    </div>
+                    
+                    <h3>Dirección de Envío</h3>
+                    <div class="form-group">
+                        <label for="fullname">Nombre Completo</label>
+                        <input type="text" id="fullname" name="fullname" required>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="street">Calle y Número</label>
+                            <input type="text" id="street" name="street" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="colonia">Colonia</label>
+                            <input type="text" id="colonia" name="colonia" required>
+                        </div>
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label for="city">Ciudad</label>
+                            <input type="text" id="city" name="city" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="state">Estado</label>
+                            <input type="text" id="state" name="state" required>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="postal">Código Postal</label>
+                        <input type="text" id="postal" name="postal" pattern="[0-9]{5}" maxlength="5" title="Por favor ingresa un código postal válido de 5 dígitos" required onkeypress="return (event.charCode >= 48 && event.charCode <= 57)" oninput="this.value = this.value.replace(/[^0-9]/g, '')" onpaste="return false">
+                    </div>
+                    <div class="form-group privacy-policy">
+                        <p>Al comprar acepto el <a href="aviso_privacidad.html" target="_blank">Aviso de privacidad</a> de Jersix.mx</p>
+                    </div>
+                    <div id="paypal-button-container"></div>
+                </form>
+            </div>
+        </div>
+    </div>
+    <!-- Modificar la línea del script de PayPal -->
+    <script src="https://www.paypal.com/sdk/js?client-id=AafgH7TO7HufD-1ZA13KIp05J4s-80UT_MwUCe2tDWsG_HW_FRnAgG1tDgviliOial0MB--XDInFpJIC&currency=MXN&locale=es_MX"></script>
+    <script>
+        // Función para validar el formulario
+        function validateForm() {
+            const requiredFields = [
+                'email',
+                'phone',
+                'fullname',
+                'street',
+                'colonia',
+                'city',
+                'state',
+                'postal'
+            ];
+
+            let isValid = true;
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                if (!input.value.trim()) {
+                    isValid = false;
+                }
+            });
+
+            // Obtener el contenedor de PayPal
+            const paypalContainer = document.getElementById('paypal-button-container');
+            
+            // Mostrar u ocultar el botón de PayPal según la validación
+            if (isValid) {
+                paypalContainer.style.display = 'block';
+            } else {
+                paypalContainer.style.display = 'none';
+            }
+        }
+
+        // Ocultar el botón de PayPal inicialmente
+        document.addEventListener('DOMContentLoaded', function() {
+            const paypalContainer = document.getElementById('paypal-button-container');
+            paypalContainer.style.display = 'none';
+
+            // Agregar event listeners a todos los campos requeridos
+            const requiredFields = [
+                'email',
+                'phone',
+                'fullname',
+                'street',
+                'colonia',
+                'city',
+                'state',
+                'postal'
+            ];
+
+            requiredFields.forEach(field => {
+                const input = document.getElementById(field);
+                input.addEventListener('input', validateForm);
+            });
+        });
+    </script>
+    <script src="Js/checkout.js"></script>
+</body>
+</html>

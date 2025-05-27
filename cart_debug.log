@@ -1,0 +1,5 @@
+[2025-04-10 09:29:52] GET: Array
+(
+    [cart] => [{"id":"1744270186335-0-6aaqr","product_id":3,"title":"Bayern Múnich Local 24/25","price":799,"size":"S","quantity":1,"image":"img/LogoNav.png"},{"id":"1744270188536-0-jt027","product_id":5,"title":"Real Madrid Local 24/25","price":799,"size":"L","quantity":1,"image":"img/LogoNav.png"}]
+)
+

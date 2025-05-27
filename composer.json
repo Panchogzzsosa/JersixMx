@@ -1,0 +1,11 @@
+{
+    "name": "prueba/ecommerce",
+    "description": "E-commerce website with MercadoPago integration",
+    "type": "project",
+    "require": {
+        "mercadopago/dx-php": "^3.0",
+        "phpmailer/phpmailer": "^6.9"
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

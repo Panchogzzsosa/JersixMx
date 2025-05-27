@@ -1,0 +1,390 @@
+[08-Feb-2025 13:57:18 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 13:57:18 America/Mexico_City] Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 13:57:21 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 13:57:21 America/Mexico_City] Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 13:58:03 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 13:58:03 America/Mexico_City] Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 13:59:18 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 13:59:18 America/Mexico_City] Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 14:03:53 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:03:53 America/Mexico_City] Attempting to send email to: franciscogzz03@gmail.com
+[08-Feb-2025 14:03:53 America/Mexico_City] Attempting to send mail...
+[08-Feb-2025 14:03:53 America/Mexico_City] SMTP Debug: Connection: opening to smtp.gmail.com:587, timeout=30, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:03:53 America/Mexico_City] SMTP Debug: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:03:53 America/Mexico_City] SMTP Debug: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:03:53 America/Mexico_City] SMTP Debug: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:03:53 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:03:53 America/Mexico_City] SMTP Debug: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 14:05:40 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:05:40 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:05:40 America/Mexico_City] SMTP Debug [2]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:05:40 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:05:40 America/Mexico_City] SMTP Debug Info: SMTP Error: Could not connect to SMTP host. Failed to connect to serverSMTP server error: Failed to connect to server SMTP code: 101 Additional SMTP info: Network is unreachable
+[08-Feb-2025 14:05:40 America/Mexico_City] Stack Trace: #0 /home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/PHPMailer.php(2058): PHPMailer\PHPMailer\PHPMailer->smtpConnect()
+#1 /home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/PHPMailer.php(1687): PHPMailer\PHPMailer\PHPMailer->smtpSend()
+#2 /home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/PHPMailer.php(1521): PHPMailer\PHPMailer\PHPMailer->postSend()
+#3 /home/jersixmx/public_html/verify_email.php(80): PHPMailer\PHPMailer\PHPMailer->send()
+#4 /home/jersixmx/public_html/verify_email.php(124): sendVerificationEmail()
+#5 {main}
+[08-Feb-2025 14:05:40 America/Mexico_City] SMTP Configuration: {"host":"smtp.gmail.com","port":587,"auth":true,"secure":"tls"}
+[08-Feb-2025 14:10:58 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:10:58 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=30, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:10:58 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:10:58 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:10:58 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:10:58 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:10:58 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:13:09 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:13:09 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:13:09 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:13:09 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:13:09 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:13:09 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:13:09 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:13:09 America/Mexico_City] Server Info: Array
+(
+    [PATH] => /usr/local/bin:/usr/bin:/bin
+    [TEMP] => /tmp
+    [TMP] => /tmp
+    [TMPDIR] => /tmp
+    [PWD] => /
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 52
+    [HTTP_COOKIE] => PHPSESSID=nmub88n6n2tqa9t4quaavm5msb
+    [HTTP_HOST] => jersix.mx
+    [HTTP_REFERER] => https://jersix.mx/checkout.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "macOS"
+    [HTTP_SEC_CH_UA] => "Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://jersix.mx
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_X_HTTPS] => 1
+    [UNIQUE_ID] => Z6e61ZYu4-lu90hb7EAvswAAAIo
+    [SCRIPT_URL] => /verify_email.php
+    [SCRIPT_URI] => https://jersix.mx/verify_email.php
+    [HTTPS] => on
+    [SSL_TLS_SNI] => jersix.mx
+    [SERVER_SIGNATURE] => 
+    [SERVER_SOFTWARE] => Apache
+    [SERVER_NAME] => jersix.mx
+    [SERVER_ADDR] => 216.245.211.58
+    [SERVER_PORT] => 443
+    [REMOTE_ADDR] => 189.175.245.184
+    [DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [REQUEST_SCHEME] => https
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [SERVER_ADMIN] => webmaster@jersix.mx
+    [SCRIPT_FILENAME] => /home/jersixmx/public_html/verify_email.php
+    [REMOTE_PORT] => 56040
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /verify_email.php
+    [SCRIPT_NAME] => /verify_email.php
+    [PHP_SELF] => /verify_email.php
+    [REQUEST_TIME_FLOAT] => 1739045589.7613
+    [REQUEST_TIME] => 1739045589
+)
+
+[08-Feb-2025 14:13:09 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[08-Feb-2025 14:14:53 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:14:53 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:14:53 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:14:53 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:14:53 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:14:53 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:14:53 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:14:53 America/Mexico_City] Server Info: Array
+(
+    [PATH] => /usr/local/bin:/usr/bin:/bin
+    [TEMP] => /tmp
+    [TMP] => /tmp
+    [TMPDIR] => /tmp
+    [PWD] => /
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 52
+    [HTTP_COOKIE] => PHPSESSID=nmub88n6n2tqa9t4quaavm5msb
+    [HTTP_HOST] => jersix.mx
+    [HTTP_REFERER] => https://jersix.mx/checkout.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "macOS"
+    [HTTP_SEC_CH_UA] => "Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://jersix.mx
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_X_HTTPS] => 1
+    [UNIQUE_ID] => Z6e7PZlA2jXIApCDG5tsPgAAAMo
+    [SCRIPT_URL] => /verify_email.php
+    [SCRIPT_URI] => https://jersix.mx/verify_email.php
+    [HTTPS] => on
+    [SSL_TLS_SNI] => jersix.mx
+    [SERVER_SIGNATURE] => 
+    [SERVER_SOFTWARE] => Apache
+    [SERVER_NAME] => jersix.mx
+    [SERVER_ADDR] => 216.245.211.58
+    [SERVER_PORT] => 443
+    [REMOTE_ADDR] => 189.175.245.184
+    [DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [REQUEST_SCHEME] => https
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [SERVER_ADMIN] => webmaster@jersix.mx
+    [SCRIPT_FILENAME] => /home/jersixmx/public_html/verify_email.php
+    [REMOTE_PORT] => 56574
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /verify_email.php
+    [SCRIPT_NAME] => /verify_email.php
+    [PHP_SELF] => /verify_email.php
+    [REQUEST_TIME_FLOAT] => 1739045693.3244
+    [REQUEST_TIME] => 1739045693
+)
+
+[08-Feb-2025 14:14:53 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[08-Feb-2025 14:18:47 America/Mexico_City] Received input: {"action":"send","email":"Franciscogzz03@gmail.com"}
+[08-Feb-2025 14:18:47 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:18:47 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:18:47 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:18:47 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:18:47 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:18:47 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:18:47 America/Mexico_City] Server Info: Array
+(
+    [PATH] => /usr/local/bin:/usr/bin:/bin
+    [TEMP] => /tmp
+    [TMP] => /tmp
+    [TMPDIR] => /tmp
+    [PWD] => /
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => es-419,es;q=0.9
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 52
+    [HTTP_COOKIE] => PHPSESSID=6b8cf3e9e882bdacf0d058e4c606ec59
+    [HTTP_HOST] => jersix.mx
+    [HTTP_REFERER] => https://jersix.mx/checkout.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 OPR/116.0.0.0
+    [HTTP_SEC_CH_UA_PLATFORM] => "macOS"
+    [HTTP_SEC_CH_UA] => "Opera GX";v="116", "Chromium";v="131", "Not_A Brand";v="24"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://jersix.mx
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_X_HTTPS] => 1
+    [UNIQUE_ID] => Z6e8JyMWLcS-Y1rE-OXXaQAAAEc
+    [SCRIPT_URL] => /verify_email.php
+    [SCRIPT_URI] => https://jersix.mx/verify_email.php
+    [HTTPS] => on
+    [SSL_TLS_SNI] => jersix.mx
+    [SERVER_SIGNATURE] => 
+    [SERVER_SOFTWARE] => Apache
+    [SERVER_NAME] => jersix.mx
+    [SERVER_ADDR] => 216.245.211.58
+    [SERVER_PORT] => 443
+    [REMOTE_ADDR] => 189.175.245.184
+    [DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [REQUEST_SCHEME] => https
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [SERVER_ADMIN] => webmaster@jersix.mx
+    [SCRIPT_FILENAME] => /home/jersixmx/public_html/verify_email.php
+    [REMOTE_PORT] => 57429
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /verify_email.php
+    [SCRIPT_NAME] => /verify_email.php
+    [PHP_SELF] => /verify_email.php
+    [REQUEST_TIME_FLOAT] => 1739045927.5009
+    [REQUEST_TIME] => 1739045927
+)
+
+[08-Feb-2025 14:18:47 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[08-Feb-2025 14:22:47 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:22:47 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:22:47 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:22:47 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:22:47 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:22:47 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:22:47 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:22:47 America/Mexico_City] Server Info: Array
+(
+    [PATH] => /usr/local/bin:/usr/bin:/bin
+    [TEMP] => /tmp
+    [TMP] => /tmp
+    [TMPDIR] => /tmp
+    [PWD] => /
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 52
+    [HTTP_COOKIE] => PHPSESSID=nmub88n6n2tqa9t4quaavm5msb
+    [HTTP_HOST] => jersix.mx
+    [HTTP_REFERER] => https://jersix.mx/checkout.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "macOS"
+    [HTTP_SEC_CH_UA] => "Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://jersix.mx
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_X_HTTPS] => 1
+    [UNIQUE_ID] => Z6e9F5Yu4-lu90hb7EAx7wAAAJQ
+    [SCRIPT_URL] => /verify_email.php
+    [SCRIPT_URI] => https://jersix.mx/verify_email.php
+    [HTTPS] => on
+    [SSL_TLS_SNI] => jersix.mx
+    [SERVER_SIGNATURE] => 
+    [SERVER_SOFTWARE] => Apache
+    [SERVER_NAME] => jersix.mx
+    [SERVER_ADDR] => 216.245.211.58
+    [SERVER_PORT] => 443
+    [REMOTE_ADDR] => 189.175.245.184
+    [DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [REQUEST_SCHEME] => https
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [SERVER_ADMIN] => webmaster@jersix.mx
+    [SCRIPT_FILENAME] => /home/jersixmx/public_html/verify_email.php
+    [REMOTE_PORT] => 57820
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /verify_email.php
+    [SCRIPT_NAME] => /verify_email.php
+    [PHP_SELF] => /verify_email.php
+    [REQUEST_TIME_FLOAT] => 1739046167.6181
+    [REQUEST_TIME] => 1739046167
+)
+
+[08-Feb-2025 14:22:47 America/Mexico_City] Error in verify_email.php: Error al enviar el código
+[08-Feb-2025 14:22:50 America/Mexico_City] Received input: {"action":"send","email":"franciscogzz03@gmail.com"}
+[08-Feb-2025 14:22:50 America/Mexico_City] SMTP Debug [3]: Connection: opening to smtp.gmail.com:587, timeout=60, options=array (
+  'ssl' => 
+  array (
+    'verify_peer' => false,
+    'verify_peer_name' => false,
+    'allow_self_signed' => true,
+  ),
+)
+[08-Feb-2025 14:22:50 America/Mexico_City] SMTP Debug [3]: Connection failed. Error #2: stream_socket_client(): Unable to connect to smtp.gmail.com:587 (Network is unreachable) [/home/jersixmx/public_html/vendor/phpmailer/phpmailer/src/SMTP.php line 412]
+[08-Feb-2025 14:22:50 America/Mexico_City] SMTP Debug [1]: SMTP ERROR: Failed to connect to server: Network is unreachable (101)
+[08-Feb-2025 14:22:50 America/Mexico_City] SMTP Debug [3]: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:22:50 America/Mexico_City] Detailed Mailer Error: SMTP Error: Could not connect to SMTP host. Failed to connect to server
+[08-Feb-2025 14:22:50 America/Mexico_City] SMTP Debug Info: 3
+[08-Feb-2025 14:22:50 America/Mexico_City] Server Info: Array
+(
+    [PATH] => /usr/local/bin:/usr/bin:/bin
+    [TEMP] => /tmp
+    [TMP] => /tmp
+    [TMPDIR] => /tmp
+    [PWD] => /
+    [HTTP_ACCEPT] => */*
+    [HTTP_ACCEPT_ENCODING] => gzip, deflate, br, zstd
+    [HTTP_ACCEPT_LANGUAGE] => en-US,en;q=0.9
+    [HTTP_CONNECTION] => keep-alive
+    [CONTENT_TYPE] => application/json
+    [CONTENT_LENGTH] => 52
+    [HTTP_COOKIE] => PHPSESSID=nmub88n6n2tqa9t4quaavm5msb
+    [HTTP_HOST] => jersix.mx
+    [HTTP_REFERER] => https://jersix.mx/checkout.html
+    [HTTP_USER_AGENT] => Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/132.0.0.0 Safari/537.36
+    [HTTP_SEC_CH_UA_PLATFORM] => "macOS"
+    [HTTP_SEC_CH_UA] => "Not A(Brand";v="8", "Chromium";v="132", "Google Chrome";v="132"
+    [HTTP_SEC_CH_UA_MOBILE] => ?0
+    [HTTP_ORIGIN] => https://jersix.mx
+    [HTTP_SEC_FETCH_SITE] => same-origin
+    [HTTP_SEC_FETCH_MODE] => cors
+    [HTTP_SEC_FETCH_DEST] => empty
+    [HTTP_X_HTTPS] => 1
+    [UNIQUE_ID] => Z6e9Gms0WVLUS3C1srxfdwAAAAI
+    [SCRIPT_URL] => /verify_email.php
+    [SCRIPT_URI] => https://jersix.mx/verify_email.php
+    [HTTPS] => on
+    [SSL_TLS_SNI] => jersix.mx
+    [SERVER_SIGNATURE] => 
+    [SERVER_SOFTWARE] => Apache
+    [SERVER_NAME] => jersix.mx
+    [SERVER_ADDR] => 216.245.211.58
+    [SERVER_PORT] => 443
+    [REMOTE_ADDR] => 189.175.245.184
+    [DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [REQUEST_SCHEME] => https
+    [CONTEXT_PREFIX] => 
+    [CONTEXT_DOCUMENT_ROOT] => /home/jersixmx/public_html
+    [SERVER_ADMIN] => webmaster@jersix.mx
+    [SCRIPT_FILENAME] => /home/jersixmx/public_html/verify_email.php
+    [REMOTE_PORT] => 57836
+    [SERVER_PROTOCOL] => HTTP/1.1
+    [REQUEST_METHOD] => POST
+    [QUERY_STRING] => 
+    [REQUEST_URI] => /verify_email.php
+    [SCRIPT_NAME] => /verify_email.php
+    [PHP_SELF] => /verify_email.php
+    [REQUEST_TIME_FLOAT] => 1739046170.0479
+    [REQUEST_TIME] => 1739046170
+)
+
+[08-Feb-2025 14:22:50 America/Mexico_City] Error in verify_email.php: Error al enviar el código

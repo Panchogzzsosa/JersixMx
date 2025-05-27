@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jersix Mystery Pack | JersixMx</title>
+    <link rel="stylesheet" href="Css/mistery-box.css">
+    <link rel="stylesheet" href="Css/index.css">
+    <link rel="stylesheet" href="Css/cart.css">
+    <link rel="stylesheet" href="Css/notificacion.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200">
+    <link rel="shortcut icon" href="img/ICON.png" type="image/x-icon">
+    <script src="Js/products-data.js"></script>
+    <script src="Js/index.js"></script>
+    <script src="Js/search.js"></script>
+    <script src="Js/mistery-box.js"></script>
+    <script src="Js/cart.js" defer></script>
+    <script src="Js/newsletter.js" defer></script>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-2PPJD4LWKZ"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-2PPJD4LWKZ');
+    </script>
+    <style>
+        html, body {
+            margin: 0 !important;
+            padding: 0 !important;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: white;
+        }
+
+        .navbar {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 36px;
+            height: 60px;
+            background-color: white;
+            width: 100%;
+            top: 0;
+            position: absolute;
+            z-index: 1000;
+            border-bottom: 1px solid #f5f5f5;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-sizing: border-box;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 24px;
+            margin: 0;
+            padding: 0;
+            list-style: none;
+            justify-content: center;
+            flex: 1;
+        }
+
+        .navbar .logo img {
+            height: 100px;
+            width: auto;
+            display: block;
+            object-fit: contain;
+            cursor: default;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-right: 40px;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin: 0;
+            order: 1;
+        }
+
+        .search-input {
+            padding: 8px 16px;
+            border: 1px solid #e5e5e5;
+            border-radius: 20px;
+            width: 180px;
+            font-size: 14px;
+        }
+
+        .search-button {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px;
+            color: #000000;
+        }
+
+        .search-button span {
+            color: #000000;
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #111;
+            font-size: 16px;
+            font-weight: 500;
+            padding: 8px 12px;
+        }
+
+        #pagina_actual {
+            color: #CA0C0C;
+        }
+
+        .nav-links a:hover {
+            color: #CA0C0C;
+        }
+
+        .cart-icon {
+            margin-left: 24px;
+            cursor: pointer;
+            color: #000000;
+            display: flex;
+            align-items: center;
+            order: 2;
+        }
+
+        /* Estilos móviles */
+        .menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.5rem;
+            z-index: 1001;
+        }
+
+        .menu-toggle span {
+            color: #333;
+        }
+
+        @media screen and (max-width: 768px) {
+            .navbar {
+                padding: 1rem 5%;
+                justify-content: space-between;
+                align-items: center;
+                position: fixed;
+                height: 60px;
+                width: 100%;
+                background: white;
+                z-index: 1000;
+                box-sizing: border-box;
+            }
+
+            .menu-toggle {
+                display: block;
+                order: 1;
+                z-index: 1001;
+            }
+
+            .logo {
+                order: 2;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                position: absolute;
+                left: 50%;
+                transform: translateX(-50%);
+            }
+
+            .cart-icon {
+                order: 3;
+                margin-left: auto;
+                margin-right: 0;
+                display: flex;
+                align-items: center;
+                height: 100%;
+                z-index: 1001;
+                position: absolute;
+                right: 5%;
+            }
+
+            .nav-links {
+                display: none;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                flex-direction: column;
+                background-color: #fff;
+                padding: 1rem;
+                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+                z-index: 1000;
+            }
+
+            .nav-links.active {
+                display: flex;
+            }
+
+            .search-container {
+                display: none;
+                position: fixed;
+                top: 60px;
+                left: 0;
+                width: 100%;
+                padding: 1rem;
+                background: white;
+                z-index: 1002;
+                justify-content: center;
+                transform: none;
+                transition: all 0.3s ease;
+                margin-bottom: 1rem;
+                box-sizing: border-box;
+            }
+
+            .search-container.active {
+                display: flex;
+            }
+
+            .search-container .search-input {
+                width: 55%;
+                max-width: 250px;
+                margin: 0 auto;
+            }
+
+            .nav-links.active ~ .search-container {
+                display: flex;
+            }
+
+            main {
+                padding-top: 60px;
+            }
+        }
+
+        main {
+            padding-top: 60px;
+        }
+
+        .nombre{
+            color: #828282;
+        }
+
+        .payment-methods {
+            display: block;
+            margin-top: 8px;
+            opacity: 0.7;
+        }
+        
+        .payment-methods i {
+            margin: 0 3px;
+            color: #888;
+            transition: opacity 0.3s ease;
+            font-size: 12px;
+        }
+        
+        .payment-methods i:hover {
+            opacity: 1;
+        }
+
+        @media (max-width: 768px) {
+            .payment-methods {
+                margin-top: 5px;
+            }
+            .payment-methods i {
+                margin: 0 2px;
+                font-size: 11px;
+            }
+        }
+
+        /* Estilos para botones seleccionados */
+        .tipo-option.selected,
+        .size-option.selected {
+            background-color: #000 !important;
+            color: white !important;
+            border-color: #000 !important;
+        }
+        
+        /* Estilo para el botón de agregar al carrito */
+        .add-to-cart-btn {
+            background-color: #000 !important;
+            color: white !important;
+            border: none !important;
+        }
+        
+        .add-to-cart-btn:hover {
+            background-color: #333 !important;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <button class="menu-toggle">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="logo"><a href="index"><img src="img/LogoNav.png" alt="JerSix Logo"></a></div>
+            <ul class="nav-links">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li><a href="index">Inicio</a></li>
+                <li><a href="productos">Productos</a></li>
+                <li><a href="mistery-box" id="pagina_actual">Mystery Pack</a></li>
+                <li><a href="giftcard">Gift Cards</a></li>
+                <li><a href="tracking.php">Seguimiento</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" placeholder="Buscar productos..." class="search-input">
+                <button class="search-button">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+            </div>
+            <div class="cart-icon">
+                <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <div class="product-detail">
+            <div class="product-image-container">
+                <img src="img/MysteryBox.webp" alt="Mystery Box" class="product-image" id="main-image">
+            </div>
+
+            <div class="product-info">
+                <h1 class="product-title">Mystery Pack</h1>
+                <p class="product-description">Tu próximo JERSIX está a un paso. ¿Cuál te tocará?</p>
+                <div class="product-price">$ 799.00 MXN</div>
+
+            <div class="product-options">
+                <div class="option-group">
+                    <h3>Tipo</h3>
+                    <div class="tipo-options">
+                        <button class="size-option tipo-option" data-tipo="champions">Champions</button>
+                        <button class="size-option tipo-option" data-tipo="ligamx">LigaMX</button>
+                        <button class="size-option tipo-option" data-tipo="Europa">Ligas Europeas</button>
+                        <button class="size-option tipo-option" data-tipo="Retro">Retro</button>
+                    </div>
+                </div>
+
+                <div class="size-selector">
+                    <h3>Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'" style="background: none; border: none; color: #0066cc; text-decoration: underline; cursor: pointer; padding: 0; font-size: 16px; margin-left: 15px;">Guía de tallas</button></h3>
+                    <div class="size-options">
+                        <button class="size-option" data-size="S">S</button>
+                        <button class="size-option" data-size="M">M</button>
+                        <button class="size-option" data-size="L">L</button>
+                        <button class="size-option" data-size="XL">XL</button>
+                    </div>
+                </div>
+
+                <div class="team-preference">
+                    <h3>¿Hay algún equipo que no te gustaría recibir?</h3>
+                    <textarea 
+                        id="unwantedTeam" 
+                        maxlength="200" 
+                        style="width: 100%; 
+                        padding: 12px; 
+                        border: 1px solid #ddd; 
+                        border-radius: 8px; 
+                        margin: 8px 0 16px; 
+                        min-height: 80px; 
+                        resize: vertical;
+                        font-family: inherit;"></textarea>
+                </div>
+
+                <div class="quantity-selector">
+                    <h3>Cantidad</h3>
+                    <div class="quantity-controls">
+                        <button class="quantity-btn minus">-</button>
+                        <input type="number" value="1" min="1" class="quantity-input">
+                        <button class="quantity-btn plus">+</button>
+                    </div>
+                </div>
+
+                <button class="add-to-cart-btn" style="margin-top: 32px;">Agregar al carrito</button>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre JersixMx</h3>
+                <p>Somos una tienda especializada en jerseys deportivos y casuales de alta calidad. Nuestro compromiso es ofrecer diseños únicos y materiales premium para nuestros clientes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Preguntas Frecuentes</h3>
+                <ul>
+                    <li><a href="Preguntas_Frecuentes.html">Envíos y Entregas</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Devoluciones</a></li>
+                    <li><a href="Preguntas_Frecuentes.html">Métodos de Pago</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Generales</h3>
+                <ul>
+                    <li><a href="PoliticaDevolucion.html">Politica de Devoluciones</a></li>
+                    <li><a href="aviso_privacidad.html">Aviso de Privacidad</a></li>
+                    <li><a href="TerminosYcondicones.html">Terminos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Suscríbete para recibir las últimas novedades y ofertas especiales.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Tu correo electrónico" class="newsletter-input">
+                    <button class="newsletter-button">Suscribirse</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">
+                &copy; 2025 Jersix.mx. Todos los derechos reservados. | 
+                <a class="nombre" href="https://franciscogonzalez.netlify.app/" target="_blank">Francisco Gonzalez Sosa</a>
+                <span class="payment-methods">
+                    <i class="fab fa-cc-visa" title="Visa"></i>
+                    <i class="fab fa-cc-mastercard" title="Mastercard"></i>
+                    <i class="fab fa-cc-amex" title="American Express"></i>
+                    <i class="fab fa-paypal" title="PayPal"></i>
+                    <i class="fas fa-university" title="SPEI - Transferencia Bancaria"></i>
+                </span>
+            </p>
+        </div>
+    </footer>
+
+    <div class="whatsapp-button">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <div id="sizeGuideModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
+            <h2 style="margin-bottom: 20px; text-align: center; font-size: 28px; color: #333;">Guía de Tallas</h2>
+            <table class="size-chart" style="width: 100%; border-collapse: collapse; margin-top: 20px; border: none; border-radius: 8px; overflow: hidden; box-shadow: 0 0 0 1px #eee;">
+                <thead>
+                    <tr>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Talla</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Largo (cm)</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Ancho (cm)</th>
+                        <th style="background-color: #000; color: #fff; font-weight: 600; font-size: 16px; border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee;">Altura (cm)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">S</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">69-71</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">53-55</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">162-170</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">M</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">71-73</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">55-57</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">170-176</td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">L</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">73-75</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">57-58</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">176-182</td>
+                    </tr>
+                    <tr style="background-color: #f9f9f9;">
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">XL</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">75-78</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">58-60</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: 1px solid #eee; font-size: 15px;">182-190</td>
+                    </tr>
+                    <tr>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">XXL</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">78-81</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">60-62</td>
+                        <td style="border: none; padding: 15px; text-align: center; border-bottom: none; font-size: 15px;">190-195</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="notification" class="notification"></div>
+
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+        // Selecciona el botón "Agregar al carrito"
+        const addToCartButton = document.querySelector('.add-to-cart-btn');
+        const quantityInput = document.querySelector('.quantity-input');
+        const minusBtn = document.querySelector('.quantity-btn.minus');
+        const plusBtn = document.querySelector('.quantity-btn.plus');
+
+        // Añadir event listeners a los botones de cantidad
+        minusBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            if (value > 1) {
+                quantityInput.value = value - 1;
+            }
+        });
+
+        plusBtn.addEventListener('click', () => {
+            let value = parseInt(quantityInput.value);
+            quantityInput.value = value + 1;
+        });
+
+        // Función para verificar si se han seleccionado tipo y talla
+        function validateSelections() {
+            const selectedType = document.querySelector('.tipo-option.selected');
+            const selectedSize = document.querySelector('.size-options .size-option.selected');
+            
+            if (!selectedType || !selectedSize) {
+                showNotification('Por favor, selecciona tanto el tipo como la talla', 'error');
+                return false;
+            }
+            return true;
+        }
+
+        // Función para mostrar notificaciones
+        function showNotification(message, type) {
+            const notification = document.getElementById('notification');
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.style.display = 'block';
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 3000);
+        }
+
+        // Agrega un evento de clic al botón
+        addToCartButton.addEventListener('click', () => {
+            if (!validateSelections()) {
+                return;
+            }
+
+            // Obtén la información del producto
+            const productTitle = document.querySelector('.product-title').innerText;
+            const productPrice = parseFloat(document.querySelector('.product-price').innerText.replace('$', '').replace(',', '').replace(' MXN', '').trim());
+            const quantity = parseInt(quantityInput.value);
+            const selectedSize = document.querySelector('.size-options .size-option.selected').textContent;
+            const selectedType = document.querySelector('.tipo-option.selected').dataset.tipo;
+
+            // Crea un objeto del producto
+            const product = {
+                id: Date.now().toString(),
+                title: productTitle,
+                price: productPrice,
+                quantity: quantity,
+                size: selectedSize,
+                tipo: selectedType,
+                image: document.getElementById('main-image').src,
+                product_id: 65, // ID específico para Mystery Box
+                unwantedTeam: document.getElementById('unwantedTeam').value.trim(), // Agregar el comentario
+                mysteryBoxType: selectedType
+            };
+
+            // Disparar evento personalizado para el carrito
+            const event = new CustomEvent('addToCart', {
+                detail: {
+                    ...product,
+                    isCustomEvent: true
+                }
+            });
+            document.dispatchEvent(event);
+
+            // Limpiar selecciones después de agregar al carrito
+            // Limpiar tipo seleccionado
+            const tipoOptions = document.querySelectorAll('.tipo-option');
+            tipoOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Limpiar talla seleccionada
+            const sizeOptions = document.querySelectorAll('.size-options .size-option');
+            sizeOptions.forEach(opt => opt.classList.remove('selected'));
+            
+            // Resetear cantidad a 1
+            quantityInput.value = 1;
+            
+            // Limpiar campo de texto
+            document.getElementById('unwantedTeam').value = '';
+
+            // Mostrar notificación de éxito
+            showNotification('Producto agregado al carrito exitosamente', 'success');
+        });
+
+        // Manejo de selección de tipo
+        const tipoOptions = document.querySelectorAll('.tipo-option');
+        const productPriceElement = document.querySelector('.product-price');
+        const originalPrice = 799.00;
+        const retroPrice = 899.00;
+
+        tipoOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                tipoOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                
+                // Actualizar el precio según el tipo seleccionado
+                if (option.dataset.tipo === 'Retro') {
+                    productPriceElement.textContent = `$ ${retroPrice.toFixed(2)} MXN`;
+                } else {
+                    productPriceElement.textContent = `$ ${originalPrice.toFixed(2)} MXN`;
+                }
+            });
+        });
+
+        // Manejo de selección de talla
+        const sizeOptions = document.querySelectorAll('.size-options .size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+            });
+        });
+
+        // Validar que la cantidad sea al menos 1
+        quantityInput.addEventListener('change', () => {
+            if (quantityInput.value < 1) {
+                quantityInput.value = 1;
+            }
+        });
+
+        // Cerrar modal al hacer clic fuera de ella
+        window.addEventListener('click', (event) => {
+            const sizeGuideModal = document.getElementById('sizeGuideModal');
+            if (event.target === sizeGuideModal) {
+                sizeGuideModal.style.display = 'none';
+            }
+        });
+    });
+    </script>
+</body>
+</html>

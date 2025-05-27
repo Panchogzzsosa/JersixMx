@@ -1,0 +1,37 @@
+[08-Feb-2025 13:33:52 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 13:33:57 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 13:34:00 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-manchester-city.php on line 398
+[08-Feb-2025 13:34:04 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-liverpool.php on line 398
+[08-Feb-2025 13:41:20 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 14:18:29 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 14:18:37 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 14:18:40 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-manchester-city.php on line 398
+[08-Feb-2025 14:18:51 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 14:20:33 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 14:56:23 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:03:11 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:03:22 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 15:03:24 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 15:03:26 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 15:03:27 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 15:03:46 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:04:39 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:04:39 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:04:39 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:04:53 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[08-Feb-2025 15:04:55 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:09:48 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[08-Feb-2025 15:14:50 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-america.php on line 398
+[08-Feb-2025 15:15:32 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-chivas.php on line 399
+[08-Feb-2025 18:16:41 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[09-Feb-2025 12:58:00 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-tigres.php on line 398
+[09-Feb-2025 12:58:16 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-barca.php on line 399
+[10-Feb-2025 08:17:08 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-tigres.php on line 398
+[10-Feb-2025 08:17:09 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[10-Feb-2025 08:18:54 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-america.php on line 398
+[10-Feb-2025 08:18:58 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-cruzazul.php on line 399
+[10-Feb-2025 08:18:58 America/Mexico_City] Database connection failed: SQLSTATE[HY000] [2002] Connection refused
+[10-Feb-2025 08:18:58 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-rayados.php on line 398
+[10-Feb-2025 08:18:58 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-liverpool.php on line 398
+[10-Feb-2025 08:18:59 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-manchester-city.php on line 398
+[10-Feb-2025 08:19:08 America/Mexico_City] PHP Warning:  Undefined variable $price in /home/jersixmx/public_html/Productos-equipos/producto-chivas.php on line 399

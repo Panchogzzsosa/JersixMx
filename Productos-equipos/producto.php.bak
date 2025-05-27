@@ -1,0 +1,1980 @@
+<?php
+// Database connection
+require_once __DIR__ . '/../config/database.php';
+
+// Verificar si se ha proporcionado un ID de producto
+$product_id = isset($_GET['id']) ? intval($_GET['id']) : 0;
+$product_slug = isset($_GET['slug']) ? $_GET['slug'] : '';
+
+// Si no hay ID ni slug, intentar obtener el slug del producto de la URL
+if (!$product_id && !$product_slug) {
+    $request_uri = $_SERVER['REQUEST_URI'];
+    $uri_parts = explode('/', $request_uri);
+    $last_part = end($uri_parts);
+    
+    // Extraer el slug si la URL tiene formato producto-something
+    if (strpos($last_part, 'producto-') === 0) {
+        $product_slug = $last_part;
+    }
+    
+    // Eliminar posibles parámetros de la URL
+    if (strpos($product_slug, '?') !== false) {
+        $product_slug = substr($product_slug, 0, strpos($product_slug, '?'));
+    }
+}
+
+try {
+    $pdo = getConnection();
+    
+    // Buscar producto por ID si está disponible
+    if ($product_id > 0) {
+        $stmt = $pdo->prepare('SELECT * FROM products WHERE product_id = ?');
+        $stmt->execute([$product_id]);
+    } else if (!empty($product_slug)) {
+        // Intentar buscar por slug/nombre
+        // Primero, convertimos el slug a un formato posible de nombre
+        $product_name = str_replace('producto-', '', $product_slug);
+        $product_name = str_replace('-', ' ', $product_name);
+        
+        // Buscar cualquier producto que contenga partes del nombre
+        $stmt = $pdo->prepare('SELECT * FROM products WHERE name LIKE ? LIMIT 1');
+        $stmt->execute(['%' . $product_name . '%']);
+    } else {
+        // Si no hay suficiente información, redirigir a la página de productos
+        header('Location: ../productos.php');
+        exit;
+    }
+    
+    // Obtener el producto
+    $product = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+    if (!$product) {
+        // Si no se encontró el producto, redirigir a la página de productos
+        header('Location: ../productos.php');
+        exit;
+    }
+    
+    // VERIFICAR SI EL PRODUCTO ESTÁ ACTIVO
+    // Primero verificar si existe la columna status
+    $hasStatusColumn = false;
+    try {
+        $stmt = $pdo->prepare("SHOW COLUMNS FROM products LIKE 'status'");
+        $stmt->execute();
+        $hasStatusColumn = ($stmt->rowCount() > 0);
+    } catch (PDOException $e) {
+        // Error al verificar la columna, asumimos que no existe
+        $hasStatusColumn = false;
+    }
+    
+    // Si la columna existe y el producto está inactivo, mostrar mensaje o redirigir
+    if ($hasStatusColumn && isset($product['status']) && $product['status'] == 0) {
+        // Opción 1: Redirigir a la página de productos con un mensaje
+        header('Location: ../productos.php?error=producto_inactivo');
+        exit;
+        
+        // Opción 2 (alternativa): Mostrar un mensaje en esta página
+        // $product_inactive = true;
+    }
+    
+    // Obtener datos del producto
+    $product_name = $product['name'];
+    $product_image = $product['image_url'];
+    $stock = $product['stock'];
+    $price = $product['price'];
+    $product_id = $product['product_id'];
+    $product_status = $hasStatusColumn ? $product['status'] : 1; // Por defecto activo si no existe la columna
+    
+    // Buscar imágenes adicionales en la base de datos (si existe una tabla de imágenes)
+    $additional_images = [];
+    try {
+        $stmt_images = $pdo->prepare("SELECT image_url FROM product_images WHERE product_id = ? ORDER BY sort_order ASC");
+        $stmt_images->execute([$product_id]);
+        $db_images = $stmt_images->fetchAll(PDO::FETCH_COLUMN);
+        
+        if ($db_images && count($db_images) > 0) {
+            foreach ($db_images as $img) {
+                if (!empty($img)) {
+                    $additional_images[] = $img;
+                }
+            }
+        }
+    } catch (PDOException $e) {
+        // Silenciar errores si la tabla no existe
+    }
+    
+    // Asegurarse de que la ruta de la imagen sea completa
+    if ($product_image) {
+        // Si la ruta no comienza con http, / o ../, añadir el prefijo
+        if (!preg_match('/^https?:\/\/|^\/|^\.\.\//', $product_image)) {
+            $product_image = '../' . $product_image;
+        }
+        
+        // Si la ruta no comienza con ../ y no es una URL absoluta
+        if (!preg_match('/^https?:\/\//', $product_image) && !preg_match('/^\.\.\//', $product_image)) {
+            $product_image = '../' . ltrim($product_image, '/');
+        }
+    } else {
+        // Imagen por defecto si no hay imagen
+        $product_image = '../img/default-product.jpg';
+    }
+    
+    // Generar imágenes de miniatura y encontrar imágenes adicionales
+    $thumbnails = [];
+    
+    // Asegurarse de que la imagen principal esté en los thumbnails
+    $thumbnails[] = $product_image;
+    
+    // Añadir imágenes de la base de datos si están disponibles
+    if (!empty($additional_images)) {
+        foreach ($additional_images as $img) {
+            // Verificar la ruta de la imagen
+            if (!empty($img)) {
+                // Si la ruta no comienza con http, / o ../, añadir el prefijo
+                if (!preg_match('/^https?:\/\/|^\/|^\.\.\//', $img)) {
+                    $img = '../' . $img;
+                }
+                
+                // Si la ruta no comienza con ../ y no es una URL absoluta
+                if (!preg_match('/^https?:\/\//', $img) && !preg_match('/^\.\.\//', $img)) {
+                    $img = '../' . ltrim($img, '/');
+                }
+                
+                if (!in_array($img, $thumbnails)) {
+                    $thumbnails[] = $img;
+                }
+            }
+        }
+    }
+    
+    // Buscar imágenes relacionadas con el equipo
+    $team_name = '';
+    
+    // Extraer nombre del equipo del nombre del producto
+    $product_name_lower = strtolower($product_name);
+    $teams = [
+        'barcelona' => ['barca', 'barcelona'],
+        'real madrid' => ['real madrid', 'madrid'],
+        'manchester city' => ['manchester city', 'manchester c'],
+        'bayern munich' => ['bayern', 'munchen', 'munich'],
+        'milan' => ['milan', 'ac milan'],
+        'psg' => ['psg', 'paris'],
+        'tigres' => ['tigres'],
+        'rayados' => ['rayados', 'monterrey'],
+        'america' => ['america', 'águilas'],
+        'chivas' => ['chivas', 'guadalajara'],
+        'cruz azul' => ['cruz azul'],
+        'seleccion mexicana' => ['seleccion', 'mexico', 'tri']
+    ];
+    
+    foreach ($teams as $team => $keywords) {
+        foreach ($keywords as $keyword) {
+            if (strpos($product_name_lower, $keyword) !== false) {
+                $team_name = $team;
+                break 2;
+            }
+        }
+    }
+    
+    // Buscar imágenes relacionadas con el equipo
+    if (!empty($team_name)) {
+        $team_name_formatted = str_replace(' ', '', ucwords($team_name));
+        
+        // Patrones de nombre de archivo a buscar (adaptado a tu estructura de archivos)
+        $patterns = [
+            $team_name_formatted . 'Local.jpg',
+            $team_name_formatted . 'Local.png',
+            $team_name_formatted . 'Local.webp',
+            $team_name_formatted . '1.jpg',
+            $team_name_formatted . '1.png',
+            $team_name_formatted . '1.webp',
+            $team_name_formatted . '2.jpg',
+            $team_name_formatted . '2.png',
+            $team_name_formatted . '2.webp',
+            $team_name_formatted . '3.jpg',
+            $team_name_formatted . '3.png',
+            $team_name_formatted . '3.webp'
+        ];
+        
+        // Variaciones adicionales para algunos equipos
+        if ($team_name == 'barcelona') {
+            $patterns[] = 'Barca2.webp';
+            $patterns[] = 'Barca3.png';
+        } elseif ($team_name == 'real madrid') {
+            $patterns[] = 'RealM2.png';
+            $patterns[] = 'RealM3.png';
+        } elseif ($team_name == 'manchester city') {
+            $patterns[] = 'ManchesterCity.png';
+            $patterns[] = 'ManchsterC2.png';
+            $patterns[] = 'ManchesterC3.webp';
+        } elseif ($team_name == 'bayern munich') {
+            $patterns[] = 'BayerMunchenLocal.jpg';
+            $patterns[] = 'BayernMunchen1.jpg';
+            $patterns[] = 'BayernMunchen2.jpg';
+        }
+        
+        $jersey_dir = $_SERVER['DOCUMENT_ROOT'] . '/img/Jerseys/';
+        
+        // Buscar en directorio de Jerseys
+        foreach ($patterns as $pattern) {
+            if (file_exists($jersey_dir . $pattern)) {
+                $image_path = '../img/Jerseys/' . $pattern;
+                if (!in_array($image_path, $thumbnails)) {
+                    $thumbnails[] = $image_path;
+                }
+            }
+        }
+        
+        // Si no se encuentran imágenes adicionales, buscar por nombre parcial
+        if (count($thumbnails) <= 1) {
+            $dir_contents = scandir($jersey_dir);
+            foreach ($dir_contents as $file) {
+                if ($file == '.' || $file == '..' || $file == '.DS_Store') continue;
+                
+                $file_lower = strtolower($file);
+                foreach ($keywords as $keyword) {
+                    $keyword_lower = strtolower($keyword);
+                    if (strpos($file_lower, $keyword_lower) !== false) {
+                        $image_path = '../img/Jerseys/' . $file;
+                        if (!in_array($image_path, $thumbnails)) {
+                            $thumbnails[] = $image_path;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    
+    // Si todavía no hay suficientes imágenes, intentar buscar por formato numérico
+    if (count($thumbnails) <= 1) {
+        $image_base = pathinfo($product_image, PATHINFO_FILENAME);
+        $image_ext = pathinfo($product_image, PATHINFO_EXTENSION);
+        $image_dir = pathinfo($product_image, PATHINFO_DIRNAME);
+        
+        for ($i = 2; $i <= 5; $i++) {
+            $possible_thumb = $image_dir . '/' . $image_base . $i . '.' . $image_ext;
+            // Verificar si el archivo existe en el servidor
+            if (file_exists($_SERVER['DOCUMENT_ROOT'] . str_replace('../', '/', $possible_thumb))) {
+                $thumbnails[] = $possible_thumb;
+            }
+        }
+    }
+    
+    // Limitar a 5 imágenes para no sobrecargar la página
+    $thumbnails = array_slice($thumbnails, 0, 5);
+    
+    // Eliminar duplicados
+    $thumbnails = array_unique($thumbnails);
+    
+    // Añadir información de depuración (solo en desarrollo)
+    $debug_info = [];
+    $debug_info['product_id'] = $product_id;
+    $debug_info['product_name'] = $product_name;
+    $debug_info['product_image'] = $product_image;
+    $debug_info['thumbnails'] = $thumbnails;
+    $debug_info['team_name'] = $team_name ?? 'No detectado';
+    
+    // Generar título para la página
+    $page_title = $product_name . ' - JerseyZone';
+    
+} catch(PDOException $e) {
+    // En caso de error, establecer valores por defecto
+    $product_name = "Producto no encontrado";
+    $product_image = "../img/default-product.jpg";
+    $stock = 0;
+    $price = '0.00';
+    $product_id = 0;
+    $thumbnails = [$product_image];
+    $page_title = "Producto no encontrado - JerseyZone";
+    
+    error_log("Database connection failed: " . $e->getMessage());
+}
+?>
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><?php echo $page_title; ?></title>
+    <link rel="stylesheet" href="../Css/index.css">
+    <link rel="stylesheet" href="../Css/productos.css">
+    <link rel="stylesheet" href="../Css/cart.css">
+    <link rel="stylesheet" href="../Css/notificacion.css">
+    <link rel="stylesheet" href="../Css/notificacion.css">
+    <link rel="stylesheet" href="../Css/producto-mobile.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="shortcut icon" href="../img/ICON.png" type="image/x-icon">
+    <script src="../Js/search.js" defer></script>
+    <script src="../Js/products-data.js" defer></script>
+    <script src="../Js/cart.js" defer></script>
+    <script src="../Js/notification.js"></script>
+    <script src="../Js/newsletter.js" defer></script>
+    <script src="../Js/producto-mobile.js" defer></script>
+    <style>
+        /* Estilos generales de la página de producto */
+        body {
+            font-family: Arial, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #fff;
+            font-size: 16px; /* Tamaño base de fuente aumentado */
+        }
+
+        .nav-links a {
+            text-decoration: none;
+            color: #111;
+            font-size: 16px;
+            font-weight: 550;
+            padding: 8px 12px;
+        }
+
+        main {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px; /* Padding aumentado */
+        }
+
+        .product-detail {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
+            margin-top: 30px;
+            margin-bottom: 30px; /* Reducido de 60px a 30px */
+            position: relative;
+        }
+
+        .product-image-container {
+            position: sticky;
+            top: 30px;
+            height: fit-content;
+            margin-bottom: 30px;
+            overflow: visible;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .main-image-container {
+            position: relative;
+            height: 650px;
+            width: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 10px;
+        }
+
+        .product-image {
+            width: 100%;
+            height: auto;
+            max-height: 650px;
+            object-fit: contain;
+            cursor: default;
+        }
+
+        .product-thumbnails {
+            display: flex;
+            gap: 10px; /* Reducido de 15px a 10px */
+            justify-content: center;
+            flex-wrap: wrap;
+            width: 100%;
+            padding: 0 15px;
+            margin-top: -10px; /* Añadido margen negativo para subir las miniaturas */
+        }
+
+        .thumbnail {
+            width: 75px;
+            height: 75px;
+            object-fit: cover;
+            border: 1px solid #e0e0e0;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 10px;
+            padding: 2px;
+        }
+
+        .thumbnail.active {
+            border: 2px solid #333; /* Borde más fino para la miniatura activa */
+        }
+
+        /* Botones de navegación de imágenes - Solo flechas */
+        .image-navigation {
+            position: absolute;
+            top: 45%;
+            left: 0;
+            right: 0;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            transform: translateY(-50%);
+            padding: 0 15px;
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .prev-image, .next-image {
+            width: 40px;
+            height: 40px;
+            background: rgba(255, 255, 255, 0.8);
+            border: none;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: background-color 0.3s ease;
+        }
+
+        .prev-image:hover, .next-image:hover {
+            background: rgba(255, 255, 255, 1);
+        }
+
+        .prev-image i, .next-image i {
+            font-size: 24px;
+            color: #333;
+        }
+
+        /* Estilos de información del producto */
+        .product-info {
+            height: fit-content;
+        }
+
+        .product-title {
+            font-size: 32px; /* Tamaño de título aumentado */
+            font-weight: 600;
+            margin-bottom: 25px; /* Margen inferior aumentado */
+            color: #000;
+            line-height: 1.3;
+        }
+
+        .product-price {
+            font-size: 25px; /* Tamaño de precio aumentado */
+            font-weight: 500; /* Peso de fuente disminuido de bold (700) a medium (500) */
+            margin-bottom: 30px; /* Margen inferior aumentado */
+            color: #000; /* Color cambiado de #000 (negro) a #555 (gris más claro) */
+            letter-spacing: 0.5px; /* Ligero espaciado entre letras para mejor visualización */
+        }
+
+        .shipping-info {
+            display: flex;
+            align-items: center;
+            margin-bottom: 35px; /* Margen inferior aumentado */
+            color: #666;
+            font-size: 18px; /* Tamaño de texto aumentado */
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px; /* Padding inferior aumentado */
+        }
+
+        .shipping-info p {
+            margin: 0;
+        }
+
+        /* Selectores de talla y cantidad */
+        .section-title {
+            font-size: 20px; /* Tamaño de título de sección aumentado */
+            font-weight: bold;
+            margin-bottom: 20px; /* Margen inferior aumentado */
+            margin-top: 30px; /* Margen superior añadido */
+            color: #333;
+        }
+
+        .size-guide-btn {
+            background: none;
+            border: none;
+            color: #0066cc;
+            text-decoration: underline;
+            cursor: pointer;
+            padding: 0;
+            font-size: 16px; /* Tamaño de texto aumentado */
+            margin-left: 15px; /* Margen izquierdo aumentado */
+        }
+
+        .size-options {
+            display: flex;
+            gap: 15px; /* Gap aumentado */
+            margin-bottom: 40px; /* Margen inferior aumentado */
+        }
+
+        .size-option {
+            width: 60px; /* Tamaño aumentado */
+            height: 60px; /* Tamaño aumentado */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #ddd;
+            cursor: pointer;
+            font-size: 18px; /* Tamaño de texto aumentado */
+            transition: all 0.3s ease;
+        }
+
+        .size-option:hover {
+            border-color: #333;
+        }
+
+        .size-option.selected {
+            background-color: #000;
+            color: #fff;
+            border-color: #000;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            margin-bottom: 30px; /* Margen inferior aumentado */
+        }
+
+        .quantity-btn {
+            width: 45px; /* Tamaño aumentado */
+            height: 45px; /* Tamaño aumentado */
+            background: #f5f5f5;
+            border: 1px solid #ddd;
+            font-size: 22px; /* Tamaño de texto aumentado */
+            cursor: pointer;
+        }
+
+        .quantity-input {
+            width: 70px; /* Anchura aumentada */
+            height: 45px; /* Altura aumentada */
+            border: 1px solid #ddd;
+            text-align: center;
+            margin: 0 12px; /* Margen horizontal aumentado */
+            font-size: 20px; /* Tamaño de texto aumentado */
+        }
+
+        .stock-info {
+            display: flex;
+            align-items: center;
+            background-color: #f8f9fa;
+            padding: 18px; /* Padding aumentado */
+            border-radius: 6px; /* Radio de borde aumentado */
+            margin-bottom: 40px; /* Margen inferior aumentado */
+            font-size: 17px; /* Tamaño de texto aumentado */
+            color: #555;
+        }
+
+        .stock-info i {
+            margin-right: 12px; /* Margen derecho aumentado */
+            font-size: 20px; /* Tamaño de icono aumentado */
+        }
+
+        /* Botón de compra */
+        .add-to-cart-btn {
+            width: 100%;
+            background-color: #000;
+            color: white;
+            border: none;
+            padding: 20px; /* Padding aumentado */
+            font-size: 20px; /* Tamaño de texto aumentado */
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px; /* Margen superior añadido */
+        }
+
+        .add-to-cart-btn:hover {
+            background-color: #333;
+        }
+
+        .add-to-cart-btn:disabled {
+            background-color: #6c757d;
+            cursor: not-allowed;
+            opacity: 0.65;
+        }
+
+        /* Modal de guía de tallas */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            position: relative;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+            animation: modalFadeIn 0.3s ease;
+            margin: 0;
+        }
+
+        .close {
+            color: #333;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 20px;
+            top: 15px;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+        
+        .modal-content h2 {
+            margin-bottom: 20px;
+            text-align: center;
+            font-size: 28px;
+            color: #333;
+        }
+
+        .size-chart {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 0 0 1px #eee;
+        }
+
+        .size-chart th,
+        .size-chart td {
+            border: none;
+            padding: 15px;
+            text-align: center;
+            border-bottom: 1px solid #eee;
+        }
+
+        .size-chart th {
+            background-color: #000;
+            color: #fff;
+            font-weight: 600;
+            font-size: 16px;
+        }
+
+        .size-chart td {
+            font-size: 15px;
+        }
+
+        .size-chart tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+
+        .size-chart tr:hover {
+            background-color: #f2f2f2;
+        }
+
+        .size-chart tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .product-detail {
+                grid-template-columns: 1fr;
+                gap: 30px;
+            }
+            
+            .product-title {
+                font-size: 26px;
+            }
+            
+            .thumbnail {
+                width: 60px;
+                height: 60px;
+            }
+
+            body {
+                padding-top: 450px; /* Reservar espacio para la imagen fija */
+            }
+
+            .product-image-container {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 450px;
+                z-index: 999;
+            }
+
+            .main-image-container {
+                height: 400px;
+            }
+        }
+
+        /* Botón de WhatsApp */
+        .whatsapp-button {
+            position: fixed;
+            bottom: 30px; /* Posición inferior aumentada */
+            right: 30px; /* Posición derecha aumentada */
+            z-index: 999;
+        }
+
+        .whatsapp-button a {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 70px; /* Tamaño aumentado */
+            height: 70px; /* Tamaño aumentado */
+            background-color: #25D366;
+            color: white;
+            border-radius: 50%;
+            font-size: 35px; /* Tamaño de icono aumentado */
+            text-decoration: none;
+            box-shadow: 0 3px 8px rgba(0,0,0,0.3); /* Sombra mejorada */
+        }
+
+        /* Eliminar cualquier indicador de zoom que pudiera existir */
+        .zoom-indicator {
+            display: none;
+        }
+
+        /* Estilos para indicador de estado y mensaje de inactividad */
+        .product-inactive-message {
+            margin-bottom: 30px;
+        }
+        
+        .alert {
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .alert-warning {
+            background-color: #fff3cd;
+            color: #856404;
+            border: 1px solid #ffeeba;
+        }
+        
+        .alert i {
+            font-size: 24px;
+        }
+        
+        .admin-product-status {
+            background-color: #f8f9fa;
+            padding: 10px 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .status-indicator {
+            padding: 6px 12px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+        }
+        
+        .status-active {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .status-inactive {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
+        
+        .edit-product-link {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+        
+        .edit-product-link:hover {
+            text-decoration: underline;
+        }
+    </style>
+    <style>
+        /* Animación para el modal */
+        @keyframes modalFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+        
+        /* Estilo para la modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.7);
+            z-index: 1000;
+            overflow: auto;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .modal-content {
+            position: relative;
+            background-color: #fff;
+            max-width: 500px;
+            width: 85%;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2);
+            animation: modalFadeIn 0.3s ease;
+            margin: 20px 0;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        
+        .form-group {
+            margin-bottom: 15px !important;
+        }
+        
+        .modal h2 {
+            font-size: 20px !important;
+            margin-bottom: 15px !important;
+        }
+        
+        .modal label {
+            font-size: 14px !important;
+            margin-bottom: 5px !important;
+        }
+        
+        .modal input[type="text"],
+        .modal textarea {
+            padding: 8px !important;
+            font-size: 14px !important;
+        }
+        
+        .modal .rating-input label {
+            font-size: 24px !important;
+            margin-right: 3px !important;
+        }
+        
+        .modal button[type="submit"] {
+            padding: 10px 15px !important;
+            font-size: 15px !important;
+        }
+        
+        /* Ajuste para pantallas más pequeñas */
+        @media (max-height: 700px) {
+            .modal-content {
+                max-height: 85vh;
+                padding: 15px;
+            }
+            
+            .form-group {
+                margin-bottom: 10px !important;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="navbar">
+            <button class="menu-toggle">
+                <span class="material-symbols-outlined">menu</span>
+            </button>
+            <div class="logo"><a href="../index.php"><img src="../img/LogoNav.png" alt="JerSix Logo"></a></div>
+            <ul class="nav-links">
+                <li></li>
+                <li></li>
+                <li></li>
+                <li><a href="../index">Inicio</a></li>
+                <li><a href="../productos">Productos</a></li>
+                <li><a href="../mistery-box">Mystery Box</a></li>
+                <li><a href="../giftcard">Giftcard</a></li>
+            </ul>
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Buscar productos..." id="searchInput">
+                <button class="search-button" onclick="performSearch(document.querySelector('.search-input').value)">
+                    <span class="material-symbols-outlined">search</span>
+                </button>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+            <div class="cart-icon">
+                <span class="material-symbols-outlined">shopping_cart</span>
+            </div>
+        </nav>
+    </header>
+
+    <main>
+        <?php if (isset($product_inactive) && $product_inactive): ?>
+        <div class="product-inactive-message">
+            <div class="alert alert-warning">
+                <i class="fas fa-exclamation-triangle"></i>
+                <p>Este producto está actualmente inactivo y no es visible para los clientes.</p>
+            </div>
+        </div>
+        <?php endif; ?>
+        
+        <?php
+        // Verificar si el usuario es administrador (condición simplificada, ajustar según tu sistema)
+        $isAdmin = isset($_SESSION['admin_id']);
+        
+        // Mostrar indicador de estado solo para administradores
+        if ($isAdmin):
+        ?>
+        <div class="admin-product-status">
+            <span class="status-indicator <?php echo $product_status ? 'status-active' : 'status-inactive'; ?>">
+                <?php echo $product_status ? 'Producto Activo' : 'Producto Inactivo'; ?>
+            </span>
+            <a href="../admin2/edit_product.php?id=<?php echo $product_id; ?>" class="edit-product-link">
+                <i class="fas fa-edit"></i> Editar Producto
+            </a>
+        </div>
+        <?php endif; ?>
+        
+        <div class="product-detail">
+            <div class="product-image-container">
+                <div class="main-image-container">
+                    <img src="<?php echo $product_image; ?>" alt="<?php echo htmlspecialchars($product_name); ?>" class="product-image" id="mainImage" loading="lazy">
+                </div>
+                
+                <?php if (count($thumbnails) > 1): ?>
+                <div class="image-navigation">
+                    <button class="prev-image" onclick="changeImageNav(-1)"><i class="fas fa-chevron-left"></i></button>
+                    <button class="next-image" onclick="changeImageNav(1)"><i class="fas fa-chevron-right"></i></button>
+                </div>
+                
+                <div class="product-thumbnails">
+                    <?php foreach ($thumbnails as $index => $thumbnail): ?>
+                    <img src="<?php echo $thumbnail; ?>" alt="<?php echo htmlspecialchars($product_name); ?> <?php echo $index+1; ?>" 
+                         class="thumbnail <?php echo ($index === 0) ? 'active' : ''; ?>" 
+                         onclick="changeImage(this)" loading="lazy">
+                    <?php endforeach; ?>
+                </div>
+                <?php endif; ?>
+            </div>
+            
+            <div class="product-info">
+                <h1 class="product-title"><?php echo htmlspecialchars($product_name); ?></h1>
+                <p class="product-price" data-product-id="<?php echo $product_id; ?>">$ <?php echo number_format($price, 2); ?></p>
+                
+                <div class="shipping-info">
+                    <p>Envío gratis a TODO MÉXICO 🇲🇽</p>
+                </div>
+                
+                <div class="section-title">
+                    Talla <button class="size-guide-btn" onclick="document.getElementById('sizeGuideModal').style.display='block'">Guía de tallas</button>
+                </div>
+                <div class="size-options">    
+                    <div class="size-option">S</div>
+                    <div class="size-option">M</div>
+                    <div class="size-option">L</div>
+                    <div class="size-option">XL</div>
+                    <div class="size-option">XXL</div>
+                </div>
+
+                <div class="section-title">Personalizar Camiseta</div>
+                <div class="customization-toggle" style="margin-bottom: 15px;">
+                    <select id="customizationSelect" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="292.4" height="292.4"><path fill="%23007CB2" d="M287 69.4a17.6 17.6 0 0 0-13-5.4H18.4c-5 0-9.3 1.8-12.9 5.4A17.6 17.6 0 0 0 0 82.2c0 5 1.8 9.3 5.4 12.9l128 127.9c3.6 3.6 7.8 5.4 12.8 5.4s9.2-1.8 12.8-5.4L287 95c3.5-3.6 5.4-7.9 5.4-12.9 0-5-1.9-9.2-5.5-12.7z"/></svg>'); background-repeat: no-repeat; background-position: right 12px center; background-size: 12px;">
+                        <option value="no">Sin Personalizar</option>
+                        <option value="yes">Personalizar (+$100)</option>
+                    </select>
+                </div>
+                <div class="customization-options" id="customizationFields" style="margin-bottom: 30px; display: none;">
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label for="jerseyName" style="display: block; margin-bottom: 8px; font-weight: 500;">Nombre en la camiseta:</label>
+                        <input type="text" id="jerseyName" name="jerseyName" maxlength="20" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el nombre">
+                    </div>
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label for="jerseyNumber" style="display: block; margin-bottom: 8px; font-weight: 500;">Número:</label>
+                        <input type="number" id="jerseyNumber" name="jerseyNumber" min="0" max="99" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 6px;" placeholder="Ingresa el número" oninput="validateJerseyNumber(this)">
+                    </div>
+                    <div class="customization-field" style="margin-bottom: 15px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="checkbox" id="patchOption" name="patchOption" style="margin-right: 10px;">
+                            <span>Agregar parche (+$50)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <div class="section-title">Cantidad</div>
+                <div class="quantity-controls">
+                    <button class="quantity-btn minus" id="minusBtn">-</button>
+                    <input type="number" class="quantity-input" id="quantityInput" value="1" min="1" max="<?php echo $stock; ?>">
+                    <button class="quantity-btn plus" id="plusBtn">+</button>
+                </div>
+                
+                <button class="add-to-cart-btn" <?php echo (!$product_status) ? 'disabled' : ''; ?> onclick="addToCartWithCustomization()">
+                    <?php if ($product_status): ?>
+                        Agregar al Carrito
+                    <?php else: ?>
+                        Producto no disponible
+                    <?php endif; ?>
+                </button>
+
+                <script>
+                function addToCartWithCustomization() {
+                    const selectedSize = document.querySelector('.size-option.selected');
+                    if (!selectedSize) {
+                        showNotification('Por favor selecciona una talla', false);
+                        return;
+                    }
+
+                    // Verificar si la personalización está habilitada
+                    const isCustomizationEnabled = document.getElementById('customizationSelect').value === 'yes';
+                    
+                    // Obtener datos de personalización
+                    const personalization = {
+                        name: '',
+                        number: '',
+                        patch: false
+                    };
+                    
+                    if (isCustomizationEnabled) {
+                        personalization.name = document.getElementById('jerseyName').value.trim();
+                        personalization.number = document.getElementById('jerseyNumber').value.trim();
+                        personalization.patch = document.getElementById('patchOption').checked;
+                        
+                        // Validar que se hayan ingresado tanto el nombre como el número
+                        if (!personalization.name || !personalization.number) {
+                            showNotification('Para personalizar la camiseta, debes ingresar tanto el nombre como el número.', false);
+                            return;
+                        }
+                    }
+
+                    // Crear el objeto de producto
+                    const productData = {
+                        productId: document.querySelector('.product-price').getAttribute('data-product-id'),
+                        title: document.querySelector('.product-title').textContent,
+                        price: currentPrice,
+                        size: selectedSize.textContent,
+                        quantity: parseInt(document.getElementById('quantityInput').value),
+                        image: document.getElementById('mainImage').src,
+                        personalization: isCustomizationEnabled ? personalization : null,
+                        isCustomEvent: true
+                    };
+
+                    // Disparar evento personalizado
+                    const event = new CustomEvent('addToCart', {
+                        detail: productData
+                    });
+                    document.dispatchEvent(event);
+                }
+                </script>
+            </div>
+        </div>
+        
+        <!-- Size Guide Modal -->
+        <div id="sizeGuideModal" class="modal" style="display: none;">
+            <div class="modal-content">
+                <span class="close" onclick="document.getElementById('sizeGuideModal').style.display='none'">&times;</span>
+                <h2>Guía de Tallas</h2>
+                <table class="size-chart">
+                    <thead>
+                        <tr>
+                            <th>Talla</th>
+                            <th>Largo (cm)</th>
+                            <th>Ancho (cm)</th>
+                            <th>Altura (cm)</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>S</td>
+                            <td>69-71</td>
+                            <td>53-55</td>
+                            <td>162-170</td>
+                        </tr>
+                        <tr>
+                            <td>M</td>
+                            <td>71-73</td>
+                            <td>55-57</td>
+                            <td>170-176</td>
+                        </tr>
+                        <tr>
+                            <td>L</td>
+                            <td>73-75</td>
+                            <td>57-58</td>
+                            <td>176-182</td>
+                        </tr>
+                        <tr>
+                            <td>XL</td>
+                            <td>75-78</td>
+                            <td>58-60</td>
+                            <td>182-190</td>
+                        </tr>
+                        <tr>
+                            <td>XXL</td>
+                            <td>78-81</td>
+                            <td>60-62</td>
+                            <td>190-195</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </main>
+
+    <div class="shipping-info-section" style="max-width: 1200px; margin: -20px auto 40px; padding: 40px 20px;">
+        <div class="shipping-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="shipping-header" onclick="toggleShippingInfo()" style="text-align: center; margin-bottom: 20px; cursor: pointer; user-select: none;">
+                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; display: flex; align-items: center; justify-content: center; gap: 10px;">
+                    Información de Envío
+                    <i class="fas fa-chevron-down" id="shipping-arrow" style="font-size: 20px; transition: transform 0.3s ease;"></i>
+                </h2>
+            </div>
+
+            <div id="shipping-content" style="display: none; transition: all 0.3s ease;">
+                <p style="text-align: center; font-size: 20px; color: #333; margin-bottom: 30px;">
+                    ¡Disfruta de envío <strong>GRATIS</strong> en todos tus pedidos!
+                </p>
+
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin-bottom: 40px;">
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">📦</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Tiempo de Envío</h3>
+                        <p style="color: #555;">15 días hábiles promedio</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">💬</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Contacto Personal</h3>
+                        <p style="color: #555;">Un "Player" de Jersix te contactará por WhatsApp en 3-5 días hábiles</p>
+                    </div>
+                    <div style="text-align: center; padding: 20px;">
+                        <div style="font-size: 24px; margin-bottom: 15px;">🚚</div>
+                        <h3 style="font-size: 18px; margin-bottom: 10px; font-weight: 600;">Seguimiento</h3>
+                        <p style="color: #555;">Recibirás tu número de rastreo en 8 - 12 días hábiles</p>
+                    </div>
+                </div>
+
+                <div style="background-color: #f8f8f8; padding: 25px; border-radius: 10px; text-align: center;">
+                    <p style="font-size: 16px; color: #333; margin-bottom: 0;">
+                        <strong>Garantía de satisfacción:</strong> Si tu espera supera los 30 días hábiles, 
+                        recibirás un reembolso de tu compra y tus Jersix serán gratis.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Separador -->
+    <div style="max-width: 80%; margin: 0 auto 40px; height: 1px; background-color: #e0e0e0;"></div>
+
+    <!-- Sección de Reseñas -->
+    <div class="reviews-section" style="max-width: 1200px; margin: 0 auto 60px; padding: 0 20px;">
+        <div class="reviews-container" style="max-width: 900px; margin: 0 auto;">
+            <div class="reviews-header" style="text-align: center; margin-bottom: 40px;">
+                <h2 style="font-size: 28px; margin-bottom: 15px; font-weight: 600; color: #000;">Opiniones de Clientes</h2>
+                <?php
+                // Obtener calificación promedio y número de reseñas DE TODAS LAS RESEÑAS
+                try {
+                    $stmt = $pdo->prepare('SELECT COUNT(*) as total, AVG(calificacion) as promedio FROM resenas');
+                    $stmt->execute();
+                    $reviewStats = $stmt->fetch(PDO::FETCH_ASSOC);
+                    
+                    $totalReviews = $reviewStats['total'] ?? 0;
+                    $avgRating = number_format($reviewStats['promedio'] ?? 0, 1);
+                } catch (PDOException $e) {
+                    $totalReviews = 0;
+                    $avgRating = 0;
+                }
+                ?>
+                
+                <div style="display: flex; justify-content: center; margin-top: 10px;">
+                    <div class="rating-stars" style="font-size: 22px; color: #FFD700; margin-right: 10px;">
+                        <?php
+                        $fullStars = floor($avgRating);
+                        $halfStar = ($avgRating - $fullStars) >= 0.5;
+                        
+                        for ($i = 1; $i <= 5; $i++) {
+                            if ($i <= $fullStars) {
+                                echo '<i class="fas fa-star"></i>';
+                            } elseif ($i == $fullStars + 1 && $halfStar) {
+                                echo '<i class="fas fa-star-half-alt"></i>';
+                            } else {
+                                echo '<i class="far fa-star"></i>';
+                            }
+                        }
+                        ?>
+                    </div>
+                    <div style="font-size: 18px; font-weight: 500; color: #333;">
+                        <span style="color: #FFD700; font-weight: bold;"><?php echo $avgRating; ?></span> <span style="color: #666; font-size: 16px; font-weight: normal;">(<?php echo $totalReviews; ?> opiniones)</span>
+                    </div>
+                </div>
+            </div>
+            
+            <?php if ($totalReviews > 0): ?>
+            <!-- Carrusel de Reseñas -->
+            <div class="reviews-carousel-container" style="position: relative;">
+                <div class="reviews-carousel" style="overflow: hidden; position: relative; margin: 0 40px;">
+                    <div class="reviews-track" id="reviewsTrack" style="display: flex; transition: transform 0.5s ease;">
+                        <?php
+                        try {
+                            // Obtener TODAS las reseñas de la base de datos, no solo para este producto
+                            $stmt = $pdo->prepare('
+                                SELECT r.*, p.name as product_name, 
+                                DATE_FORMAT(r.fecha_creacion, "%d/%m/%Y") as fecha_formateada
+                                FROM resenas r
+                                JOIN products p ON r.producto_id = p.product_id
+                                ORDER BY r.fecha_creacion DESC
+                            ');
+                            $stmt->execute();
+                            $reviews = $stmt->fetchAll(PDO::FETCH_ASSOC);
+                        } catch (PDOException $e) {
+                            $reviews = [];
+                        }
+                        
+                        foreach ($reviews as $review):
+                        ?>
+                        <div class="review-card" style="min-width: 300px; flex: 0 0 calc(100% - 20px); max-width: 100%; padding: 30px; margin: 0 10px; background-color: #f9f9f9; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); border-top: 3px solid #cc0000;">
+                            <div class="review-card-header" style="margin-bottom: 15px;">
+                                <div class="reviewer-name" style="font-size: 18px; font-weight: 600; margin-bottom: 8px;">
+                                    <?php echo htmlspecialchars($review['nombre']); ?>
+                                </div>
+                                
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <div class="review-rating" style="color: #FFD700; font-size: 16px;">
+                                        <?php
+                                        $rating = $review['calificacion'];
+                                        $fullStars = floor($rating);
+                                        $halfStar = ($rating - $fullStars) >= 0.5;
+                                        
+                                        for ($i = 1; $i <= 5; $i++) {
+                                            if ($i <= $fullStars) {
+                                                echo '<i class="fas fa-star"></i>';
+                                            } elseif ($i == $fullStars + 1 && $halfStar) {
+                                                echo '<i class="fas fa-star-half-alt"></i>';
+                                            } else {
+                                                echo '<i class="far fa-star"></i>';
+                                            }
+                                        }
+                                        ?>
+                                    </div>
+                                    
+                                    <div class="review-date" style="color: #888; font-size: 14px;">
+                                        <?php echo $review['fecha_formateada']; ?>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <!-- Mostrar el nombre del producto -->
+                            <div style="font-size: 14px; color: #666; margin-bottom: 10px; border-left: 3px solid #cc0000; padding-left: 10px;">
+                                Producto: <a href="producto.php?id=<?php echo $review['producto_id']; ?>" style="color: #000; text-decoration: underline; font-weight: 500;"><?php echo htmlspecialchars($review['product_name']); ?></a>
+                            </div>
+                            
+                            <h3 style="margin: 0 0 10px 0; font-size: 18px; color: #333;"><?php echo htmlspecialchars($review['titulo']); ?></h3>
+                            <p style="color: #555; line-height: 1.6; margin-bottom: 15px; font-size: 15px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; text-overflow: ellipsis;"><?php echo nl2br(htmlspecialchars($review['contenido'])); ?></p>
+                            
+                            <?php if (isset($review['imagen_path']) && !empty($review['imagen_path'])): ?>
+                            <div class="review-image" style="margin-bottom: 15px; text-align: center;">
+                                <a href="../<?php echo htmlspecialchars($review['imagen_path']); ?>" target="_blank" style="display: inline-block; overflow: hidden; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1);">
+                                    <img src="../<?php echo htmlspecialchars($review['imagen_path']); ?>" alt="Imagen de reseña" style="max-width: 100%; max-height: 200px; object-fit: cover;">
+                                </a>
+                                <p style="margin-top: 5px; font-size: 13px; color: #666;">Haz clic en la imagen para ampliarla</p>
+                            </div>
+                            <?php endif; ?>
+                            
+                            <?php if ($review['recomienda'] == 'si'): ?>
+                            <div style="color: #2e7d32; font-size: 14px; display: flex; align-items: center;">
+                                <i class="fas fa-thumbs-up" style="margin-right: 5px;"></i> Recomendado
+                            </div>
+                            <?php else: ?>
+                            <div style="color: #c62828; font-size: 14px; display: flex; align-items: center;">
+                                <i class="fas fa-thumbs-down" style="margin-right: 5px;"></i> No recomendado
+                            </div>
+                            <?php endif; ?>
+                        </div>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                
+                <!-- Controles del carrusel -->
+                <button id="prevReview" class="carousel-control prev" style="position: absolute; left: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
+                    <i class="fas fa-chevron-left" style="color: #000;"></i>
+                </button>
+                <button id="nextReview" class="carousel-control next" style="position: absolute; right: 0; top: 50%; transform: translateY(-50%); background: #fff; border: 1px solid #ddd; border-radius: 50%; width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; cursor: pointer; box-shadow: 0 2px 5px rgba(0,0,0,0.1); z-index: 10;">
+                    <i class="fas fa-chevron-right" style="color: #000;"></i>
+                </button>
+                
+                <!-- Indicadores de página -->
+                <div class="carousel-indicators" style="display: flex; justify-content: center; margin-top: 20px; gap: 8px;">
+                    <?php 
+                    $totalPages = ceil(count($reviews) / 1);
+                    for ($i = 0; $i < $totalPages; $i++): 
+                    ?>
+                    <button class="indicator <?php echo $i === 0 ? 'active' : ''; ?>" data-index="<?php echo $i; ?>" style="width: 10px; height: 10px; border-radius: 50%; background-color: <?php echo $i === 0 ? '#000' : '#ddd'; ?>; border: none; padding: 0; cursor: pointer;"></button>
+                    <?php endfor; ?>
+                </div>
+            </div>
+            <?php else: ?>
+            <div class="no-reviews" style="text-align: center; padding: 40px; background-color: #f9f9f9; border-radius: 12px; border-top: 3px solid #cc0000;">
+                <div style="font-size: 50px; color: #cc0000; margin-bottom: 15px;">
+                    <i class="far fa-comment-dots"></i>
+                </div>
+                <h3 style="margin: 0 0 10px 0; font-size: 20px; color: #333;">¡Sé el primero en dejar una opinión!</h3>
+                <p style="color: #666; max-width: 500px; margin: 0 auto;">Tu opinión es muy importante para nosotros y para otros clientes. Comparte tu experiencia con este producto.</p>
+            </div>
+            <?php endif; ?>
+            
+            <div style="text-align: center; margin-top: 30px;">
+                <button class="write-review-btn" id="openReviewForm" style="background-color: #000; color: white; padding: 12px 25px; border: none; border-radius: 4px; font-size: 16px; cursor: pointer; transition: all 0.3s ease;">Escribir una opinión</button>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Modal para escribir reseñas -->
+    <div id="reviewModal" class="modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background-color: rgba(0,0,0,0.7); z-index: 1000; overflow: auto; justify-content: center; align-items: center;">
+        <div class="modal-content" style="position: relative; background-color: #fff; max-width: 500px; width: 85%; padding: 20px; border-radius: 8px; box-shadow: 0 4px 20px rgba(0,0,0,0.2); animation: modalFadeIn 0.3s ease; max-height: 90vh; overflow-y: auto;">
+            <span class="close" onclick="document.getElementById('reviewModal').style.display='none'" style="position: absolute; right: 15px; top: 10px; font-size: 24px; font-weight: bold; cursor: pointer; color: #333;">&times;</span>
+            <h2 style="margin-top: 0; margin-bottom: 15px; text-align: center; font-size: 20px;">Escribir una reseña</h2>
+            
+            <form id="reviewForm" action="<?php echo $_SERVER['REQUEST_URI']; ?>" method="post" enctype="multipart/form-data" style="margin-top: 20px;">
+                <input type="hidden" name="producto_id" value="<?php echo $product_id; ?>">
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="nombre" style="display: block; margin-bottom: 8px; font-weight: 500;">Nombre</label>
+                    <input type="text" id="nombre" name="nombre" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="titulo" style="display: block; margin-bottom: 8px; font-weight: 500;">Título de la reseña</label>
+                    <input type="text" id="titulo" name="titulo" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px;">
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; margin-bottom: 8px; font-weight: 500;">Calificación</label>
+                    <div class="rating-input" style="direction: rtl; display: inline-block; margin-bottom: 10px;">
+                        <input type="radio" id="star5" name="calificacion" value="5" required style="display: none;">
+                        <label for="star5" title="5 estrellas" style="font-size: 30px; color: #ddd; cursor: pointer; display: inline-block; margin-right: 5px;">&#9733;</label>
+                        
+                        <input type="radio" id="star4" name="calificacion" value="4" style="display: none;">
+                        <label for="star4" title="4 estrellas" style="font-size: 30px; color: #ddd; cursor: pointer; display: inline-block; margin-right: 5px;">&#9733;</label>
+                        
+                        <input type="radio" id="star3" name="calificacion" value="3" style="display: none;">
+                        <label for="star3" title="3 estrellas" style="font-size: 30px; color: #ddd; cursor: pointer; display: inline-block; margin-right: 5px;">&#9733;</label>
+                        
+                        <input type="radio" id="star2" name="calificacion" value="2" style="display: none;">
+                        <label for="star2" title="2 estrellas" style="font-size: 30px; color: #ddd; cursor: pointer; display: inline-block; margin-right: 5px;">&#9733;</label>
+                        
+                        <input type="radio" id="star1" name="calificacion" value="1" style="display: none;">
+                        <label for="star1" title="1 estrella" style="font-size: 30px; color: #ddd; cursor: pointer; display: inline-block; margin-right: 5px;">&#9733;</label>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="contenido" style="display: block; margin-bottom: 8px; font-weight: 500;">Tu reseña</label>
+                    <textarea id="contenido" name="contenido" rows="5" required style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; resize: vertical;"></textarea>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label for="review_image" style="display: block; margin-bottom: 8px; font-weight: 500;">Sube una foto del producto (opcional)</label>
+                    <input type="file" id="review_image" name="review_image" accept="image/jpeg, image/png, image/jpg" style="width: 100%; padding: 12px; border: 1px solid #ddd; border-radius: 4px; background-color: #f9f9f9;">
+                    <p style="margin-top: 5px; font-size: 13px; color: #666;">Formatos permitidos: JPG, JPEG, PNG. Tamaño máximo: 5MB</p>
+                    <div id="image_preview" style="margin-top: 10px; display: none; text-align: center;">
+                        <img id="preview_img" src="#" alt="Vista previa" style="max-width: 100%; max-height: 200px; border: 1px solid #ddd; border-radius: 4px;">
+                        <button type="button" id="remove_image" style="margin-top: 5px; background: #f44336; color: white; border: none; padding: 5px 10px; border-radius: 4px; cursor: pointer; font-size: 14px;">Eliminar imagen</button>
+                    </div>
+                </div>
+                
+                <div class="form-group" style="margin-bottom: 30px;">
+                    <label style="font-weight: 500; display: block; margin-bottom: 10px;">¿Recomendarías este producto?</label>
+                    <div style="display: flex; gap: 20px;">
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="radio" name="recomienda" value="si" checked style="margin-right: 8px;">
+                            <span>Sí</span>
+                        </label>
+                        <label style="display: flex; align-items: center; cursor: pointer;">
+                            <input type="radio" name="recomienda" value="no" style="margin-right: 8px;">
+                            <span>No</span>
+                        </label>
+                    </div>
+                </div>
+                
+                <button type="submit" name="submit_review" style="background-color: #000; color: white; padding: 14px 25px; border: none; border-radius: 4px; font-size: 16px; width: 100%; cursor: pointer;">Enviar reseña</button>
+            </form>
+
+            <script>
+            // Previsualización de la imagen
+            document.getElementById('review_image').addEventListener('change', function(e) {
+                const file = this.files[0];
+                if (file) {
+                    // Verificar tamaño (5MB máximo)
+                    if (file.size > 5 * 1024 * 1024) {
+                        alert('El archivo es demasiado grande. El tamaño máximo es 5MB.');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Verificar tipo
+                    if (!['image/jpeg', 'image/jpg', 'image/png'].includes(file.type)) {
+                        alert('Solo se permiten archivos JPG, JPEG o PNG.');
+                        this.value = '';
+                        return;
+                    }
+                    
+                    // Mostrar la vista previa
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('preview_img').src = e.target.result;
+                        document.getElementById('image_preview').style.display = 'block';
+                    }
+                    reader.readAsDataURL(file);
+                }
+            });
+            
+            // Eliminar imagen
+            document.getElementById('remove_image').addEventListener('click', function() {
+                document.getElementById('review_image').value = '';
+                document.getElementById('image_preview').style.display = 'none';
+            });
+            </script>
+        </div>
+    </div>
+    
+    <?php
+    // Procesar el envío de la reseña
+    if (isset($_POST['submit_review'])) {
+        // Sanitizar y validar los datos
+        $producto_id = intval($_POST['producto_id']);
+        $nombre = trim(htmlspecialchars($_POST['nombre']));
+        $calificacion = floatval($_POST['calificacion']);
+        $titulo = trim(htmlspecialchars($_POST['titulo']));
+        $contenido = trim(htmlspecialchars($_POST['contenido']));
+        $recomienda = $_POST['recomienda'] === 'si' ? 'si' : 'no';
+        $imagen_path = null;
+        
+        // Procesar la imagen si se ha subido
+        if(isset($_FILES['review_image']) && $_FILES['review_image']['error'] == 0) {
+            // Crear directorio para las imágenes de reseñas si no existe
+            $upload_dir = "../uploads/reviews/";
+            if(!is_dir($upload_dir)) {
+                mkdir($upload_dir, 0755, true);
+            }
+            
+            // Validar tipo de archivo
+            $allowed_types = ['image/jpeg', 'image/jpg', 'image/png'];
+            $file_type = $_FILES['review_image']['type'];
+            
+            if(in_array($file_type, $allowed_types)) {
+                // Validar tamaño (5MB máximo)
+                if($_FILES['review_image']['size'] <= 5 * 1024 * 1024) {
+                    // Generar nombre único para la imagen
+                    $file_extension = pathinfo($_FILES['review_image']['name'], PATHINFO_EXTENSION);
+                    $unique_filename = 'review_' . $producto_id . '_' . time() . '_' . uniqid() . '.' . $file_extension;
+                    $upload_path = $upload_dir . $unique_filename;
+                    
+                    if(move_uploaded_file($_FILES['review_image']['tmp_name'], $upload_path)) {
+                        $imagen_path = 'uploads/reviews/' . $unique_filename;
+                    } else {
+                        echo "<script>alert('Error al guardar la imagen. Por favor, intenta nuevamente.');</script>";
+                    }
+                } else {
+                    echo "<script>alert('La imagen es demasiado grande. El tamaño máximo es 5MB.');</script>";
+                }
+            } else {
+                echo "<script>alert('Tipo de archivo no permitido. Solo se permiten imágenes JPG, JPEG o PNG.');</script>";
+            }
+        }
+        
+        // Validar datos
+        if (empty($nombre) || empty($titulo) || empty($contenido) || $calificacion < 1 || $calificacion > 5) {
+            echo "<script>alert('Por favor, complete todos los campos correctamente.');</script>";
+        } else {
+            try {
+                // Insertar la reseña en la base de datos con la imagen (si existe)
+                if ($imagen_path) {
+                    $stmt = $pdo->prepare('
+                        INSERT INTO resenas (producto_id, nombre, calificacion, titulo, contenido, recomienda, imagen_path)
+                        VALUES (?, ?, ?, ?, ?, ?, ?)
+                    ');
+                    $result = $stmt->execute([$producto_id, $nombre, $calificacion, $titulo, $contenido, $recomienda, $imagen_path]);
+                } else {
+                    $stmt = $pdo->prepare('
+                        INSERT INTO resenas (producto_id, nombre, calificacion, titulo, contenido, recomienda)
+                        VALUES (?, ?, ?, ?, ?, ?)
+                    ');
+                    $result = $stmt->execute([$producto_id, $nombre, $calificacion, $titulo, $contenido, $recomienda]);
+                }
+                
+                if ($result) {
+                    echo "<script>
+                        alert('¡Gracias por tu reseña!');
+                        window.location.href = window.location.pathname + '?id=" . $product_id . "';
+                        </script>";
+                } else {
+                    echo "<script>alert('Hubo un error al guardar tu reseña. Por favor, intenta nuevamente.');</script>";
+                }
+            } catch (PDOException $e) {
+                echo "<script>alert('Error en el servidor. Por favor, intenta nuevamente más tarde.');</script>";
+                error_log("Error al guardar reseña: " . $e->getMessage());
+            }
+        }
+    }
+    ?>
+
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-section">
+                <h3>Sobre Jersix</h3>
+                <p>Somos una tienda especializada en jerseys deportivos y casuales de alta calidad. Nuestro compromiso es ofrecer diseños únicos y materiales premium para nuestros clientes.</p>
+            </div>
+            <div class="footer-section">
+                <h3>Preguntas Frecuentes</h3>
+                <ul>
+                    <li><a href="../Preguntas_Frecuentes.html">Envíos y Entregas</a></li>
+                    <li><a href="../Preguntas_Frecuentes.html">Devoluciones</a></li>
+                    <li><a href="../Preguntas_Frecuentes.html">Métodos de Pago</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Generales</h3>
+                <ul>
+                    <li><a href="../PoliticaDevolucion">Politica de Devoluciones</a></li>
+                    <li><a href="../aviso_privacidad">Aviso de Privacidad</a></li>
+                    <li><a href="../TerminosYcondicones">Terminos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-section">
+                <h3>Newsletter</h3>
+                <p>Suscríbete para recibir las últimas novedades y ofertas especiales.</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Tu correo electrónico" class="newsletter-input">
+                    <button class="newsletter-button">Suscribirse</button>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="social-links">
+                <a href="https://www.tiktok.com/@jersix.mx" class="social-link" target="_blank"><i class="fab fa-tiktok"></i></a>
+                <a href="https://www.instagram.com/jersix.mx/" class="social-link" target="_blank"><i class="fab fa-instagram"></i></a>
+                <a href="https://wa.me/+528129157795" class="social-link" target="_blank"><i class="fab fa-whatsapp"></i></a>
+            </div>
+            <p class="copyright">&copy; 2025 Jersix.mx. Todos los derechos reservados.</p>
+        </div>
+    </footer>
+    
+    <div class="whatsapp-button">
+        <a href="https://wa.me/+528129157795" target="_blank" rel="noopener noreferrer">
+            <i class="fab fa-whatsapp"></i>
+        </a>
+    </div>
+
+    <script>
+    // Variables para personalización
+    let basePrice = parseFloat(document.querySelector('.product-price').textContent.replace('$', '').trim());
+    let currentPrice = basePrice;
+    const PATCH_PRICE = 50;
+    const CUSTOMIZATION_PRICE = 100;
+
+    // Función para validar el número del jersey
+    function validateJerseyNumber(input) {
+        // Limitar a máximo 2 dígitos
+        if (input.value.length > 2) {
+            input.value = input.value.slice(0, 2);
+        }
+        
+        // Solo validar si hay un valor
+        if (input.value !== '') {
+            let value = parseInt(input.value);
+            if (isNaN(value) || value < 0) {
+                input.value = '';
+            } else if (value > 99) {
+                input.value = 99;
+            }
+        }
+    }
+
+    // Función para actualizar el precio
+    function updatePrice() {
+        const patchOption = document.getElementById('patchOption');
+        const customizationSelect = document.getElementById('customizationSelect');
+        
+        // Calcular precio base + personalización + parche
+        currentPrice = basePrice;
+        
+        // Añadir costo de personalización si está seleccionado
+        if (customizationSelect.value === 'yes') {
+            currentPrice += CUSTOMIZATION_PRICE;
+        }
+        
+        // Añadir costo de parche si está seleccionado
+        if (patchOption.checked) {
+            currentPrice += PATCH_PRICE;
+        }
+        
+        document.querySelector('.product-price').textContent = '$ ' + currentPrice.toFixed(2);
+    }
+
+    // Event listeners para personalización
+    document.getElementById('patchOption').addEventListener('change', updatePrice);
+    document.getElementById('customizationSelect').addEventListener('change', function() {
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        if (this.value === 'yes') {
+            document.getElementById('customizationFields').style.display = 'block';
+            // Desactivar el botón de agregar al carrito hasta que se completen los campos
+            addToCartBtn.disabled = true;
+            // Verificar si los campos ya tienen valores
+            validatePersonalizationFields();
+        } else {
+            document.getElementById('customizationFields').style.display = 'none';
+            // Limpiar campos de personalización
+            document.getElementById('jerseyName').value = '';
+            document.getElementById('jerseyNumber').value = '';
+            document.getElementById('patchOption').checked = false;
+            // Habilitar el botón de agregar al carrito
+            addToCartBtn.disabled = false;
+        }
+        updatePrice();
+    });
+
+
+    // Añadir validación en tiempo real para los campos de personalización
+    document.getElementById('jerseyName').addEventListener('input', validatePersonalizationFields);
+    document.getElementById('jerseyNumber').addEventListener('input', validatePersonalizationFields);
+
+    // Función para validar los campos de personalización y actualizar el estado del botón
+    function validatePersonalizationFields() {
+        const customizationSelect = document.getElementById('customizationSelect');
+        const addToCartBtn = document.querySelector('.add-to-cart-btn');
+        
+        // Solo validar si la personalización está habilitada
+        if (customizationSelect.value === 'yes') {
+            const name = document.getElementById('jerseyName').value.trim();
+            const number = document.getElementById('jerseyNumber').value.trim();
+            
+            // Habilitar el botón solo si ambos campos están completos
+            addToCartBtn.disabled = !(name && number);
+        }
+    }
+
+    // Funciones básicas para el manejo de imágenes
+    function changeImage(element) {
+        document.getElementById('mainImage').src = element.src;
+        
+        const thumbnails = document.querySelectorAll('.thumbnail');
+        thumbnails.forEach(thumb => {
+            thumb.classList.remove('active');
+        });
+        
+        element.classList.add('active');
+    }
+    
+    function changeImageNav(direction) {
+        const thumbnails = Array.from(document.querySelectorAll('.thumbnail'));
+        const currentIndex = thumbnails.findIndex(thumb => thumb.classList.contains('active'));
+        
+        let newIndex = currentIndex + direction;
+        
+        if (newIndex < 0) newIndex = thumbnails.length - 1;
+        if (newIndex >= thumbnails.length) newIndex = 0;
+        
+        changeImage(thumbnails[newIndex]);
+    }
+
+    // Nueva función para manejar la imagen fija en móviles
+    function handleFixedImages() {
+        // Solo ejecutar en dispositivos móviles
+        if (window.innerWidth <= 768) {
+            const imageContainer = document.querySelector('.product-image-container');
+            const productInfo = document.querySelector('.product-info');
+            const imageContainerHeight = imageContainer.offsetHeight;
+            
+            // Función para manejar el scroll
+            function handleScroll() {
+                const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                
+                // Si hemos scrolleado más allá de la posición original del contenedor
+                if (scrollTop > imageContainer.offsetTop) {
+                    imageContainer.classList.add('image-fixed');
+                    productInfo.classList.add('content-shifted');
+                } else {
+                    imageContainer.classList.remove('image-fixed');
+                    productInfo.classList.remove('content-shifted');
+                }
+            }
+            
+            // Añadir event listener para el scroll
+            window.addEventListener('scroll', handleScroll);
+            
+            // Llamar a la función una vez para establecer el estado inicial
+            handleScroll();
+        }
+    }
+
+    // Asegurar que el DOM esté completamente cargado
+    document.addEventListener('DOMContentLoaded', function() {
+        console.log("DOM fully loaded");
+        
+        // Inicializar la funcionalidad de imagen fija
+        handleFixedImages();
+        
+        // Funcionalidad para el botón del menú móvil
+        const menuToggle = document.querySelector('.menu-toggle');
+        const navLinks = document.querySelector('.nav-links');
+        
+        if (menuToggle && navLinks) {
+            menuToggle.addEventListener('click', function() {
+                navLinks.classList.toggle('active');
+                menuToggle.classList.toggle('active');
+            });
+        }
+        
+        // Manejo de selección de tallas
+        const sizeOptions = document.querySelectorAll('.size-option');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                console.log('Talla seleccionada:', this.textContent);
+            });
+        });
+        
+        // Manejo de cantidad con IDs específicos para evitar conflictos
+        const minusBtn = document.getElementById('minusBtn');
+        const plusBtn = document.getElementById('plusBtn');
+        const quantityInput = document.getElementById('quantityInput');
+        
+        if (minusBtn && plusBtn && quantityInput) {
+            // Botón de disminuir
+            minusBtn.onclick = function() {
+                let currentValue = parseInt(quantityInput.value);
+                if (currentValue > 1) {
+                    quantityInput.value = currentValue - 1;
+                    console.log('Cantidad actualizada a:', quantityInput.value);
+                }
+            };
+            
+            // Botón de aumentar
+            plusBtn.onclick = function() {
+                let currentValue = parseInt(quantityInput.value);
+                let maxValue = parseInt(quantityInput.getAttribute('max'));
+                if (currentValue < maxValue) {
+                    quantityInput.value = currentValue + 1;
+                    console.log('Cantidad actualizada a:', quantityInput.value);
+                }
+            };
+            
+            // Validación directa del input
+            quantityInput.addEventListener('input', function() {
+                let value = parseInt(this.value);
+                let max = parseInt(this.getAttribute('max'));
+                let min = parseInt(this.getAttribute('min'));
+                
+                if (isNaN(value) || value < min) {
+                    this.value = min;
+                } else if (value > max) {
+                    this.value = max;
+                }
+            });
+        } else {
+            console.error('No se encontraron los elementos de control de cantidad');
+        }
+        
+        // Modal de guía de tallas
+        const sizeGuideBtn = document.querySelector('.size-guide-btn');
+        const sizeGuideModal = document.getElementById('sizeGuideModal');
+        const closeBtn = sizeGuideModal.querySelector('.close');
+        
+        if (sizeGuideBtn && sizeGuideModal && closeBtn) {
+            sizeGuideBtn.onclick = function() {
+                sizeGuideModal.style.display = 'flex';
+            };
+            
+            closeBtn.onclick = function() {
+                sizeGuideModal.style.display = 'none';
+            };
+            
+            window.onclick = function(event) {
+                if (event.target == sizeGuideModal) {
+                    sizeGuideModal.style.display = 'none';
+                }
+            };
+        }
+        
+        // Eliminar cualquier comportamiento de zoom en la imagen
+        const mainImage = document.getElementById('mainImage');
+        if (mainImage) {
+            // Eliminar eventos de clic que pudieran estar activando zoom
+            mainImage.onclick = null;
+            mainImage.style.cursor = 'default';
+        }
+    });
+
+    function toggleShippingInfo() {
+        const content = document.getElementById('shipping-content');
+        const arrow = document.getElementById('shipping-arrow');
+        
+        if (content.style.display === 'none') {
+            content.style.display = 'block';
+            arrow.style.transform = 'rotate(180deg)';
+        } else {
+            content.style.display = 'none';
+            arrow.style.transform = 'rotate(0deg)';
+        }
+    }
+
+    // Código para manejar las reseñas
+    document.addEventListener('DOMContentLoaded', function() {
+        // Abrir el modal de reseñas al hacer clic en el botón
+        const openReviewBtn = document.getElementById('openReviewForm');
+        const reviewModal = document.getElementById('reviewModal');
+        
+        if (openReviewBtn && reviewModal) {
+            openReviewBtn.addEventListener('click', function() {
+                reviewModal.style.display = 'flex';
+            });
+        }
+        
+        // Cerrar modal al hacer clic fuera de él
+        window.addEventListener('click', function(event) {
+            if (event.target === reviewModal) {
+                reviewModal.style.display = 'none';
+            }
+        });
+        
+        // Sistema de calificación por estrellas
+        const starLabels = document.querySelectorAll('.rating-input label');
+        if (starLabels.length > 0) {
+            starLabels.forEach(function(label) {
+                label.addEventListener('mouseover', function() {
+                    // Al pasar el ratón, colorea esta estrella y todas las anteriores
+                    const currentId = this.getAttribute('for');
+                    const currentStar = parseInt(currentId.replace('star', ''));
+                    
+                    starLabels.forEach(function(innerLabel) {
+                        const innerLabelId = innerLabel.getAttribute('for');
+                        const innerStar = parseInt(innerLabelId.replace('star', ''));
+                        
+                        // En el sistema RTL (right-to-left), las estrellas más altas están a la izquierda
+                        if (innerStar >= currentStar) {
+                            innerLabel.style.color = '#FFD700'; // Color dorado
+                        } else {
+                            innerLabel.style.color = '#ddd'; // Color gris
+                        }
+                    });
+                });
+            });
+            
+            // Restablecer colores al salir del área de calificación
+            const ratingInput = document.querySelector('.rating-input');
+            if (ratingInput) {
+                ratingInput.addEventListener('mouseout', function() {
+                    // Restaurar colores basados en la selección actual
+                    const selectedStar = document.querySelector('.rating-input input:checked');
+                    if (selectedStar) {
+                        const selectedValue = parseInt(selectedStar.value);
+                        
+                        starLabels.forEach(function(label) {
+                            const labelId = label.getAttribute('for');
+                            const star = parseInt(labelId.replace('star', ''));
+                            
+                            if (star >= selectedValue) {
+                                label.style.color = '#FFD700';
+                            } else {
+                                label.style.color = '#ddd';
+                            }
+                        });
+                    } else {
+                        // Si no hay selección, todas las estrellas son grises
+                        starLabels.forEach(function(label) {
+                            label.style.color = '#ddd';
+                        });
+                    }
+                });
+            }
+            
+            // Actualizar selección al hacer clic
+            document.querySelectorAll('.rating-input input').forEach(function(input) {
+                input.addEventListener('change', function() {
+                    const value = parseInt(this.value);
+                    
+                    starLabels.forEach(function(label) {
+                        const labelId = label.getAttribute('for');
+                        const star = parseInt(labelId.replace('star', ''));
+                        
+                        if (star >= value) {
+                            label.style.color = '#FFD700';
+                        } else {
+                            label.style.color = '#ddd';
+                        }
+                    });
+                });
+            });
+        }
+        
+        // Carrusel de reseñas
+        const track = document.getElementById('reviewsTrack');
+        const prevButton = document.getElementById('prevReview');
+        const nextButton = document.getElementById('nextReview');
+        const indicators = document.querySelectorAll('.carousel-indicators .indicator');
+        
+        if (track && prevButton && nextButton) {
+            let currentIndex = 0;
+            const reviewCards = document.querySelectorAll('.review-card');
+            const totalReviews = reviewCards.length;
+            
+            // No hacer nada si no hay reseñas
+            if (totalReviews === 0) return;
+            
+            // Actualizar la posición del track
+            function updatePosition() {
+                if (!track) return;
+                
+                // Calcular el ancho a desplazar
+                const cardWidth = reviewCards[0].offsetWidth;
+                const margin = 20; // 10px a cada lado
+                const offset = -(currentIndex * (cardWidth + margin));
+                
+                track.style.transform = `translateX(${offset}px)`;
+                
+                // Actualizar indicadores
+                indicators.forEach((indicator, i) => {
+                    indicator.style.backgroundColor = i === currentIndex ? '#000' : '#ddd';
+                });
+                
+                // Actualizar estado de los botones
+                prevButton.disabled = currentIndex === 0;
+                prevButton.style.opacity = currentIndex === 0 ? '0.5' : '1';
+                nextButton.disabled = currentIndex === totalReviews - 1;
+                nextButton.style.opacity = currentIndex === totalReviews - 1 ? '0.5' : '1';
+            }
+            
+            // Botón anterior
+            prevButton.addEventListener('click', function() {
+                if (currentIndex > 0) {
+                    currentIndex--;
+                    updatePosition();
+                }
+            });
+            
+            // Botón siguiente
+            nextButton.addEventListener('click', function() {
+                if (currentIndex < totalReviews - 1) {
+                    currentIndex++;
+                    updatePosition();
+                }
+            });
+            
+            // Indicadores
+            indicators.forEach((indicator, i) => {
+                indicator.addEventListener('click', function() {
+                    currentIndex = i;
+                    updatePosition();
+                });
+            });
+            
+            // Inicializar posición
+            updatePosition();
+            
+            // Adaptar carrusel al redimensionar la ventana
+            window.addEventListener('resize', updatePosition);
+        }
+    });
+    </script>
+</body>
+</html>

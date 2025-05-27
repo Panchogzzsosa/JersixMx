@@ -81,6 +81,29 @@ try {
     $product_id = $product['product_id'];
     $product_status = $hasStatusColumn ? $product['status'] : 1; // Por defecto activo si no existe la columna
     
+    // Obtener stock por talla (aleatorio entre 2 y 8, fijo por una semana)
+    $stock_by_size = [];
+    $sizes = ['S', 'M', 'L', 'XL', 'XXL']; // Puedes ajustar las tallas aquí
+    foreach ($sizes as $size) {
+        // Buscar si ya existe un stock fake vigente
+        $stmt = $pdo->prepare("SELECT stock, expires_at FROM product_stock_fake WHERE product_id = ? AND size = ?");
+        $stmt->execute([$product_id, $size]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $now = new DateTime();
+        $expires = $row ? new DateTime($row['expires_at']) : null;
+        if ($row && $expires > $now) {
+            // Si existe y no ha expirado, usar ese stock
+            $stock_by_size[$size] = $row['stock'];
+        } else {
+            // Generar uno nuevo y guardarlo
+            $random_stock = rand(2, 5);
+            $expires_at = (new DateTime('+7 days'))->format('Y-m-d H:i:s');
+            $pdo->prepare("REPLACE INTO product_stock_fake (product_id, size, stock, expires_at) VALUES (?, ?, ?, ?)")
+                ->execute([$product_id, $size, $random_stock, $expires_at]);
+            $stock_by_size[$size] = $random_stock;
+        }
+    }
+    
     // Buscar imágenes adicionales en la base de datos (si existe una tabla de imágenes)
     $additional_images = [];
     try {
@@ -1175,17 +1198,8 @@ try {
                     <button class="quantity-btn plus" id="plusBtn">+</button>
                 </div>
 
-                <div class="stock-info">
-                    <?php if ($stock <= 0): ?>
-                        <i class="fas fa-times-circle" style="color: #dc3545;"></i>
-                        <p>Producto agotado</p>
-                    <?php elseif ($stock < 5): ?>
-                        <i class="fas fa-exclamation-circle" style="color: #ffc107;"></i>
-                        <p>¡Últimas <?php echo $stock; ?> unidades disponibles!</p>
-                    <?php else: ?>
-                        <i class="fas fa-check-circle" style="color: #28a745;"></i>
-                        <p>Disponible en stock</p>
-                    <?php endif; ?>
+                <div class="stock-info" id="stockInfo">
+                    <!-- El mensaje se llenará dinámicamente con JS -->
                 </div>
                 
                 <div class="action-buttons">
@@ -1843,13 +1857,15 @@ try {
     const PATCH_PRICE = 50;
     const CUSTOMIZATION_PRICE = 100;
 
+    // Stock por talla desde PHP
+    var stockPorTalla = <?php echo json_encode($stock_by_size); ?>;
+
     // Función para validar el número del jersey
     function validateJerseyNumber(input) {
         // Limitar a máximo 2 dígitos
         if (input.value.length > 2) {
             input.value = input.value.slice(0, 2);
         }
-        
         // Solo validar si hay un valor
         if (input.value !== '') {
             let value = parseInt(input.value);
@@ -1865,22 +1881,61 @@ try {
     function updatePrice() {
         const patchOption = document.getElementById('patchOption');
         const customizationSelect = document.getElementById('customizationSelect');
-        
         // Calcular precio base + personalización + parche
         currentPrice = basePrice;
-        
-        // Añadir costo de personalización si está seleccionado
         if (customizationSelect.value === 'yes') {
             currentPrice += CUSTOMIZATION_PRICE;
         }
-        
-        // Añadir costo de parche si está seleccionado
         if (patchOption.checked) {
             currentPrice += PATCH_PRICE;
         }
-        
         document.querySelector('.product-price').textContent = '$ ' + currentPrice.toFixed(2);
     }
+
+    // Función para mostrar mensaje aleatorio al cargar la página
+    function mostrarMensajeStockInicial() {
+        const stockInfo = document.getElementById('stockInfo');
+        // 70% probabilidad de "¡Quedan pocos!", 30% de "Disponible en stock"
+        const random = Math.random();
+        if (random < 0.7) {
+            stockInfo.innerHTML = '<i class="fas fa-exclamation-circle" style="color: #dc3545;"></i> <span>¡Quedan pocos!</span>';
+        } else {
+            stockInfo.innerHTML = '<i class="fas fa-check-circle" style="color: #28a745;"></i> <span>Disponible en stock</span>';
+        }
+    }
+
+    // Función para mostrar el stock real al seleccionar talla
+    function mostrarStockPorTalla(talla) {
+        const stockInfo = document.getElementById('stockInfo');
+        const stock = stockPorTalla[talla] || 0;
+        if (stock <= 0) {
+            stockInfo.innerHTML = '<i class="fas fa-times-circle" style="color: #dc3545;"></i> <span>Producto agotado</span>';
+        } else if (stock <= 3) {
+            stockInfo.innerHTML = `<i class=\"fas fa-exclamation-circle\" style=\"color: #dc3545;\"></i> <span>¡Últimas ${stock} unidades disponibles!</span>`;
+        } else {
+            stockInfo.innerHTML = `<i class=\"fas fa-check-circle\" style=\"color: #28a745;\"></i> <span>¡${stock} unidades disponibles!</span>`;
+        }
+    }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        // Mostrar mensaje aleatorio al cargar la página
+        mostrarMensajeStockInicial();
+
+        // Manejar selección de talla
+        const sizeOptions = document.querySelectorAll('.size-option');
+        const quantityInput = document.getElementById('quantityInput');
+        sizeOptions.forEach(option => {
+            option.addEventListener('click', function() {
+                sizeOptions.forEach(opt => opt.classList.remove('selected'));
+                this.classList.add('selected');
+                const talla = this.textContent.trim();
+                const stock = stockPorTalla[talla] || 0;
+                quantityInput.max = stock;
+                quantityInput.value = 1;
+                mostrarStockPorTalla(talla);
+            });
+        });
+    });
 
     // Event listeners para personalización
     document.getElementById('patchOption').addEventListener('change', updatePrice);

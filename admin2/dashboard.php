@@ -639,6 +639,12 @@ try {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="inventario.php">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Compras</span>
@@ -707,7 +713,7 @@ try {
                 </div>
             </div>
             
-            <?php /* Eliminar alerta de giftcards pendientes */ ?>
+            <?php /* Eliminar alerta de gift cards pendientes */ ?>
             
             <!-- Stats Grid -->
             <div class="stats-grid">
@@ -775,6 +781,14 @@ try {
                             </div>
                             <h4 class="action-title">Ver Productos</h4>
                             <p class="action-description">Gestiona tu inventario</p>
+                        </a>
+                        
+                        <a href="inventario.php" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-warehouse"></i>
+                            </div>
+                            <h4 class="action-title">Gestionar Inventario</h4>
+                            <p class="action-description">Controla stock por tallas</p>
                         </a>
                         
                         <a href="orders.php" class="action-card">

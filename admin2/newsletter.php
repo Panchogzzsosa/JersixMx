@@ -982,6 +982,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['add_subscriber'])) {
                     </a>
                 </li>
                 <li class="nav-item">
+                    <a href="inventario.php">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
+                <li class="nav-item">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
                         <span>Compras</span>

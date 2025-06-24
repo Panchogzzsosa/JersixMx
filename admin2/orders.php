@@ -1273,6 +1273,12 @@ function calcularPrecioReal($item) {
                         <span>Productos</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                    <a href="inventario.php">
+                        <i class="fas fa-warehouse"></i>
+                        <span>Inventario</span>
+                    </a>
+                </li>
                 <li class="nav-item active">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>

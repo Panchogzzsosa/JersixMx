@@ -355,6 +355,7 @@ $pedidos = $conn->query("SELECT * FROM pedidos_internos ORDER BY orden ASC, fech
         <ul class="nav-menu">
             <li class="nav-item"><a href="dashboard.php"><i class="fas fa-home"></i><span>Inicio</span></a></li>
             <li class="nav-item"><a href="products.php"><i class="fas fa-box"></i><span>Productos</span></a></li>
+            <li class="nav-item"><a href="inventario.php"><i class="fas fa-warehouse"></i><span>Inventario</span></a></li>
             <li class="nav-item"><a href="orders.php"><i class="fas fa-shopping-cart"></i><span>Compras</span></a></li>
             <li class="nav-item"><a href="newsletter.php"><i class="fas fa-users"></i><span>Clientes / Newsletter</span></a></li>
             <li class="nav-item"><a href="giftcards.php"><i class="fas fa-gift"></i><span>Gift Cards</span></a></li>

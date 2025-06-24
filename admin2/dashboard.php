@@ -647,7 +647,13 @@ try {
                 <li class="nav-item">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Compras</span>
+                        <span>Ventas Web</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ventas.php">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -791,6 +797,14 @@ try {
                             <p class="action-description">Controla stock por tallas</p>
                         </a>
                         
+                        <a href="ventas.php" class="action-card">
+                            <div class="action-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h4 class="action-title">Registrar Ventas</h4>
+                            <p class="action-description">Registra ventas online y offline</p>
+                        </a>
+                        
                         <a href="orders.php" class="action-card">
                             <div class="action-icon">
                                 <i class="fas fa-shopping-cart"></i>
@@ -900,5 +914,4 @@ try {
         });
     </script>
 </body>
-</html> 
 </html> 

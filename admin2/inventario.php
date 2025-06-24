@@ -654,6 +654,17 @@ function parseInventoryData($inventory_data) {
                 min-width: auto;
             }
         }
+        
+        .sortable-col {
+            cursor: pointer;
+            color: var(--primary-color);
+            text-decoration: underline dotted;
+            transition: color 0.2s;
+        }
+        .sortable-col:hover {
+            color: var(--primary-dark);
+            text-decoration: underline;
+        }
     </style>
 </head>
 <body>
@@ -685,7 +696,13 @@ function parseInventoryData($inventory_data) {
                 <li class="nav-item">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Compras</span>
+                        <span>Ventas Web</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ventas.php">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
                     </a>
                 </li>
                 <li class="nav-item">
@@ -821,17 +838,9 @@ function parseInventoryData($inventory_data) {
                             </select>
                         </div>
                         
-                        <div class="filter-group">
-                            <label>&nbsp;</label>
-                            <div style="display: flex; gap: 10px;">
-                                <button type="submit" class="search-btn">
-                                    <i class="fas fa-search"></i> Buscar
-                                </button>
-                                <a href="inventario.php" class="clear-btn" style="text-decoration: none; display: flex; align-items: center;">
-                                    <i class="fas fa-times"></i> Limpiar
-                                </a>
-                            </div>
-                        </div>
+                        <!-- <button type="submit" class="search-btn">
+                            <i class="fas fa-search"></i> Buscar
+                        </button> -->
                     </div>
                 </form>
                 
@@ -865,11 +874,11 @@ function parseInventoryData($inventory_data) {
                                 <th>Categoría</th>
                                 <th>Precio</th>
                                 <th>Estado</th>
-                                <th>Stock Total</th>
-                                <th>Talla S</th>
-                                <th>Talla M</th>
-                                <th>Talla L</th>
-                                <th>Talla XL</th>
+                                <th class="sortable-col" data-sort="total_stock">Stock Total</th>
+                                <th class="sortable-col" data-sort="S">Talla S</th>
+                                <th class="sortable-col" data-sort="M">Talla M</th>
+                                <th class="sortable-col" data-sort="L">Talla L</th>
+                                <th class="sortable-col" data-sort="XL">Talla XL</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -1062,6 +1071,47 @@ function parseInventoryData($inventory_data) {
                 }
             });
         });
+
+        // Ordenamiento dinámico de la tabla
+        (function() {
+            const getCellValue = (row, col, tallaKey) => {
+                if (col === 'total_stock') {
+                    return parseInt(row.querySelector('.stock-badge').textContent.replace(/,/g, '')) || 0;
+                } else if (['S','M','L','XL'].includes(col)) {
+                    // Buscar el input de la talla correspondiente en la fila
+                    const input = Array.from(row.querySelectorAll("input[name='size']")).find(inp => inp.value === col);
+                    if (input) {
+                        const stockInput = input.parentElement.querySelector("input[name='stock']");
+                        return parseInt(stockInput.value) || 0;
+                    }
+                    return 0;
+                } else {
+                    return row.querySelector('.product-name').textContent.trim().toLowerCase();
+                }
+            };
+            let lastSort = {col: null, byStock: false};
+            document.querySelectorAll('.sortable-col').forEach(header => {
+                header.addEventListener('click', function() {
+                    const col = this.getAttribute('data-sort');
+                    const tbody = document.querySelector('.inventory-table tbody');
+                    const rows = Array.from(tbody.querySelectorAll('tr')).filter(r => r.querySelector('.product-name'));
+                    if (lastSort.col === col && lastSort.byStock) {
+                        // Volver a orden alfabético
+                        rows.sort((a, b) => {
+                            const nameA = getCellValue(a, 'name');
+                            const nameB = getCellValue(b, 'name');
+                            return nameA.localeCompare(nameB);
+                        });
+                        lastSort = {col: col, byStock: false};
+                    } else {
+                        // Ordenar por stock/talla descendente
+                        rows.sort((a, b) => getCellValue(b, col, col) - getCellValue(a, col, col));
+                        lastSort = {col: col, byStock: true};
+                    }
+                    rows.forEach(row => tbody.appendChild(row));
+                });
+            });
+        })();
     </script>
 </body>
 </html>

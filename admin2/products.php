@@ -764,7 +764,13 @@ if (isset($_GET['error'])) {
                 <li class="nav-item">
                     <a href="orders.php">
                         <i class="fas fa-shopping-cart"></i>
-                        <span>Compras</span>
+                        <span>Ventas Web</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="ventas.php">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Ventas</span>
                     </a>
                 </li>
                 <li class="nav-item">

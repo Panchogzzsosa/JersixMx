@@ -127,7 +127,7 @@ try {
             'usos_restantes' => $promo['usos_maximos'] > 0 ? $promo['usos_maximos'] - $promo['usos_actuales'] : 'ilimitado'
         ]
     ];
-
+    
     // Si es un paquete de 2 jerseys, agregar información específica
     if ($promo['tipo_descuento'] === 'paquete') {
         $response['data']['paquete_info'] = [
@@ -136,7 +136,7 @@ try {
             'ahorro' => 598.00
         ];
     }
-
+    
     echo json_encode($response);
     logMessage("Código promocional válido: $codigo", 'SUCCESS');
     

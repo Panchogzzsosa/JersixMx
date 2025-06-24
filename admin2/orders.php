@@ -1402,7 +1402,14 @@ function calcularPrecioReal($item) {
                                                         <i class="fas fa-gift"></i> Gift Card
                                                     </div>
                                                 <?php endif; ?>
-                                                <?php if ($hasPromoCode): ?>
+                                                <?php 
+                                                // Mostrar badge de promo si hay código promocional o promoción automática
+                                                $hasPromoBadge = false;
+                                                $payment_notes = $order['payment_notes'] ?? '';
+                                                if (strpos($payment_notes, 'Código promocional aplicado') !== false || strpos($payment_notes, 'Promoción automática') !== false) {
+                                                    $hasPromoBadge = true;
+                                                }
+                                                if ($hasPromoBadge): ?>
                                                     <div class="promo-code-badge">
                                                         <i class="fas fa-percent"></i> Promo
                                                     </div>
@@ -1441,32 +1448,33 @@ function calcularPrecioReal($item) {
                                                 $notes_stmt->execute([$order['order_id']]);
                                                 $payment_notes = $notes_stmt->fetchColumn();
                                                 
-                                                if (!empty($payment_notes) && preg_match('/Gift Card aplicada:.+\- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                                if (!empty($payment_notes) && preg_match('/Gift Card aplicada:.+- Monto: \$([0-9.]+)/', $payment_notes, $matches)) {
                                                     $discount_amount = floatval($matches[1]);
                                                 }
                                             }
                                             
-                                            // Verificar si hay descuento de código promocional
-                                            if ($hasPromoCode) {
-                                                // Obtener notas de pago para buscar descuento
-                                                if (!isset($payment_notes)) {
-                                                    $notes_stmt = $pdo->prepare("SELECT payment_notes FROM orders WHERE order_id = ?");
-                                                    $notes_stmt->execute([$order['order_id']]);
-                                                    $payment_notes = $notes_stmt->fetchColumn();
-                                                }
-                                                
-                                                if (!empty($payment_notes) && preg_match('/Código promocional aplicado:.+\- Descuento: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                            // Verificar si hay descuento de código promocional o promoción automática
+                                            $hasPromo = false;
+                                            $promo_discount = 0;
+                                            $payment_notes = $order['payment_notes'] ?? '';
+                                            if (!empty($payment_notes)) {
+                                                // Código promocional tradicional
+                                                if (preg_match('/Código promocional aplicado:.+- Descuento: \$([0-9.]+)/', $payment_notes, $matches)) {
                                                     $promo_discount = floatval($matches[1]);
-                                                    if (!isset($discount_amount)) $discount_amount = 0;
-                                                    $discount_amount += $promo_discount;
+                                                    $hasPromo = true;
+                                                }
+                                                // Promoción automática
+                                                if (preg_match('/Promoción automática [^\-]+- Descuento: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                                    $promo_discount = floatval($matches[1]);
+                                                    $hasPromo = true;
                                                 }
                                             }
                                             
-                                            // Si es pago completo con giftcard o hay descuento, mostrar ambos precios
+                                            // Mostrar precios según el tipo de descuento
                                             if ($order['payment_method'] === 'giftcard') {
                                                 echo '<div style="font-weight: 500; color: #28a745;">$0 <small style="color: #6c757d; text-decoration: line-through;">($' . number_format($real_total, 2) . ')</small></div>';
-                                            } elseif ($discount_amount > 0) {
-                                                $paid_amount = $real_total - $discount_amount;
+                                            } elseif ($hasPromo && $promo_discount > 0) {
+                                                $paid_amount = $real_total - $promo_discount;
                                                 echo '<div>';
                                                 echo '<span style="font-weight: 500; color: #28a745;">$' . number_format($paid_amount, 2) . '</span><br>';
                                                 echo '<small style="color: #6c757d; text-decoration: line-through;">$' . number_format($real_total, 2) . '</small>';
@@ -1733,7 +1741,7 @@ function calcularPrecioReal($item) {
                                                                     <td colspan="6" class="text-right" style="text-align: right; font-weight: 500; color:rgb(0, 0, 0);">
                                                                         Descuento (Gift Card):
                                                                     </td>
-                                                                    <td style="color: #dc3545;">$<?php echo number_format($discount_amount, 2); ?></td>
+                                                                    <td style="color: #dc3545;">-$<?php echo number_format($discount_amount, 2); ?></td>
                                                                     <td></td>
                                                                 </tr>
                                                             <?php 
@@ -1789,6 +1797,30 @@ function calcularPrecioReal($item) {
                                                                     <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($order_subtotal, 2); ?></td>
                                                                     <td></td>
                                                                 </tr>
+                                                            <?php endif; ?>
+                                                            <?php
+                                                            // Verificar si hay descuento de promoción automática
+                                                            $auto_promo_discount = 0;
+                                                            $has_auto_promo = false;
+                                                            $auto_promo_name = '';
+                                                            if (!empty($payment_notes) && preg_match('/Promoción automática ([^:]+):? aplicada - Descuento: \$([0-9.]+)/', $payment_notes, $matches)) {
+                                                                $auto_promo_name = trim($matches[1]);
+                                                                $auto_promo_discount = floatval($matches[2]);
+                                                                $has_auto_promo = true;
+                                                            }
+                                                            if ($has_auto_promo): ?>
+                                                            <tr class="discount-row" style="background-color: #FFFFFF; border: 1px solid #f0f0f0;">
+                                                                <td colspan="6" class="text-right" style="text-align: right; font-weight: 500; color:rgb(0, 0, 0);">
+                                                                    Promoción automática <?php echo htmlspecialchars($auto_promo_name); ?>:
+                                                                </td>
+                                                                <td style="color: #FF0000; font-weight: 500;">-$<?php echo number_format($auto_promo_discount, 2); ?></td>
+                                                                <td></td>
+                                                            </tr>
+                                                            <tr class="total-row">
+                                                                <td colspan="6" class="text-right" style="text-align: right; font-weight: 700; font-size: 1.1em;">TOTAL:</td>
+                                                                <td style="font-weight: 700; font-size: 1.1em;">$<?php echo number_format($order_subtotal - $auto_promo_discount, 2); ?></td>
+                                                                <td></td>
+                                                            </tr>
                                                             <?php endif; ?>
                                                         </tbody>
                                                     </table>

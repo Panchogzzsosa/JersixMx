@@ -879,6 +879,7 @@ function parseInventoryData($inventory_data) {
                                 <th class="sortable-col" data-sort="M">Talla M</th>
                                 <th class="sortable-col" data-sort="L">Talla L</th>
                                 <th class="sortable-col" data-sort="XL">Talla XL</th>
+                                <th class="sortable-col" data-sort="XXL">Talla XXL</th>
                                 <th>Acciones</th>
                             </tr>
                         </thead>
@@ -967,6 +968,15 @@ function parseInventoryData($inventory_data) {
                                                 <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
                                                 <input type="hidden" name="size" value="XL">
                                                 <input type="number" name="stock" value="<?php echo $inventory['XL'] ?? 0; ?>" 
+                                                       min="0" class="size-input" 
+                                                       onchange="this.form.submit()">
+                                            </form>
+                                        </td>
+                                        <td>
+                                            <form method="POST" style="display: inline;">
+                                                <input type="hidden" name="product_id" value="<?php echo $product['product_id']; ?>">
+                                                <input type="hidden" name="size" value="XXL">
+                                                <input type="number" name="stock" value="<?php echo $inventory['XXL'] ?? 0; ?>" 
                                                        min="0" class="size-input" 
                                                        onchange="this.form.submit()">
                                             </form>
@@ -1077,7 +1087,7 @@ function parseInventoryData($inventory_data) {
             const getCellValue = (row, col, tallaKey) => {
                 if (col === 'total_stock') {
                     return parseInt(row.querySelector('.stock-badge').textContent.replace(/,/g, '')) || 0;
-                } else if (['S','M','L','XL'].includes(col)) {
+                } else if (["S","M","L","XL","XXL"].includes(col)) {
                     // Buscar el input de la talla correspondiente en la fila
                     const input = Array.from(row.querySelectorAll("input[name='size']")).find(inp => inp.value === col);
                     if (input) {

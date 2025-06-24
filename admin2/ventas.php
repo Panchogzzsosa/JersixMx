@@ -736,6 +736,7 @@ try {
                                     <option value="M">M</option>
                                     <option value="L">L</option>
                                     <option value="XL">XL</option>
+                                    <option value="XXL">XXL</option>
                                 </select>
                             </div>
                             
@@ -791,11 +792,16 @@ try {
             
             <!-- Sales History Table -->
             <div class="table-container">
-                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center;">
+                <div class="table-header" style="display: flex; justify-content: space-between; align-items: center; gap: 10px;">
                     <h3 class="table-title"><i class="fas fa-history"></i> Historial de Ventas</h3>
-                    <a href="exportar_ventas_pdf.php" target="_blank" class="btn btn-danger" style="margin-left: auto; padding: 10px 14px; display: flex; align-items: center; justify-content: center;">
-                        <i class="fas fa-file-pdf" style="font-size: 20px;"></i>
-                    </a>
+                    <div style="display: flex; gap: 10px;">
+                        <a href="exportar_ventas_pdf.php" target="_blank" class="btn btn-danger" style="padding: 10px 14px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-pdf" style="font-size: 20px;"></i>
+                        </a>
+                        <a href="exportar_ventas_excel.php" class="btn btn-success" style="background-color: #28a745; border-color: #28a745; color: #fff; padding: 10px 14px; display: flex; align-items: center; justify-content: center;">
+                            <i class="fas fa-file-excel" style="font-size: 20px; color: #fff;"></i>
+                        </a>
+                    </div>
                 </div>
                 <div style="overflow-x: auto;">
                     <table class="sales-table">

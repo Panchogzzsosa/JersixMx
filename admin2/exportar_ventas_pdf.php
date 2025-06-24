@@ -44,6 +44,55 @@ class PDF extends FPDF {
         $this->Cell(28,9,'Fecha',1,0,'C',true);
         $this->Cell(55,9,'Notas',1,1,'C',true);
     }
+    // Método para calcular el número de líneas de un texto en un ancho dado
+    function NbLines($w, $txt) {
+        $cw = &$this->CurrentFont['cw'];
+        if($w==0)
+            $w = $this->w-$this->rMargin-$this->x;
+        $wmax = ($w-2*$this->cMargin)*1000/$this->FontSize;
+        $s = str_replace("\r",'',(string)$txt);
+        $nb = strlen($s);
+        if($nb>0 and $s[$nb-1]=="\n")
+            $nb--;
+        $sep = -1;
+        $i = 0;
+        $j = 0;
+        $l = 0;
+        $nl = 1;
+        while($i<$nb)
+        {
+            $c = $s[$i];
+            if($c=="\n")
+            {
+                $i++;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+                continue;
+            }
+            if($c==' ')
+                $sep = $i;
+            $l += $cw[$c];
+            if($l>$wmax)
+            {
+                if($sep==-1)
+                {
+                    if($i==$j)
+                        $i++;
+                }
+                else
+                    $i = $sep+1;
+                $sep = -1;
+                $j = $i;
+                $l = 0;
+                $nl++;
+            }
+            else
+                $i++;
+        }
+        return $nl;
+    }
 }
 
 $pdf = new PDF('L','mm','A4');
@@ -57,15 +106,40 @@ $fill = false;
 foreach ($ventas as $venta) {
     $pdf->SetFillColor(245,245,245);
     $pdf->SetDrawColor(200,200,200);
-    $pdf->Cell(10,8,$contador++,1,0,'C',$fill);
-    $pdf->Cell(55,8,$venta['producto'],1,0,'L',$fill);
-    $pdf->Cell(15,8,$venta['size'],1,0,'C',$fill);
-    $pdf->Cell(22,8,'$'.number_format($venta['price'],2),1,0,'R',$fill);
-    $pdf->Cell(32,8,$venta['location'],1,0,'L',$fill);
-    $pdf->Cell(20,8,($venta['sale_type']=='online'?'Online':'Offline'),1,0,'C',$fill);
-    $pdf->Cell(28,8,date('d/m/Y',strtotime($venta['sale_date'])),1,0,'C',$fill);
-    $nota = mb_strimwidth($venta['notes'], 0, 55, '...');
-    $pdf->Cell(55,8,$nota,1,1,'L',$fill);
+    // Preparar los datos de la fila
+    $row = [
+        $contador++,
+        iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $venta['producto']),
+        iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $venta['size']),
+        '$'.number_format($venta['price'],2),
+        iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $venta['location']),
+        ($venta['sale_type']=='online'?'Online':'Offline'),
+        date('d/m/Y',strtotime($venta['sale_date'])),
+        iconv('UTF-8', 'ISO-8859-1//TRANSLIT', $venta['notes'])
+    ];
+    $widths = [10, 55, 15, 22, 32, 20, 28, 55];
+    $aligns = ['C','L','C','R','L','C','C','L'];
+    // Calcular la altura necesaria para la celda de Notas
+    $nbLinesNotas = $pdf->NbLines($widths[7], $row[7] !== '' ? $row[7] : ' ');
+    $h = max(8, $nbLinesNotas * 5);
+    $x = $pdf->GetX();
+    $y = $pdf->GetY();
+    // Imprimir las primeras 7 celdas
+    for ($i = 0; $i < 7; $i++) {
+        $pdf->SetXY($x + array_sum(array_slice($widths, 0, $i)), $y);
+        $pdf->Cell($widths[$i], $h, $row[$i], 1, 0, $aligns[$i], $fill);
+    }
+    // Imprimir la celda de Notas
+    $pdf->SetXY($x + array_sum(array_slice($widths, 0, 7)), $y);
+    if (trim($row[7]) === '') {
+        // Si la nota está vacía, usar Cell para que la celda tenga la misma altura que la fila
+        $pdf->Cell($widths[7], $h, '', 1, 0, $aligns[7], $fill);
+    } else {
+        // Si hay nota, usar MultiCell
+        $pdf->MultiCell($widths[7], 5, $row[7], 1, $aligns[7], $fill);
+    }
+    // Ajustar la posición para la siguiente fila
+    $pdf->SetXY($x, $y + $h);
     $fill = !$fill;
 }
 
